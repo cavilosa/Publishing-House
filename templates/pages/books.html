@@ -1,0 +1,20 @@
+{% extends 'layouts/main.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+
+<!-- <form method="post" action="/books/create">
+    <input type="text" name="title"/>
+    <input type="text" name="author">
+    <input type="text" name="year">
+    <input type="submit" value="Create" />
+  </form> -->
+    {% if books %}
+        <ul>
+            {% for book in books %}
+            <li>{{ book.title }}, {{ book.author}}, {{ book.year }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        There are no books in the databse yet. 
+    {% endif %}
+{% endblock content %}

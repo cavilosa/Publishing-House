@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+
+    <title>{% block title %}{% endblock %}</title>
+    <!-- <meta name="description" content="">
+    <meta name="author" content=""> -->
+
+    <!-- meta -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- styles -->
+    <link rel="stylesheet" href="../../static/css/main.css">
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="../../static/img/teddy-bear.png">
+    
+
+</head>
+
+<body>
+    <div class="new">
+        Hello!
+        Welcome to our Publishing House!
+    </div>
+    <!-- <button type="submit" name="test" class="test" id="test" onsubmit="change(e)">change color</button> -->
+
+    <p>If you'd like to browse through our books and authors, please sign in.<p> 
+    
+    
+    <p><button type="submit" name="sign_in" class="sign_in" id="sign_in" onsubmit="signIn(e)">Sign in</button></p>
+    <br>
+    <a href="https://korzhyk-app.us.auth0.com/authorize?audience=app&response_type=token&client_id=a0mzLPX0PZ6KPWVGo058FFCUUNwShqIN&redirect_uri=http://localhost:8080/login-results">Login</a>
+
+    <!-- {% if books %}
+        <ul>
+            {% for book in books %}
+            <li>{{ book.title }}, {{ book.author}}, {{ book.year }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        There are no books in the database yet. 
+    {% endif %} -->
+
+
+    {% block create_book %}{% endblock %}
+
+    <!-- <script type="text/javascript">
+        window.onload = function() {
+          if (document.cookie.match(/^(.*;)?\s*user_token\s*=\s*[^;]+(.*)?$/)) {
+             var node = document.createElement("LI"); 
+             node.innerHTML = "<button onclick='logout()'>logout</button>"
+             document.getElementById("navbar").appendChild(node); 
+            } else {
+              var node = document.createElement("LI"); 
+             node.innerHTML = "<a href='/login'>Login/Signup</a>"
+             document.getElementById("navbar").appendChild(node); 
+            }
+      }
+  
+      function logout() {
+        document.cookie = "user_token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;"
+        location.reload();
+      }
+    </script> -->
+    <main id="content" role="main" class="container">
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-block alert-info fade in">
+              <a class="close" data-dismiss="alert">&times;</a>
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+
+
+    </main>
+
+
+
+    <!-- scripts -->
+    <script src="../../static/js/main.js" type="text/javascript"></script>
+
+</body>
+</html>
