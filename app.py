@@ -1,7 +1,7 @@
 import os
 from flask import Flask, request, abort, jsonify, redirect, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import json
 from dotenv import load_dotenv
 from models import db, setup_db,  Book, Author # authors_books, #db_drop_and_create_all
@@ -19,18 +19,29 @@ def create_app(test_config=None):
     migrate = Migrate(app, db)
     setup_db(app)
     # db_drop_and_create_all()
+    # app.config['CORS_HEADERS'] = 'Content-Type'
+
 
     @app.route("/", methods=["GET"])
+    @cross_origin()
+    @cross_origin(headers=["Access-Control-Allow-Origin", "http://localhost:5000"])
     def hello():
         return render_template("layouts/main.html")
         # return render_template("pages/books.html")
         # return redirect ("https://korzhyk-app.us.auth0.com/authorize?audience=app&response_type=token&client_id=a0mzLPX0PZ6KPWVGo058FFCUUNwShqIN&redirect_uri=http://localhost:8080/login-results")
 
 
+    # @app.route("/login", methods=["GET"])
+    # @cross_origin()
+    # def login():
+
+
+
     # @app.route("/books", methods=["GET"])
     #     return render_template("books.html", books=Books.query.all)
 
     @app.route("/books", methods=["GET"])
+    @cross_origin()
     @requires_auth("get:books")
     def list_books(payload):
         
@@ -51,6 +62,7 @@ def create_app(test_config=None):
             })
 
     @app.route("/books/create", methods=["GET", "POST"])
+    @cross_origin()
     @requires_auth("post:books") # use fetch(Ajax request) to avoid reloading the page and 
     # adding new book to the list
     def create_book(payload):

@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     console.log("LOADED")
-    let button = document.querySelector(".test")
-    button.addEventListener("click", changeColor)
+    // let button = document.querySelector(".test")
+    // button.addEventListener("click", changeColor)
 });
 
 let sign_in = document.querySelector(".sign_in")
@@ -20,4 +20,22 @@ async function signIn(e){
     e.preventDefault();
     console.log("SIGH IN")
         window.location.href = "https://korzhyk-app.us.auth0.com/authorize?audience=app&response_type=token&client_id=a0mzLPX0PZ6KPWVGo058FFCUUNwShqIN&redirect_uri=http://localhost:8080/login-results"; 
+}
+
+// async function signIn(e){
+//     e.preventDefault();
+//     console.log("SIGH IN")
+//         const respose = await fetch("https://korzhyk-app.us.auth0.com/authorize?audience=app&response_type=token&client_id=a0mzLPX0PZ6KPWVGo058FFCUUNwShqIN&redirect_uri=http://localhost:8080/login-results").then ((data) => {
+//             return data.json()
+//         }).then ( (data) => { console.log(data) })
+// }
+
+async function get_jwt(){
+    const respose = await fetch("http://localhost:8080/login-results").then( function (data) {
+        return data.json();
+    }).then (function(data){
+        console.log(data);
+    }).catch(function(err){
+        console.warn("smth went wrong", err);
+    })
 }
