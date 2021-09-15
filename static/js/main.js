@@ -21,3 +21,13 @@ async function signIn(e){
     console.log("SIGH IN")
         window.location.href = "https://korzhyk-app.us.auth0.com/authorize?audience=app&response_type=token&client_id=a0mzLPX0PZ6KPWVGo058FFCUUNwShqIN&redirect_uri=http://localhost:8080/login-results"; 
 }
+
+async function get_jwt(){
+    const respose = await fetch("http://localhost:8080/login-results") .then( function (response) {
+        return respose.json();
+    }).then (function(data){
+        console.log(data);
+    }).catch(function(err){
+        console.warn("smth went wrong", err);
+    })
+}

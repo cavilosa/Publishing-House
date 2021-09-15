@@ -40,6 +40,7 @@ def create_app(test_config=None):
                  "success": books_list
             })
 
+
     @app.route("/authors", methods=["GET"])
     @requires_auth("get:authors")
     def list_authors(payload):
