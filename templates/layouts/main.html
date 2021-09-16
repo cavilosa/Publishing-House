@@ -32,7 +32,7 @@
     
     <p><button type="submit" name="sign_in" class="sign_in" id="sign_in" onsubmit="signIn(e)">Sign in</button></p>
     <br>
-    <a href="https://korzhyk-app.us.auth0.com/authorize?audience=app&response_type=token&client_id=a0mzLPX0PZ6KPWVGo058FFCUUNwShqIN&redirect_uri=http://localhost:8080/login-results">Login</a>
+    <!-- <a href="https://korzhyk-app.us.auth0.com/authorize?audience=app&response_type=token&client_id=a0mzLPX0PZ6KPWVGo058FFCUUNwShqIN&redirect_uri=http://localhost:5000">Login</a> -->
 
     <!-- {% if books %}
         <ul>
@@ -43,6 +43,23 @@
     {% else %}
         There are no books in the database yet. 
     {% endif %} -->
+
+    <div class="login-page clearfix">
+      <div class="login-box auth0-box before">
+        <img src="https://i.cloudup.com/StzWWrY34s.png" />
+        <h3>Auth0 Example</h3>
+        <p>Zero friction identity infrastructure, built for developers</p>
+        <a id="qsLoginBtn" class="btn btn-primary btn-lg btn-login btn-block" href="/login">Log In</a>
+      </div>
+    </div>
+
+    {% if token %}
+    <div class="logged-in-box auth0-box logged-in">
+      <!-- <h1 id="logo"><img src="//cdn.auth0.com/samples/auth0_logo_final_blue_RGB.png" /></h1> -->
+      <h2>{{ token }}</h2>
+      <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
+    </div>
+    {% endif %}
 
     
     {% if payload %}
