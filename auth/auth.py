@@ -5,6 +5,7 @@ from jose import jwt
 from urllib.request import urlopen
 import os
 from dotenv import load_dotenv
+from flask import session
 
 load_dotenv()
 
@@ -256,6 +257,7 @@ def requires_auth(permission=""):
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
+            token = session["token"]
             token = get_token_auth_header()
             payload = verify_decode_jwt(token)
             check_permissions(permission, payload)

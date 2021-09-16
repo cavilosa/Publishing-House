@@ -38,30 +38,35 @@ def create_app(test_config=None):
         'scope': 'openid profile email',
     },
     )
-
+    
     @app.after_request
     def after_request(response):
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
         response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
         return response
+       
+        
 
 
-    # def requires_auth(f):
-    #     @wraps(f)
-    #     def decorated(*args, **kwargs):
-    #         if constants.PROFILE_KEY not in session:
-    #             return redirect('/login')
-    #         return f(*args, **kwargs)
- 
-    #     return decorated
+    # @app.after_request
+    # def after_request(request):
+    #     # response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
+    #     # access_token = session.get("access_token", None)
+    #     # if access_token is not None:
+    #     #     # response.headers["Authorization"] = f"Bearer {access_token}"
+    #     #     response.headers.add('Authorization', f"Bearer {access_token}")
+    #     # # response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
+    #     # print("after_reqiest", response.headers)
+    #     # return response
+    #     request.headers.add("Authorization", "Bearer")
+    #     print( request.headers)
+    #     return request
 
 
     @app.route("/", methods=["GET"])
     def hello():
-        print ("SESSION", session)
+        # print ("SESSION", session)
         return render_template("layouts/main.html")
-        # return render_template("pages/books.html")
-        # return redirect ("https://korzhyk-app.us.auth0.com/authorize?audience=app&response_type=token&client_id=a0mzLPX0PZ6KPWVGo058FFCUUNwShqIN&redirect_uri=http://localhost:8080/login-results")
 
 
     @app.route('/login')
@@ -71,12 +76,14 @@ def create_app(test_config=None):
 
     @app.route('/callback')
     def callback_handling():
-        token = auth0.authorize_access_token()['access_token']
+        # token = auth0.authorize_access_token()['access_token']
 
-        session['token'] = token
-        print("TOKEN", token)
-        
-        return render_template('layouts/main.html', token=token)
+        # session['token'] = token
+        # print("TOKEN", token)
+        token = auth0.authorize_access_token()
+    
+        session['token'] = token['access_token']
+        return render_template('layouts/main.html', token=token['access_token'])
 
     @app.route('/logout')
     def log_out():
@@ -87,20 +94,11 @@ def create_app(test_config=None):
         return redirect('https://korzhyk-app.us.auth0.com' + '/v2/logout?' + urlencode(params))
 
 
-    # @app.route('/dashboard')
-    # @requires_auth
-    # def dashboard():
-    #     return render_template('layouts/main.html',
-    #                         userinfo=session[constants.PROFILE_KEY],
-    #                         userinfo_pretty=json.dumps(session[constants.JWT_PAYLOAD], indent=4))
-
-
-
     @app.route("/books", methods=["GET"])
     @cross_origin()
     @requires_auth("get:books")
     def books(payload):
-        print ("PAyLOAD", session)
+        print ("PAYLOAD", session)
 
         return render_template("pages/books.html")
 
