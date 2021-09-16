@@ -2,11 +2,11 @@ import os
 from flask import Flask, request, abort, jsonify, redirect, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from urllib.parse import urlencode
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import json
 from dotenv import load_dotenv
 from models import db, setup_db,  Book, Author # authors_books, #db_drop_and_create_all
-from auth.auth import AuthError #, requires_auth
+from auth.auth import AuthError, requires_auth
 from flask_migrate import Migrate
 # from .auth.auth import AuthError, requires_auth
 from authlib.integrations.flask_client import OAuth
@@ -19,7 +19,7 @@ load_dotenv()
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
-    CORS(app)
+    CORS(app, expose_headers='Authorization')
     migrate = Migrate(app, db)
     setup_db(app)
     # db_drop_and_create_all()
@@ -39,24 +39,26 @@ def create_app(test_config=None):
     },
     )
 
-    # @app.after_request
-    # def after_request(response):
-    #     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
-    #     response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
-    #     return response
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
+        return response
 
 
-    def requires_auth(f):
-        @wraps(f)
-        def decorated(*args, **kwargs):
-            if constants.PROFILE_KEY not in session:
-                return redirect('/login')
-            return f(*args, **kwargs)
+    # def requires_auth(f):
+    #     @wraps(f)
+    #     def decorated(*args, **kwargs):
+    #         if constants.PROFILE_KEY not in session:
+    #             return redirect('/login')
+    #         return f(*args, **kwargs)
  
-        return decorated
+    #     return decorated
+
 
     @app.route("/", methods=["GET"])
     def hello():
+        print ("SESSION", session)
         return render_template("layouts/main.html")
         # return render_template("pages/books.html")
         # return redirect ("https://korzhyk-app.us.auth0.com/authorize?audience=app&response_type=token&client_id=a0mzLPX0PZ6KPWVGo058FFCUUNwShqIN&redirect_uri=http://localhost:8080/login-results")
@@ -94,11 +96,13 @@ def create_app(test_config=None):
 
 
 
-    
+    @app.route("/books", methods=["GET"])
+    @cross_origin()
+    @requires_auth("get:books")
+    def books(payload):
+        print ("PAyLOAD", session)
 
-
-    # @app.route("/books", methods=["GET"])
-    #     return render_template("books.html", books=Books.query.all)
+        return render_template("pages/books.html")
 
     # @app.route("/books", methods=["GET"])
     # @requires_auth("get:books")
