@@ -6,7 +6,7 @@ from flask_cors import CORS, cross_origin
 import json
 from dotenv import load_dotenv
 from models import db, setup_db,  Book, Author # authors_books, #db_drop_and_create_all
-from auth.auth import AuthError, requires_auth
+from auth.auth import AuthError, verify_decode_jwt, requires_auth
 from flask_migrate import Migrate
 # from .auth.auth import AuthError, requires_auth
 from authlib.integrations.flask_client import OAuth
@@ -43,24 +43,8 @@ def create_app(test_config=None):
     def after_request(response):
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
         response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
+        # print ("HEADERS", request.headers)
         return response
-       
-        
-
-
-    # @app.after_request
-    # def after_request(request):
-    #     # response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
-    #     # access_token = session.get("access_token", None)
-    #     # if access_token is not None:
-    #     #     # response.headers["Authorization"] = f"Bearer {access_token}"
-    #     #     response.headers.add('Authorization', f"Bearer {access_token}")
-    #     # # response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
-    #     # print("after_reqiest", response.headers)
-    #     # return response
-    #     request.headers.add("Authorization", "Bearer")
-    #     print( request.headers)
-    #     return request
 
 
     @app.route("/", methods=["GET"])
@@ -76,14 +60,20 @@ def create_app(test_config=None):
 
     @app.route('/callback')
     def callback_handling():
-        # token = auth0.authorize_access_token()['access_token']
-
-        # session['token'] = token
-        # print("TOKEN", token)
         token = auth0.authorize_access_token()
-    
         session['token'] = token['access_token']
-        return render_template('layouts/main.html', token=token['access_token'])
+        # print("SESSION TOKEN", session["token"])
+        payload = verify_decode_jwt(token['access_token'])
+        # print("PAYLOAD", type(payload["permissions"]))
+        permissions = payload["permissions"]
+        if "get:book" and "get:authors" is in permissions:
+            return render_template('layouts/main.html', token=token['access_token']
+        elif "patch:author" and "post:book" is in permissions:
+            return 
+        elif "delete:author" and "delete:book" is in permissions:
+            return pass
+       
+    #    return render_template('layouts/main.html', token=token['access_token'])
 
     @app.route('/logout')
     def log_out():
@@ -98,7 +88,7 @@ def create_app(test_config=None):
     @cross_origin()
     @requires_auth("get:books")
     def books(payload):
-        print ("PAYLOAD", session)
+        print ("SESSION TOKEN /BOOKS", session["token"])
 
         return render_template("pages/books.html")
 

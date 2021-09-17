@@ -4,12 +4,10 @@
     <meta charset="utf-8">
 
     <title>{% block title %}{% endblock %}</title>
-    <!-- <meta name="description" content="">
-    <meta name="author" content=""> -->
 
     <!-- meta -->
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- styles -->
     <link rel="stylesheet" href="../../static/css/main.css">
@@ -17,10 +15,11 @@
     <!-- favicon -->
     <link rel="shortcut icon" href="../../static/img/teddy-bear.png">
     
-
 </head>
 
 <body>
+    
+    
     <div class="new">
         Hello!
         Welcome to our Publishing House!
@@ -69,24 +68,6 @@
 
     {% block create_book %}{% endblock %}
 
-    <!-- <script type="text/javascript">
-        window.onload = function() {
-          if (document.cookie.match(/^(.*;)?\s*user_token\s*=\s*[^;]+(.*)?$/)) {
-             var node = document.createElement("LI"); 
-             node.innerHTML = "<button onclick='logout()'>logout</button>"
-             document.getElementById("navbar").appendChild(node); 
-            } else {
-              var node = document.createElement("LI"); 
-             node.innerHTML = "<a href='/login'>Login/Signup</a>"
-             document.getElementById("navbar").appendChild(node); 
-            }
-      }
-  
-      function logout() {
-        document.cookie = "user_token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;"
-        location.reload();
-      }
-    </script> -->
     <main id="content" role="main" class="container">
 
       {% with messages = get_flashed_messages() %}
