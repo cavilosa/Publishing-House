@@ -49,11 +49,11 @@ def create_app(test_config=None):
 
     @app.route("/", methods=["GET"])
     def hello():
-        # print ("SESSION", session)
-        # if session["token"]:
-        #     return redirect("/callback")
-        # else:
-        return render_template("layouts/main.html")
+        print ("SESSION get token", session.get("token"))
+        if session.get("token") == True:
+            return redirect("/callback")
+        else:
+            return render_template("layouts/main.html")
 
 
     @app.route('/login')
@@ -63,13 +63,13 @@ def create_app(test_config=None):
 
     @app.route('/callback')
     def callback_handling():
-        # if session["token"]:
-        #     print("SESSION TOKEN", session["token"])
-        #     token = session["token"]
-        # else:
-        token = auth0.authorize_access_token()
-        session['token'] = token['access_token']
-        token = token['access_token']
+        if session.get("token") == True:
+            print("SESSION TOKEN", session["token"])
+            token = session["token"]
+        else:
+            token = auth0.authorize_access_token()
+            session['token'] = token['access_token']
+            token = token['access_token']
         
         payload = verify_decode_jwt(token)
 
