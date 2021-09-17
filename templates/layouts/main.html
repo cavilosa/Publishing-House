@@ -19,38 +19,40 @@
 
 <body>
     
-    
-    <div class="new">
-        Hello!
-        Welcome to our Publishing House!
+    <div class="header">
+        <h1>FSND Publishing House</h1>
     </div>
-    <!-- <button type="submit" name="test" class="test" id="test" onsubmit="change(e)">change color</button> -->
 
-    <p>If you'd like to browse through our books and authors, please sign in.<p> 
-    
-    
-    <p><button type="submit" name="sign_in" class="sign_in" id="sign_in" onsubmit="signIn(e)">Sign in</button></p>
-    <br>
-    <!-- <a href="https://korzhyk-app.us.auth0.com/authorize?audience=app&response_type=token&client_id=a0mzLPX0PZ6KPWVGo058FFCUUNwShqIN&redirect_uri=http://localhost:5000">Login</a> -->
+    <p>If you'd like to browse through our books and authors, please <a id="qsLoginBtn" class="btn btn-primary btn-lg btn-login btn-block" href="/login">Log In</a>.<p> 
 
-    <!-- {% if books %}
-        <ul>
-            {% for book in books %}
-            <li>{{ book.title }}, {{ book.author}}, {{ book.year }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        There are no books in the database yet. 
-    {% endif %} -->
-
-    <div class="login-page clearfix">
+    <!-- <div class="login-page clearfix">
       <div class="login-box auth0-box before">
         <img src="https://i.cloudup.com/StzWWrY34s.png" />
         <h3>Auth0 Example</h3>
         <p>Zero friction identity infrastructure, built for developers</p>
         <a id="qsLoginBtn" class="btn btn-primary btn-lg btn-login btn-block" href="/login">Log In</a>
       </div>
-    </div>
+    </div> -->
+
+    {% if permission %}
+        {% if "coordinator" or "editor" in permission %}
+        {{ permission }}
+        <a href="/books">BOOKS</a>
+        <a href="/authors">AUTHORS</a>
+        <a href="/book/create">Add new book</a>
+        <a href="author/create">Add new author</a>
+        <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
+        {% endif %}
+    {% endif %}
+
+    {% if coordinator %}
+    You are a coordinator
+    <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
+    {% endif %}
+    {% if editor %}
+    You are an editor
+    <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
+    {% endif %}
 
     {% if token %}
     <div class="logged-in-box auth0-box logged-in">
@@ -59,11 +61,6 @@
       <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
       <a href="/books">books</a>
     </div>
-    {% endif %}
-
-    
-    {% if payload %}
-        {{ payload}}
     {% endif %}
 
     {% block create_book %}{% endblock %}

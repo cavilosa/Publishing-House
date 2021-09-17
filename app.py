@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, abort, jsonify, redirect, render_template, request, url_for
+from flask import Flask, request, abort, jsonify, redirect, render_template, request, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from urllib.parse import urlencode
 from flask_cors import CORS, cross_origin
@@ -50,6 +50,9 @@ def create_app(test_config=None):
     @app.route("/", methods=["GET"])
     def hello():
         # print ("SESSION", session)
+        # if session["token"]:
+        #     return redirect("/callback")
+        # else:
         return render_template("layouts/main.html")
 
 
@@ -60,20 +63,33 @@ def create_app(test_config=None):
 
     @app.route('/callback')
     def callback_handling():
+        # if session["token"]:
+        #     print("SESSION TOKEN", session["token"])
+        #     token = session["token"]
+        # else:
         token = auth0.authorize_access_token()
         session['token'] = token['access_token']
-        # print("SESSION TOKEN", session["token"])
-        payload = verify_decode_jwt(token['access_token'])
-        # print("PAYLOAD", type(payload["permissions"]))
+        token = token['access_token']
+        
+        payload = verify_decode_jwt(token)
+
         permissions = payload["permissions"]
-        if "get:book" and "get:authors" is in permissions:
-            return render_template('layouts/main.html', token=token['access_token']
-        elif "patch:author" and "post:book" is in permissions:
-            return 
-        elif "delete:author" and "delete:book" is in permissions:
-            return pass
+        permission = ""
+        if "delete:author" and "delete:book" in permissions:
+            # flash('You were successfully logged in as an editor')
+            return render_template('layouts/main.html', permission="editor")
+
+        elif "patch:author" and "post:book" in permissions:
+            # flash('You were successfully logged in as a coordinator')
+            return render_template('layouts/main.html', permission="coordinator")
+
+        elif "get:book" and "get:authors" in permissions:
+            # flash('You were successfully logged in as a reader')
+            return render_template('layouts/main.html', permission="reader") 
+
+        else:
+            return render_template('layouts/main.html')
        
-    #    return render_template('layouts/main.html', token=token['access_token'])
 
     @app.route('/logout')
     def log_out():
@@ -147,3 +163,4 @@ APP = create_app()
 
 if __name__ == '__main__':
     APP.run(host='0.0.0.0', port=5000, debug=True)
+    App.config['TEMPLATES_AUTO_RELOAD'] = True
