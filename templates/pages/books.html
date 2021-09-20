@@ -2,24 +2,16 @@
 {% block title %}BOOKS{% endblock %}
 {% block content %}
 
-
-    
-
-    {% if "patch:book" in permissions %}
-        <a href="/add_book">ADD NEW BOOK</a>
-        <a href="/add_author">ADD NEW AUTHOR</a>
-    
     {% if books %}
-        <ul>
-            {% for book in books %}
-            <a href="/books/{{ book.id }}"><li>{{ book.id }}, {{ book.title }}, {{ book.author}}, {{ book.year }}</li></a>
-            {% endfor %}
-        </ul>
+    <ul>
+        {% for book in books %}
+        <a href="/books/{{ book.id }}"><li>{{ book.id }}, {{ book.title }}, {{ book.author}}, {{ book.year }}</li></a>
+        {% endfor %}
+    </ul>
     {% else %}
         There are no books in the database yet. 
     {% endif %}
 
-    {% endif %}
 
     {% if "read:book" in permissions %}
         {% if books %}
@@ -31,8 +23,7 @@
         {% else %}
             There are no books in the database yet. 
         {% endif %}
+    <!-- <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a> -->
     {% endif %}
-
-    <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
 
 {% endblock content %}

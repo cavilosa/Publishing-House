@@ -138,8 +138,9 @@ def create_app(test_config=None):
 
     @app.route("/books/<id>/edit", methods=["POST", "GET"])
     @cross_origin()
-    @requires_auth("post:book")
+    @requires_auth("patch:book")
     def edit_book(payload, id):
+        # session.pop('_flashes', None)
         book = Book.query.get(id)
         permissions = payload["permissions"]
         form = BookForm(obj=book)
@@ -147,13 +148,48 @@ def create_app(test_config=None):
         if request.method == "POST":
             form = BookForm(request.form, meta={'csrf': False})
             book = Book.query.get(id)
-            form.populate_obj(book)
+            
 
-            book.update()
+            if form.validate_on_submit():
+                # flash("Successfully created a new book")
+                form.populate_obj(book)
+
+                book.update()
 
             return render_template("pages/book.html", book=book, permissions=permissions)
 
         return render_template("forms/edit_book.html", form=form)
+
+
+    @app.route("/books/create", methods=["POST", "GET"])
+    @cross_origin()
+    @requires_auth("post:book")
+    def create_book(payload):
+
+        permissions = payload["permissions"]
+        book = Book(title="", author="", year=0)
+        form = BookForm()
+
+        if request.method == "POST":
+            form = BookForm(request.form, meta={'csrf': False})
+        
+            if form.validate_on_submit():
+                
+                form.populate_obj(book)
+
+                book.insert()
+
+                books = Book.query.all()
+
+            return render_template("pages/books.html", books=books, permissions=permissions)
+
+        return render_template("forms/create_book.html", form=form)
+
+
+        return render_template("forms/create_book.html", form=form)
+
+
+
 
 
     @app.route("/authors", methods=["GET"])

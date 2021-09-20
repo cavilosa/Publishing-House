@@ -31,6 +31,12 @@
     {% if permissions %}
     <a href="/books">BOOKS</a>
     <a href="/authors">AUTHORS</a>
+    <p>
+      {% if "patch:book" in permissions %}
+      <a href="/books/create">ADD NEW BOOK</a>
+      <a href="/authors/create">ADD NEW AUTHOR</a>
+      {% endif %}
+    </p>
     <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
     {% endif %}
     
