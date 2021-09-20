@@ -256,21 +256,21 @@ def create_app(test_config=None):
 
 # DELETE author by id
 
-    # @app.route("/authors/<id>/delete", methods=["POST"])
-    # @cross_origin()
-    # @requires_auth("delete:author")
-    # def delete_author(payload, id):
-    #     author = Author.query.get(id)
-    #     permissions = payload["permissions"]
-    #     # print("METHOD", request.method)
+    @app.route("/authors/<id>/delete", methods=["GET", "POST"])
+    @cross_origin()
+    @requires_auth("delete:author")
+    def delete_author(payload, id):
+        author = Author.query.get(id)
+        permissions = payload["permissions"]
+        # print("METHOD", request.method)
 
-    #     # if request.method == "DELETE":
+        # if request.method == "DELETE":
 
-    #     author.delete()
+        author.delete()
 
-    #     authors = Author.query.order_by(Author.id).all()
+        authors = Author.query.order_by(Author.id).all()
         
-    #     return render_template("pages/authors.html", authors=authors, permissions=permissions)
+        return render_template("pages/authors.html", authors=authors, permissions=permissions)
 
 
 # Create new book
