@@ -114,7 +114,7 @@ def create_app(test_config=None):
         # clear the session
         session.clear()
         # redirect user to logout endpoint
-        params = {'returnTo': url_for('hello', _external=True), 'client_id': "a0mzLPX0PZ6KPWVGo058FFCUUNwShqIN"}
+        params = {'returnTo': url_for('index', _external=True), 'client_id': "a0mzLPX0PZ6KPWVGo058FFCUUNwShqIN"}
         return redirect('https://korzhyk-app.us.auth0.com' + '/v2/logout?' + urlencode(params))
 
 
@@ -312,8 +312,6 @@ def create_app(test_config=None):
             return render_template("pages/authors.html", authors=authors, permissions=permissions)
 
         return render_template("forms/create_author.html", form=form)
-
-
 
         
   
