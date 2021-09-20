@@ -254,6 +254,21 @@ def create_app(test_config=None):
         return render_template("forms/edit_author.html", form=form)
 
 
+# Delete book by it's id
+    @app.route("/books/<id>/delete", methods=["GET", "POST"])
+    @cross_origin()
+    @requires_auth("delete:book")
+    def delete_book(payload, id):
+        book = Book.query.get(id)
+        permissions = payload["permissions"]
+
+        book.delete()
+
+        books = Book.query.order_by(Book.id).all()
+        
+        return render_template("pages/books.html", books=books, permissions=permissions)
+
+
 # DELETE author by id
 
     @app.route("/authors/<id>/delete", methods=["GET", "POST"])
