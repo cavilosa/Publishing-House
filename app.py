@@ -49,11 +49,13 @@ def create_app(test_config=None):
 
     @app.route("/", methods=["GET"])
     def hello():
-        print ("SESSION get token", session.get("token"))
-        if session.get("token") == True:
+        # print ("SESSION get token", session.get("token"))
+        if session.get("token"):
+            print ("SESSION TOKEN TRUE")
             return redirect("/callback")
         else:
-            return render_template("layouts/main.html")
+            login = True
+            return render_template("layouts/main.html", login=True)
 
 
     @app.route('/login')
@@ -63,8 +65,9 @@ def create_app(test_config=None):
 
     @app.route('/callback')
     def callback_handling():
-        if session.get("token") == True:
-            print("SESSION TOKEN", session["token"])
+        print("CALLBACK")
+        if session.get("token"):
+            # print("SESSION TOKEN", session["token"])
             token = session["token"]
         else:
             token = auth0.authorize_access_token()
@@ -75,17 +78,18 @@ def create_app(test_config=None):
 
         permissions = payload["permissions"]
         permission = ""
+        login = True
         if "delete:author" and "delete:book" in permissions:
             # flash('You were successfully logged in as an editor')
-            return render_template('layouts/main.html', permission="editor")
+            return render_template('layouts/main.html', permission="editor", login=False)
 
         elif "patch:author" and "post:book" in permissions:
             # flash('You were successfully logged in as a coordinator')
-            return render_template('layouts/main.html', permission="coordinator")
+            return render_template('layouts/main.html', permission="coordinator", login=False)
 
         elif "get:book" and "get:authors" in permissions:
             # flash('You were successfully logged in as a reader')
-            return render_template('layouts/main.html', permission="reader") 
+            return render_template('layouts/main.html', permission="reader", login=False) 
 
         else:
             return render_template('layouts/main.html')
