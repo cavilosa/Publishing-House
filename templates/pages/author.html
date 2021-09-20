@@ -1,0 +1,24 @@
+{% extends 'layouts/main.html' %}
+{% block title %}AUTHOR{% endblock %}
+{% block content %}
+{% if author %}
+<div class="author">
+   <p>Name: {{ author.name }}</p>
+</div>
+
+    {% if "post:author" in permissions %}
+    <a href="/authors/{{ author.id }}/edit">Edit this author</a>
+    {% endif%}
+
+    {% if "delete:author" in permissions %}
+    <!-- <a  href="/authors/{{ author.id }}/delete">Delete this author</a> -->
+    <!-- <button id="delete-author" onclick="window.location.href='{{ url_for('.delete_author') }}'" class="btn btn-primary btn-lg">Delete</button> -->
+    <!-- <form action='{{ url_for("delete_author", id="4") }}'>
+        <input class="btn" type="submit" name="delete" value="Delete">
+    </form> -->
+    delete
+    {% endif %}
+    
+{% endif %}
+
+{% endblock content %}

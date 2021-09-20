@@ -1,36 +1,29 @@
 {% extends 'layouts/main.html' %}
-{% block title %}AUTHORS{% endblock %}
+{% block title %}BOOKS{% endblock %}
 {% block content %}
-    
 
-    {% if "coordinator" or "editor" in role %}
-        <a href="/add_book">ADD NEW BOOK</a>
-        <a href="/add_author">ADD NEW AUTHOR</a>
-
-    {% if books %}
-        <ul>
-            {% for book in books %}
-            <a href="/books/{{ book.id }}"><li>{{ book.id }}, {{ book.title }}, {{ book.author}}, {{ book.year }}</li></a>
-            {% endfor %}
-        </ul>
+    {% if authors %}
+    <ul>
+        {% for author in authors %}
+        <a href="/authors/{{ author.id }}"><li>{{ author.id }}, {{ author.name }}</li></a>
+        {% endfor %}
+    </ul>
     {% else %}
-        There are no books in the database yet. 
+        There are no authors in the database yet. 
     {% endif %}
 
-    {% endif %}
 
-    {% if "reader" in role %}
-        {% if books %}
+    {% if "read:author" in permissions %}
+        {% if authors %}
         <ul>
-            {% for book in books %}
-            <li>{{ book.id }}, {{ book.title }}, {{ book.author}}, {{ book.year }}</li>
+            {% for author in authors %}
+            <li>{{ author.id }}, {{ author.name }}</li>
             {% endfor %}
         </ul>
         {% else %}
-            There are no books in the database yet. 
+            There are no authors in the database yet. 
         {% endif %}
+    <!-- <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a> -->
     {% endif %}
-
-    <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
 
 {% endblock content %}

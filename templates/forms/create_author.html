@@ -1,0 +1,13 @@
+{% extends 'layouts/main.html' %}
+{% block title %}CREATE AUTHOR{% endblock %}
+{% block content %}
+<form action="" method="post">
+    {{form.hidden_tag()}}
+    {{ form.csrf_token }}
+    <div class="form-group m-5">
+        {{form.name.label()}}
+       {{form.name(class="form-control")}}
+    </div>
+    {{form.send(class="btn-lg btn-primary m-5")}}
+ </form>
+{% endblock content %}

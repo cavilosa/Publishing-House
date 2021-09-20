@@ -17,6 +17,9 @@ from flask import session
 
 load_dotenv()
 
+#---------------------------------------------------------------------------------------------
+# Configuring APP
+#----------------------------------------
 
 def create_app(test_config=None):
     # create and configure the app
@@ -24,9 +27,13 @@ def create_app(test_config=None):
     CORS(app, expose_headers='Authorization')
     migrate = Migrate(app, db)
     setup_db(app)
-    # db_drop_and_create_all()
     app.secret_key = os.environ["JWT_CODE_SIGNING_SECRET"]
 
+ 
+
+#----------------------------------------------------------------------------
+# OAUTH initiation
+#---------------------------------------------------------------------------
     oauth = OAuth(app)
 
     auth0 = oauth.register(
@@ -49,6 +56,9 @@ def create_app(test_config=None):
         return response
 
 
+# Initial route to authorize with auth0
+# -------------------------------------------------------------------------------------------
+#
     @app.route("/", methods=["GET"])
     def index():
         # print ("SESSION get token", session.get("token"))
@@ -96,7 +106,9 @@ def create_app(test_config=None):
         else:
             return render_template('layouts/main.html')
        
-
+# Logout 
+#-----------------------------------------------------------------------------------------------
+#
     @app.route('/logout')
     def log_out():
         # clear the session
@@ -106,6 +118,11 @@ def create_app(test_config=None):
         return redirect('https://korzhyk-app.us.auth0.com' + '/v2/logout?' + urlencode(params))
 
 
+#----------------------------------------------------------------------------------------
+# Books routes: list, create, patch
+#-----------------------------------------------------------------------------------------
+
+# List all the books in the db
     @app.route("/books", methods=["GET"])
     @cross_origin()
     @requires_auth("get:books")
@@ -118,6 +135,7 @@ def create_app(test_config=None):
         return render_template("pages/books.html", books=books, permissions=permissions)
 
 
+# See a book by it's id
     @app.route("/books/<id>", methods=["GET"])
     @cross_origin()
     @requires_auth("post:book")
@@ -130,6 +148,7 @@ def create_app(test_config=None):
         return render_template("pages/book.html", book=book, permissions=permissions)
 
 
+# Edit a book by it's id
     @app.route("/books/<id>/edit", methods=["POST", "GET"])
     @cross_origin()
     @requires_auth("patch:book")
@@ -155,6 +174,7 @@ def create_app(test_config=None):
         return render_template("forms/edit_book.html", form=form)
 
 
+# Create new book
     @app.route("/books/create", methods=["POST", "GET"])
     @cross_origin()
     @requires_auth("post:book")
@@ -180,70 +200,106 @@ def create_app(test_config=None):
         return render_template("forms/create_book.html", form=form)
 
 
-
-
-
+#------------------------------------------------------------------------------------------
+# Authors
+#------------------------------------------------------------------------------------------
 
     @app.route("/authors", methods=["GET"])
     @cross_origin()
     @requires_auth("get:authors")
     def authors(payload):
 
-        role = ""
         permissions = payload["permissions"]
 
-        if "patch:author" and "post:book" in permissions:
-            role = "coordinator"
-        elif "delete:author" and "delete:book" in permissions:
-            role = "editor"
-        else:
-            role = "reader"
-
-        authors = Author.query.all()
+        authors = Author.query.order_by(Author.id).all()
         
-        return render_template("pages/authors.html", authors=authors, role=role)
+        return render_template("pages/authors.html", authors=authors, permissions=permissions)
 
-    # @app.route("/books", methods=["GET"])
-    # @requires_auth("get:books")
-    # def list_books(payload):
+
+    @app.route("/authors/<id>", methods=["GET"])
+    @cross_origin()
+    @requires_auth("post:author")
+    def author_by_id(payload, id):
+
+        author = Author.query.get(id)
+
+        permissions = payload["permissions"]
+
+        return render_template("pages/author.html", author=author, permissions=permissions)
+
+
+# Edit a book by it's id
+    @app.route("/authors/<id>/edit", methods=["POST", "GET"])
+    @cross_origin()
+    @requires_auth("patch:author")
+    def edit_author(payload, id):
+        # session.pop('_flashes', None)
+        author = Author.query.get(id)
+        permissions = payload["permissions"]
+        form = AuthorForm(obj=author)
+
+        if request.method == "POST":
+            form = AuthorForm(request.form, meta={'csrf': False})
+            author = Author.query.get(id)
+            
+
+            if form.validate_on_submit():
+                # flash("Successfully created a new book")
+                form.populate_obj(author)
+
+                author.update()
+
+            return render_template("pages/author.html", author=author, permissions=permissions)
+
+        return render_template("forms/edit_author.html", form=form)
+
+
+# DELETE author by id
+
+    # @app.route("/authors/<id>/delete", methods=["POST"])
+    # @cross_origin()
+    # @requires_auth("delete:author")
+    # def delete_author(payload, id):
+    #     author = Author.query.get(id)
+    #     permissions = payload["permissions"]
+    #     # print("METHOD", request.method)
+
+    #     # if request.method == "DELETE":
+
+    #     author.delete()
+
+    #     authors = Author.query.order_by(Author.id).all()
         
-    #     books = Book.query.all()
-    #     books_list = [book.format() for book in books]
-    #     return jsonify({
-    #              "success": books_list
-    #         })
+    #     return render_template("pages/authors.html", authors=authors, permissions=permissions)
 
 
-    # @app.route("/authors", methods=["GET"])
-    # @requires_auth("get:authors")
-    # def list_authors(payload):
+# Create new book
+    @app.route("/authors/create", methods=["POST", "GET"])
+    @cross_origin()
+    @requires_auth("post:author")
+    def create_author(payload):
+
+        permissions = payload["permissions"]
+        author = Author(name="")
+        form = AuthorForm()
+
+        if request.method == "POST":
+            form = AuthorForm(request.form, meta={'csrf': False})
         
-    #     authors = Author.query.all()
-    #     authors_list = [author.format() for author in authors]
-    #     return jsonify({
-    #              "success": authors_list
-    #         })
+            if form.validate_on_submit():
+                
+                form.populate_obj(author)
 
-    # @app.route("/books/create", methods=["GET", "POST"])
-    # @requires_auth("post:books") # use fetch(Ajax request) to avoid reloading the page and 
-    # # adding new book to the list
-    # def create_book(payload):
-    #     # new_book = {}
-    #     new_book = {
-    #       "title": "NAME",
-    #       "author": "author", 
-    #       "year": 2000
-    #     }
-    #     # title = request.get_json()["title"]
-    #     # author = request.get_json()["author"]
-    #     # year = request.form.get["year"]
-    #     # new_book = Book(title=book[title], author=book[author], year=book[year])
-    #     # new_book.insert()
-    #     # body["title"] = title
-    #     # body["author"] = author
-    #     # body["year"] = year
-    #     # return redirect(url_for("books"))
-    #     return jsonify(new_book)
+                author.insert()
+
+            authors = Author.query.order_by(Author.id).all()
+
+            return render_template("pages/authors.html", authors=authors, permissions=permissions)
+
+        return render_template("forms/create_author.html", form=form)
+
+
+
         
   
     @app.errorhandler(AuthError)
