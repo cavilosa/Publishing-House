@@ -1,13 +1,36 @@
 {% extends 'layouts/main.html' %}
 {% block title %}AUTHORS{% endblock %}
 {% block content %}
-    {% if authors %}
+    
+
+    {% if "coordinator" or "editor" in role %}
+        <a href="/add_book">ADD NEW BOOK</a>
+        <a href="/add_author">ADD NEW AUTHOR</a>
+
+    {% if books %}
         <ul>
-            {% for author in authors %}
-            <li>{{ author.id }}, {{ author.name}}</li>
+            {% for book in books %}
+            <a href="/books/{{ book.id }}"><li>{{ book.id }}, {{ book.title }}, {{ book.author}}, {{ book.year }}</li></a>
             {% endfor %}
         </ul>
     {% else %}
-        There are no authors in the database yet. 
+        There are no books in the database yet. 
     {% endif %}
+
+    {% endif %}
+
+    {% if "reader" in role %}
+        {% if books %}
+        <ul>
+            {% for book in books %}
+            <li>{{ book.id }}, {{ book.title }}, {{ book.author}}, {{ book.year }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            There are no books in the database yet. 
+        {% endif %}
+    {% endif %}
+
+    <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
+
 {% endblock content %}

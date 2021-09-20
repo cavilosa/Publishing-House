@@ -1,12 +1,14 @@
 {% extends 'layouts/main.html' %}
 {% block title %}BOOKS{% endblock %}
 {% block content %}
+
+
     
 
-    {% if "coordinator" or "coordinator" in role %}
+    {% if "patch:book" in permissions %}
         <a href="/add_book">ADD NEW BOOK</a>
         <a href="/add_author">ADD NEW AUTHOR</a>
-
+    
     {% if books %}
         <ul>
             {% for book in books %}
@@ -19,7 +21,7 @@
 
     {% endif %}
 
-    {% if "reader" in role %}
+    {% if "read:book" in permissions %}
         {% if books %}
         <ul>
             {% for book in books %}

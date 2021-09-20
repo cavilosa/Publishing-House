@@ -33,7 +33,8 @@
     <a href="/authors">AUTHORS</a>
     <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
     {% endif %}
-
+    
+    
 
     {% block create_book %}{% endblock %}
 
@@ -51,6 +52,8 @@
       {% endwith %}
 
       {% block content %}{% endblock %}
+
+      <a href="{{ url_for('index') }}">Main Page</a>
 
 
     </main>

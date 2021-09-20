@@ -48,7 +48,7 @@ def create_app(test_config=None):
 
 
     @app.route("/", methods=["GET"])
-    def hello():
+    def index():
         # print ("SESSION get token", session.get("token"))
         if session.get("token"):
             print ("SESSION TOKEN TRUE")
@@ -110,16 +110,16 @@ def create_app(test_config=None):
     def books(payload):
         role =[]
         permissions = payload["permissions"]
-        if "patch:author" and "post:book" in permissions:
-            role = ["coordinator"]
-        elif "delete:author" and "delete:book" in permissions:
-            role = ["editor"]
-        else:
-            role = ["reader"]
+        # if "patch:author" and "post:book" in permissions:
+        #     role = ["coordinator"]
+        # elif "delete:author" and "delete:book" in permissions:
+        #     role = ["editor"]
+        # else:
+        #     role = ["reader"]
 
         books = Book.query.all()
         
-        return render_template("pages/books.html", books=books, role=role)
+        return render_template("pages/books.html", books=books, permissions=permissions)
 
 
     @app.route("/books/<id>", methods=["GET"])
