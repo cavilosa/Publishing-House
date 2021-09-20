@@ -6,6 +6,9 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.declarative import declarative_base
 # from flask_migrate import Migrate
 import json
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField, SubmitField, IntegerField
+from wtforms.validators import DataRequired, Email
 
 
 password = os.environ["PASSWORD"]
@@ -44,8 +47,8 @@ class Book(db.Model):
     __tablename__ = "books"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(), nullable=False)
-    author = db.Column(db.String())
-    year = db.Column(db.Integer)
+    author = db.Column(db.String(), nullable=False)
+    year = db.Column(db.Integer, nullable=False)
     
     # authors = db.relationship("Author", secondary=authors_books,
     #     backref=db.backref("books", lazy="dynamic", cascade="save-update, merge, delete"))
@@ -139,4 +142,10 @@ class Author(db.Model):
     def __repr__(self):
         # return json.dumps(self.short())
         return f"<{self.name}, {self.book}>"
+
+
+class BookForm(FlaskForm):
+    title = StringField("title", validators=[DataRequired()])
+    author = StringField("author", validators=[DataRequired()])
+    year = IntegerField("year", validators=[DataRequired()])
 
