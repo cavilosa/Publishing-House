@@ -1,11 +1,13 @@
 import os
 from flask import Flask, request, abort, jsonify, redirect, render_template, request, url_for, flash
+from flask.templating import render_template_string
 from flask_sqlalchemy import SQLAlchemy
 from urllib.parse import urlencode
 from flask_cors import CORS, cross_origin
 import json
 from dotenv import load_dotenv
-from models import db, setup_db,  Book, Author, authors_books, BookForm
+from models import db, setup_db,  Book, Author, authors_books
+from forms import BookForm, AuthorForm
 from auth.auth import AuthError, verify_decode_jwt, requires_auth
 from flask_migrate import Migrate
 # from .auth.auth import AuthError, requires_auth
@@ -132,6 +134,26 @@ def create_app(test_config=None):
         permissions = payload["permissions"]
 
         return render_template("pages/book.html", book=book, permissions=permissions)
+
+
+    @app.route("/books/<id>/edit", methods=["POST", "GET"])
+    @cross_origin()
+    @requires_auth("post:book")
+    def edit_book(payload, id):
+        book = Book.query.get(id)
+        permissions = payload["permissions"]
+        form = BookForm(obj=book)
+
+        if request.method == "POST":
+            form = BookForm(request.form, meta={'csrf': False})
+            book = Book.query.get(id)
+            form.populate_obj(book)
+
+            book.update()
+
+            return render_template("pages/book.html", book=book, permissions=permissions)
+
+        return render_template("forms/edit_book.html", form=form)
 
 
     @app.route("/authors", methods=["GET"])

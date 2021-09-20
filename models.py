@@ -6,9 +6,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.declarative import declarative_base
 # from flask_migrate import Migrate
 import json
-from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SubmitField, IntegerField
-from wtforms.validators import DataRequired, Email
 
 
 password = os.environ["PASSWORD"]
@@ -143,9 +140,4 @@ class Author(db.Model):
         # return json.dumps(self.short())
         return f"<{self.name}, {self.book}>"
 
-
-class BookForm(FlaskForm):
-    title = StringField("title", validators=[DataRequired()])
-    author = StringField("author", validators=[DataRequired()])
-    year = IntegerField("year", validators=[DataRequired()])
 

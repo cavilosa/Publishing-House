@@ -1,0 +1,21 @@
+{% extends 'layouts/main.html' %}
+{% block title %}EDIT BOOK{% endblock %}
+{% block content %}
+<form action="" method="post">
+    {{form.hidden_tag()}}
+  
+    <div class="form-group m-5">
+        {{form.title.label()}}
+       {{form.title(class="form-control")}}
+    </div>
+    <div class="form-group m-5">
+        {{form.author.label()}}
+        {{form.author(class="form-control")}}
+    </div >
+    <div class="form-group m-5">
+        {{form.year.label()}}
+        {{form.year(class="form-control")}}
+    </div>
+    {{form.send(class="btn-lg btn-primary m-5")}}
+ </form>
+{% endblock content %}

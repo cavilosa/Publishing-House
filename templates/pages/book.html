@@ -10,9 +10,9 @@
 </div>
 {% endif %}
 {% if "post:book" in permissions %}
-<a href="/edit_book/{{ book.id }}">Edit this book</a>
+<a href="/books/{{ book.id }}/edit">Edit this book</a>
 {% endif%}
 {% if "delete:book" in permissions %}
-<a href="/book/{{ book.id }}/delete">Delete this book</a>
+<a href="/books/{{ book.id }}/delete">Delete this book</a>
 {% endif %}
 {% endblock content %}
