@@ -1,23 +1,24 @@
 {% extends 'layouts/main.html' %}
 {% block title %}BOOKS{% endblock %}
 {% block content %}
-
-    {% if authors %}
-    <ul>
-        {% for author in authors %}
-        <a href="/authors/{{ author.id }}"><li>{{ author.id }}, {{ author.name }}</li></a>
-        {% endfor %}
-    </ul>
-    {% else %}
-        There are no authors in the database yet. 
-    {% endif %}
-
-
-    {% if "read:author" in permissions %}
+    {% if "post:author" not in permissions %}
         {% if authors %}
         <ul>
             {% for author in authors %}
-            <li>{{ author.id }}, {{ author.name }}</li>
+            <li>{{ author.id }}, {{ author.name }}</li></a>
+            {% endfor %}
+        </ul>
+        {% else %}
+            There are no authors in the database yet. 
+        {% endif %}
+    {% endif %}
+
+
+    {% if "post:author" in permissions %}
+        {% if authors %}
+        <ul>
+            {% for author in authors %}
+            <li><a href="/authors/{{ author.id }}">{{ author.id }}, {{ author.name }}</a></li>
             {% endfor %}
         </ul>
         {% else %}
