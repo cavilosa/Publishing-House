@@ -112,14 +112,8 @@ def create_app(test_config=None):
     def books(payload):
         role =[]
         permissions = payload["permissions"]
-        # if "patch:author" and "post:book" in permissions:
-        #     role = ["coordinator"]
-        # elif "delete:author" and "delete:book" in permissions:
-        #     role = ["editor"]
-        # else:
-        #     role = ["reader"]
 
-        books = Book.query.all()
+        books = Book.query.order_by(Book.id).all()
         
         return render_template("pages/books.html", books=books, permissions=permissions)
 
@@ -179,14 +173,12 @@ def create_app(test_config=None):
 
                 book.insert()
 
-                books = Book.query.all()
+            books = Book.query.order_by(Book.id).all()
 
             return render_template("pages/books.html", books=books, permissions=permissions)
 
         return render_template("forms/create_book.html", form=form)
 
-
-        return render_template("forms/create_book.html", form=form)
 
 
 
