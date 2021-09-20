@@ -1,0 +1,18 @@
+{% extends 'layouts/main.html' %}
+{% block title %}BOOK{% endblock %}
+{% block content %}
+{% if book %}
+<div class="book">
+    <p>Title: {{ book.title }}</p>
+    <p>Author: {{ book.author }}</p>
+    <p>Year: {{ book.year }}</p>
+    <p>ID: {{ book.id }}</p>
+</div>
+{% endif %}
+{% if "post:book" in permissions %}
+<a href="/edit_book/{{ book.id }}">Edit this book</a>
+{% endif%}
+{% if "delete:book" in permissions %}
+<a href="/book/{{ book.id }}/delete">Delete this book</a>
+{% endif %}
+{% endblock content %}

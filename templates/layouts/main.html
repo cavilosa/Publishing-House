@@ -2,6 +2,9 @@
 <html lang="en" dir="ltr">
 <head>
     <meta charset="utf-8">
+    <div class="header">
+      <h1>FSND Publishing House</h1>
+  </div>
 
     <title>{% block title %}{% endblock %}</title>
 
@@ -19,43 +22,18 @@
 
 <body>
     
-    <div class="header">
-        <h1>FSND Publishing House</h1>
-    </div>
+    
 
     {% if login==True %}
     <p>If you'd like to browse through our books and authors, please <a id="qsLoginBtn" class="btn btn-primary btn-lg btn-login btn-block" href="/login">Log In</a>.<p>    
     {% endif %}
 
-
-    {% if permission %}
-        {% if "coordinator" or "editor" in permission %}
-        <p>You are logged in as {{ permission }}.</p>
-        <a href="/books">BOOKS</a>
-        <a href="/authors">AUTHORS</a>
-        <a href="/book/create">Add new book</a>
-        <a href="author/create">Add new author</a>
-        <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
-        {% endif %}
-    {% endif %}
-
-    {% if coordinator %}
-    You are a coordinator
-    <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
-    {% endif %}
-    {% if editor %}
-    You are an editor
+    {% if permissions %}
+    <a href="/books">BOOKS</a>
+    <a href="/authors">AUTHORS</a>
     <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
     {% endif %}
 
-    {% if token %}
-    <div class="logged-in-box auth0-box logged-in">
-      <!-- <h1 id="logo"><img src="//cdn.auth0.com/samples/auth0_logo_final_blue_RGB.png" /></h1> -->
-      <h2>{{ token }}</h2>
-      <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
-      <a href="/books">books</a>
-    </div>
-    {% endif %}
 
     {% block create_book %}{% endblock %}
 

@@ -1,0 +1,13 @@
+{% extends 'layouts/main.html' %}
+{% block title %}AUTHORS{% endblock %}
+{% block content %}
+    {% if authors %}
+        <ul>
+            {% for author in authors %}
+            <li>{{ author.id }}, {{ author.name}}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        There are no authors in the database yet. 
+    {% endif %}
+{% endblock content %}

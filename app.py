@@ -77,19 +77,19 @@ def create_app(test_config=None):
         payload = verify_decode_jwt(token)
 
         permissions = payload["permissions"]
-        permission = ""
+        role = ""
         login = True
         if "delete:author" and "delete:book" in permissions:
             # flash('You were successfully logged in as an editor')
-            return render_template('layouts/main.html', permission="editor", login=False)
+            return render_template('layouts/main.html', role="editor", permissions=permissions, login=False, token=True)
 
         elif "patch:author" and "post:book" in permissions:
             # flash('You were successfully logged in as a coordinator')
-            return render_template('layouts/main.html', permission="coordinator", login=False)
+            return render_template('layouts/main.html', role="coordinator", permissions=permissions, login=True, token=token)
 
         elif "get:book" and "get:authors" in permissions:
             # flash('You were successfully logged in as a reader')
-            return render_template('layouts/main.html', permission="reader", login=False) 
+            return render_template('layouts/main.html', role="reader", permissions=permissions, login=False, token=True) 
 
         else:
             return render_template('layouts/main.html')
@@ -108,9 +108,50 @@ def create_app(test_config=None):
     @cross_origin()
     @requires_auth("get:books")
     def books(payload):
-        print ("SESSION TOKEN /BOOKS", session["token"])
+        role =[]
+        permissions = payload["permissions"]
+        if "patch:author" and "post:book" in permissions:
+            role = ["coordinator"]
+        elif "delete:author" and "delete:book" in permissions:
+            role = ["editor"]
+        else:
+            role = ["reader"]
 
-        return render_template("pages/books.html")
+        books = Book.query.all()
+        
+        return render_template("pages/books.html", books=books, role=role)
+
+
+    @app.route("/books/<id>", methods=["GET"])
+    @cross_origin()
+    @requires_auth("post:book")
+    def book_by_id(payload, id):
+
+        book = Book.query.get(id)
+
+        permissions = payload["permissions"]
+
+        return render_template("pages/book.html", book=book, permissions=permissions)
+
+
+    @app.route("/authors", methods=["GET"])
+    @cross_origin()
+    @requires_auth("get:authors")
+    def authors(payload):
+
+        role = ""
+        permissions = payload["permissions"]
+
+        if "patch:author" and "post:book" in permissions:
+            role = "coordinator"
+        elif "delete:author" and "delete:book" in permissions:
+            role = "editor"
+        else:
+            role = "reader"
+
+        authors = Author.query.all()
+        
+        return render_template("pages/authors.html", authors=authors, role=role)
 
     # @app.route("/books", methods=["GET"])
     # @requires_auth("get:books")

@@ -1,20 +1,36 @@
 {% extends 'layouts/main.html' %}
-{% block title %}{{ title }}{% endblock %}
+{% block title %}BOOKS{% endblock %}
 {% block content %}
+    
 
-<!-- <form method="post" action="/books/create">
-    <input type="text" name="title"/>
-    <input type="text" name="author">
-    <input type="text" name="year">
-    <input type="submit" value="Create" />
-  </form> -->
+    {% if "coordinator" or "coordinator" in role %}
+        <a href="/add_book">ADD NEW BOOK</a>
+        <a href="/add_author">ADD NEW AUTHOR</a>
+
     {% if books %}
         <ul>
             {% for book in books %}
-            <li>{{ book.title }}, {{ book.author}}, {{ book.year }}</li>
+            <a href="/books/{{ book.id }}"><li>{{ book.id }}, {{ book.title }}, {{ book.author}}, {{ book.year }}</li></a>
             {% endfor %}
         </ul>
     {% else %}
-        There are no books in the databse yet. 
+        There are no books in the database yet. 
     {% endif %}
+
+    {% endif %}
+
+    {% if "reader" in role %}
+        {% if books %}
+        <ul>
+            {% for book in books %}
+            <li>{{ book.id }}, {{ book.title }}, {{ book.author}}, {{ book.year }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            There are no books in the database yet. 
+        {% endif %}
+    {% endif %}
+
+    <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
+
 {% endblock content %}
