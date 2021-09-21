@@ -188,11 +188,18 @@ def create_app(test_config=None):
 
         if request.method == "POST":
             form = BookForm(request.form, meta={'csrf': False})
+
+            name = request.form.get("author")
+
+            author=Author.query.filter_by(name=name).first()
+            # print("AUTHOR", author.id)
         
             if form.validate_on_submit():
                 
                 form.populate_obj(book)
 
+                book.authors.append(author)
+                
                 book.insert()
 
             books = Book.query.order_by(Book.id).all()
@@ -225,9 +232,12 @@ def create_app(test_config=None):
 
         author = Author.query.get(id)
 
+        books = author.books
+        print(len(books), author)
+
         permissions = payload["permissions"]
 
-        return render_template("pages/author.html", author=author, permissions=permissions)
+        return render_template("pages/author.html", author=author, permissions=permissions, books=books)
 
 
 # Edit a book by it's id
