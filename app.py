@@ -40,9 +40,9 @@ def create_app(test_config=None):
     'auth0',
     client_id=os.environ["AUTH0_ID"],
     client_secret=os.environ["JWT_CODE_SIGNING_SECRET"],
-    api_base_url='https://YOUR_DOMAIN',
-    access_token_url='https://korzhyk-app.us.auth0.com/oauth/token',
-    authorize_url='https://korzhyk-app.us.auth0.com/authorize',
+    api_base_url='https://' + os.environ["AUTH0_DOMAIN"],
+    access_token_url='https://' + os.environ["AUTH0_DOMAIN"] + '/oauth/token',
+    authorize_url='https://' + os.environ["AUTH0_DOMAIN"] + '/authorize',
     client_kwargs={
         'scope': 'openid profile email',
     },
@@ -114,7 +114,7 @@ def create_app(test_config=None):
         # clear the session
         session.clear()
         # redirect user to logout endpoint
-        params = {'returnTo': url_for('index', _external=True), 'client_id': "a0mzLPX0PZ6KPWVGo058FFCUUNwShqIN"}
+        params = {'returnTo': url_for('index', _external=True), 'client_id': os.environ["AUTH0_ID"]}
         return redirect('https://korzhyk-app.us.auth0.com' + '/v2/logout?' + urlencode(params))
 
 
