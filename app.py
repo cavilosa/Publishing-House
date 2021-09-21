@@ -291,13 +291,10 @@ def create_app(test_config=None):
             form = AuthorForm(request.form, meta={'csrf': False})
             author = Author.query.get(id)
             
-
             if form.validate_on_submit():
-                # flash("Successfully created a new book")
+
                 form.populate_obj(author)
-
                 author.update()
-
             return render_template("pages/author.html", author=author, permissions=permissions)
 
         return render_template("forms/edit_author.html", form=form, permissions=permissions)

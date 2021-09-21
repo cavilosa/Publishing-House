@@ -98,6 +98,7 @@ class Author(db.Model):
     __tablename__ = "authors"
     id = Column(db.Integer, primary_key=True)
     name = Column(db.String, nullable=False)
+    yob = Column(db.Integer)
     books = relationship("Book", secondary=authors_books, 
         backref=db.backref("authors", lazy='dynamic', cascade="save-update, merge, delete"))
 
@@ -133,7 +134,8 @@ class Author(db.Model):
     def format(self):
         return {
             "id": self.id,
-            "name":self.name
+            "name":self.name,
+            "year_of_birth": self.yob
         }
 
     def __repr__(self):
