@@ -3,11 +3,11 @@
 {% block content %}
     {% if "post:author" not in permissions %}
         {% if authors %}
-        <ul>
+        <ol>
             {% for author in authors %}
-            <li>{{ author.id }}, {{ author.name }}</li></a>
+            <li>{{ author.name }}</li></a>
             {% endfor %}
-        </ul>
+        </ol>
         {% else %}
             There are no authors in the database yet. 
         {% endif %}
@@ -16,11 +16,11 @@
 
     {% if "post:author" in permissions %}
         {% if authors %}
-        <ul>
+        <ol>
             {% for author in authors %}
-            <li><a href="/authors/{{ author.id }}">{{ author.id }}, {{ author.name }}</a></li>
+            <li><a href="/authors/{{ author.id }}"> {{ author.name }}</a></li>
             {% endfor %}
-        </ul>
+        </ol>
         {% else %}
             There are no authors in the database yet. 
         {% endif %}

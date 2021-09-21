@@ -19,16 +19,17 @@
   
 </div>
 
+<div class="links">
     {% if "post:author" in permissions %}
-    <a href="/authors/{{ author.id }}/edit">Edit this author</a>
+    <div><a href="/authors/{{ author.id }}/edit">Edit this author</a></div>
     {% endif%}
     
-
     {% if "delete:author" in permissions %}
-    <a data-method="delete" href="/authors/{{ author.id }}/delete">DELETE</a>
+    <div><a data-method="delete" href="/authors/{{ author.id }}/delete">DELETE</a></div>
     {% endif %}
     
-    
+</div>
+       
 {% endif %}
 
 {% endblock content %}

@@ -186,7 +186,7 @@ def create_app(test_config=None):
 
             return render_template("pages/book.html", book=book, permissions=permissions)
 
-        return render_template("forms/edit_book.html", form=form)
+        return render_template("forms/edit_book.html", form=form, permissions=permissions)
 
 
 # Create new book
@@ -219,9 +219,24 @@ def create_app(test_config=None):
 
             books = Book.query.order_by(Book.id).all()
 
-            return render_template("pages/books.html", books=books, permissions=permissions,   authors=authors)
+            return render_template("pages/books.html", books=books, permissions=permissions, authors=authors)
 
-        return render_template("forms/create_book.html", form=form, authors=authors)
+        return render_template("forms/create_book.html", form=form, authors=authors, permissions=permissions)
+
+
+    # Delete book by it's id
+    @app.route("/books/<id>/delete", methods=["GET", "POST"])
+    @cross_origin()
+    @requires_auth("delete:book")
+    def delete_book(payload, id):
+        book = Book.query.get(id)
+        permissions = payload["permissions"]
+
+        book.delete()
+
+        books = Book.query.order_by(Book.id).all()
+        
+        return render_template("pages/books.html", books=books, permissions=permissions)
 
 
 #------------------------------------------------------------------------------------------
@@ -285,22 +300,7 @@ def create_app(test_config=None):
 
             return render_template("pages/author.html", author=author, permissions=permissions)
 
-        return render_template("forms/edit_author.html", form=form)
-
-
-# Delete book by it's id
-    @app.route("/books/<id>/delete", methods=["GET", "POST"])
-    @cross_origin()
-    @requires_auth("delete:book")
-    def delete_book(payload, id):
-        book = Book.query.get(id)
-        permissions = payload["permissions"]
-
-        book.delete()
-
-        books = Book.query.order_by(Book.id).all()
-        
-        return render_template("pages/books.html", books=books, permissions=permissions)
+        return render_template("forms/edit_author.html", form=form, permissions=permissions)
 
 
 # DELETE author by id
@@ -345,7 +345,7 @@ def create_app(test_config=None):
 
             return render_template("pages/authors.html", authors=authors, permissions=permissions)
 
-        return render_template("forms/create_author.html", form=form)
+        return render_template("forms/create_author.html", form=form, permissions=permissions)
 
         
   

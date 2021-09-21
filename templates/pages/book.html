@@ -6,7 +6,7 @@
     <p>Title: {{ book.title }}</p>
     {% if "post:book" in permissions %}
         {% if author %}
-        <a href="/authors/{{author.id}}">{{book.author}}</a>
+        <p>AUTHOR:<a href="/authors/{{author.id}}"> {{book.author}}</a></p>
         {% else %}
             <p>Author: {{ book.author }}</p>
         {% endif %}
