@@ -4,7 +4,16 @@
 {% if book %}
 <div class="book">
     <p>Title: {{ book.title }}</p>
-    <p>Author: {{ book.author }}</p>
+    {% if "post:book" in permissions %}
+        {% if author %}
+        <a href="/authors/{{author.id}}">{{book.author}}</a>
+        {% else %}
+            <p>Author: {{ book.author }}</p>
+        {% endif %}
+    {% else %}
+        <p>Author: {{ book.author }}</p>
+    {% endif%}
+    
     <p>Year: {{ book.year }}</p>
     <p>ID: {{ book.id }}</p>
 </div>

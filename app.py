@@ -144,8 +144,23 @@ def create_app(test_config=None):
         book = Book.query.get(id)
 
         permissions = payload["permissions"]
+        item = {}
+        for author in book.authors:
+            item = {
+                "id": author.id
+            }
 
-        return render_template("pages/book.html", book=book, permissions=permissions)
+        # books = []
+
+        # for book in author.books:
+        #     item = {
+        #         "title": book.title,
+        #         "year": book.year
+        #     }
+        #     books.append(item)
+
+
+        return render_template("pages/book.html", book=book, permissions=permissions, author=item)
 
 
 # Edit a book by it's id
