@@ -138,6 +138,6 @@ class Author(db.Model):
 
     def __repr__(self):
         # return json.dumps(self.short())
-        return f"<{self.name}, {self.book}>"
+        return f"<{self.id}, {self.name}>"
 
 

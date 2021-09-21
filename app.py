@@ -182,6 +182,8 @@ def create_app(test_config=None):
 
         permissions = payload["permissions"]
         book = Book(title="", author="", year=0)
+        authors = Author.query.all()
+        # print("AUTHORS", authors)
         form = BookForm()
 
         if request.method == "POST":
@@ -195,9 +197,9 @@ def create_app(test_config=None):
 
             books = Book.query.order_by(Book.id).all()
 
-            return render_template("pages/books.html", books=books, permissions=permissions)
+            return render_template("pages/books.html", books=books, permissions=permissions,   authors=authors)
 
-        return render_template("forms/create_book.html", form=form)
+        return render_template("forms/create_book.html", form=form, authors=authors)
 
 
 #------------------------------------------------------------------------------------------
