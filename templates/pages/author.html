@@ -3,9 +3,7 @@
 {% block content %}
 {% if author %}
 <div class="author">
-   <p>Name: {{ author.name }}
-       {% if author.yob %}, {{ author.yob }}
-        {% endif %}
+   <p>Name: {{ author.name }}, {{ author.yob }}
     </p>
         
    {% if books%}

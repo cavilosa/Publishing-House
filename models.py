@@ -98,7 +98,7 @@ class Author(db.Model):
     __tablename__ = "authors"
     id = Column(db.Integer, primary_key=True)
     name = Column(db.String, nullable=False)
-    yob = Column(db.Integer)
+    yob = Column(db.Integer, nullable=False)
     books = relationship("Book", secondary=authors_books, 
         backref=db.backref("authors", lazy='dynamic', cascade="save-update, merge, delete"))
 

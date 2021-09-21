@@ -18,13 +18,13 @@
         {% if authors %}
         <ol>
             {% for author in authors %}
-            <li><a href="/authors/{{ author.id }}"> {{ author.name }}</a></li>
+            <li><a href="/authors/{{ author.id }}"> {{ author.name }}, {{ author.yob }}</a></li>
             {% endfor %}
         </ol>
         {% else %}
             There are no authors in the database yet. 
         {% endif %}
-    <!-- <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a> -->
+
     {% endif %}
 
 {% endblock content %}
