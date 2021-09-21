@@ -4,7 +4,15 @@
 {% if author %}
 <div class="author">
    <p>Name: {{ author.name }}</p>
-   <p>Books: {{ books }}</p>
+   <p>Books:</p>
+       <ol>
+        {% for book in books %}
+           <li>
+               {{ book.title}}, {{ book.year}}
+           </li>
+        {% endfor %}
+       </ol>
+  
 </div>
 
     {% if "post:author" in permissions %}

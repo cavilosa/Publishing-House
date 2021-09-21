@@ -232,8 +232,15 @@ def create_app(test_config=None):
 
         author = Author.query.get(id)
 
-        books = author.books
-        print(len(books), author)
+        books = []
+
+        for book in author.books:
+            item = {
+                "title": book.title,
+                "year": book.year
+            }
+            books.append(item)
+        
 
         permissions = payload["permissions"]
 
