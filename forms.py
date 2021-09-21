@@ -4,11 +4,11 @@ from wtforms.validators import DataRequired, Email
 from wtforms.validators import InputRequired, AnyOf, URL
 
 class BookForm(FlaskForm):
-    title = StringField("title", validators=[DataRequired()])
-    author = StringField("author", validators=[DataRequired()])
-    year = IntegerField("year", validators=[DataRequired()])
+    title = StringField("TITLE", validators=[DataRequired()])
+    author = StringField("AUTHOR", validators=[DataRequired()])
+    year = IntegerField("YEAR", validators=[DataRequired()])
     send = SubmitField('send')
 
 class AuthorForm(FlaskForm):
-    name = StringField("name", validators=[DataRequired()])
+    name = StringField("NAME", validators=[DataRequired()])
     send = SubmitField('send')

@@ -3,11 +3,11 @@
 {% block content %}
     {% if "post:book" not in permissions %}
         {% if books %}
-            <ul>
+            <ol>
                 {% for book in books %}
-                <li>{{ book.id }}, {{ book.title }}, {{ book.author}}, {{ book.year }}</li></a>
+                <li> {{ book.title }}, {{ book.author}}, {{ book.year }}</li></a>
                 {% endfor %}
-            </ul>
+            </ol>
             {% else %}
                 There are no books in the database yet. 
             {% endif %}
@@ -16,11 +16,11 @@
 
         {% if "post:book" in permissions %}
             {% if books %}
-            <ul>
+            <ol>
                 {% for book in books %}
-                <li><a href="/books/{{ book.id }}">{{ book.id }}, {{ book.title }}, {{ book.author }}, {{ book.year }}</a></li>
+                <li><a href="/books/{{ book.id }}">{{ book.title }}, {{ book.author }}, {{ book.year }}</a></li>
                 {% endfor %}
-            </ul>
+            </ol>
             {% else %}
                 There are no books in the database yet. 
             {% endif %}
