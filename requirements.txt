@@ -14,6 +14,7 @@ Flask-OAuth==0.12
 Flask-Script==2.0.6
 Flask-Session==0.4.0
 Flask-SQLAlchemy==2.5.1
+Flask-Testing==0.8.1
 Flask-WTF==0.15.1
 greenlet==1.1.0
 gunicorn==20.1.0

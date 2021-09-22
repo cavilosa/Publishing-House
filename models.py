@@ -1,4 +1,5 @@
 import os
+from dotenv.main import load_dotenv
 from sqlalchemy import Table, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy import MetaData
@@ -7,6 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base
 # from flask_migrate import Migrate
 import json
 
+load_dotenv()
 
 password = os.environ["PASSWORD"]
 # password = os.environ.get("PASSWORD")
@@ -19,7 +21,7 @@ Base = declarative_base()
 # db = SQLAlchemy(app)
 db = SQLAlchemy()
 
-def setup_db(app):
+def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app

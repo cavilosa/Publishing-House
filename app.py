@@ -61,9 +61,9 @@ def create_app(test_config=None):
 #
     @app.route("/", methods=["GET"])
     def index():
-        # print ("SESSION get token", session.get("token"))
+
         if session.get("token"):
-            print ("SESSION TOKEN TRUE")
+            # print("TOKE", session.get("token"))
             return redirect("/callback")
         else:
             login = True
@@ -77,9 +77,8 @@ def create_app(test_config=None):
 
     @app.route('/callback')
     def callback_handling():
-        print("CALLBACK")
+        # check if a user is logged in
         if session.get("token"):
-            # print("SESSION TOKEN", session["token"])
             token = session["token"]
         else:
             token = auth0.authorize_access_token()
@@ -89,19 +88,18 @@ def create_app(test_config=None):
         payload = verify_decode_jwt(token)
 
         permissions = payload["permissions"]
-        role = ""
-        login = True
+        
         if "delete:author" and "delete:book" in permissions:
             # flash('You were successfully logged in as an editor')
-            return render_template('layouts/main.html', role="editor", permissions=permissions, login=False, token=True)
+            return render_template('layouts/main.html', permissions=permissions, token=True, messages="messages")
 
         elif "patch:author" and "post:book" in permissions:
             # flash('You were successfully logged in as a coordinator')
-            return render_template('layouts/main.html', role="coordinator", permissions=permissions, login=True, token=token)
+            return render_template('layouts/main.html',permissions=permissions, token=token)
 
         elif "get:book" and "get:authors" in permissions:
             # flash('You were successfully logged in as a reader')
-            return render_template('layouts/main.html', role="reader", permissions=permissions, login=False, token=True) 
+            return render_template('layouts/main.html', permissions=permissions,  token=True) 
 
         else:
             return render_template('layouts/main.html')
@@ -319,7 +317,7 @@ def create_app(test_config=None):
         return render_template("pages/authors.html", authors=authors, permissions=permissions)
 
 
-# Create new book
+# Create new author
     @app.route("/authors/create", methods=["POST", "GET"])
     @cross_origin()
     @requires_auth("post:author")
@@ -344,13 +342,50 @@ def create_app(test_config=None):
 
         return render_template("forms/create_author.html", form=form, permissions=permissions)
 
+
+#----------------------------------------------------------
+# Errorhandlers
+#----------------------------------------------------
         
-  
     @app.errorhandler(AuthError)
     def handle_auth_error(ex):
         response = jsonify(ex.error)
         response.status_code = ex.status_code
         return response
+
+      # Handlers for all expected errors
+
+    @app.errorhandler(404)
+    def not_found(error):
+        return jsonify({
+            "success": False,
+            "error": 404,
+            "messages": "resource not found"
+        }), 404
+
+    @app.errorhandler(400)
+    def bad_request(error):
+        return jsonify({
+            "success": False,
+            "error": 400,
+            "message": "bad request"
+        }), 400
+
+    @app.errorhandler(422)
+    def unprocessable(error):
+        return jsonify({
+            "success": False,
+            "error": 422,
+            "messages": "You are trying to delete a question that does not exists in the database."
+        }), 422
+
+    @app.errorhandler(500)
+    def server_error(error):
+        return jsonify({
+            "success": False,
+            "error": 500,
+            "messages": "Internal server error."
+        }), 500
 
     return app
 
