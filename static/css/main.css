@@ -38,3 +38,11 @@ a {
     justify-content: space-around;
     margin: 20px;
 }
+
+.flash {
+    margin:20px;
+    padding: 20px;
+    text-align: center;
+    color:black;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}

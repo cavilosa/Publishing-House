@@ -13,7 +13,7 @@ from flask_migrate import Migrate
 # from .auth.auth import AuthError, requires_auth
 from authlib.integrations.flask_client import OAuth
 from functools import wraps
-from flask import session
+from flask import session, abort
 
 load_dotenv()
 
@@ -53,6 +53,7 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
         response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
         # print ("HEADERS", request.headers)
+        session.pop('_flashes', None)
         return response
 
 
@@ -90,15 +91,15 @@ def create_app(test_config=None):
         permissions = payload["permissions"]
         
         if "delete:author" and "delete:book" in permissions:
-            # flash('You were successfully logged in as an editor')
-            return render_template('layouts/main.html', permissions=permissions, token=True, messages="messages")
+            flash('You were successfully logged in as an editor')
+            return render_template('layouts/main.html', permissions=permissions, token=True)
 
         elif "patch:author" and "post:book" in permissions:
-            # flash('You were successfully logged in as a coordinator')
+            flash('You were successfully logged in as a coordinator')
             return render_template('layouts/main.html',permissions=permissions, token=token)
 
         elif "get:book" and "get:authors" in permissions:
-            # flash('You were successfully logged in as a reader')
+            flash('You were successfully logged in as a reader')
             return render_template('layouts/main.html', permissions=permissions,  token=True) 
 
         else:
@@ -125,10 +126,12 @@ def create_app(test_config=None):
     @cross_origin()
     @requires_auth("get:books")
     def books(payload):
-        role =[]
         permissions = payload["permissions"]
-
-        books = Book.query.order_by(Book.id).all()
+        try:
+            books = Book.query.order_by(Book.id).all()
+        
+        except:
+            flash("No books were found in the database")
         
         return render_template("pages/books.html", books=books, permissions=permissions)
 
@@ -138,25 +141,19 @@ def create_app(test_config=None):
     @cross_origin()
     @requires_auth("post:book")
     def book_by_id(payload, id):
+        try:
+            book = Book.query.get(id)
 
-        book = Book.query.get(id)
+            permissions = payload["permissions"]
+            item = {}
+            for author in book.authors:
+                item = {
+                    "id": author.id
+                }
 
-        permissions = payload["permissions"]
-        item = {}
-        for author in book.authors:
-            item = {
-                "id": author.id
-            }
-
-        # books = []
-
-        # for book in author.books:
-        #     item = {
-        #         "title": book.title,
-        #         "year": book.year
-        #     }
-        #     books.append(item)
-
+        except:
+            flash(f"The book with id {id} doesn't exist.")
+            abort(422)
 
         return render_template("pages/book.html", book=book, permissions=permissions, author=item)
 
@@ -166,21 +163,28 @@ def create_app(test_config=None):
     @cross_origin()
     @requires_auth("patch:book")
     def edit_book(payload, id):
-        # session.pop('_flashes', None)
         book = Book.query.get(id)
+        if book is None:
+            flash("You are trying to access a book with nonexisting id")
+            abort(422)
         permissions = payload["permissions"]
         form = BookForm(obj=book)
 
         if request.method == "POST":
             form = BookForm(request.form, meta={'csrf': False})
             book = Book.query.get(id)
+            if book is None:
+                flash("You are trying to access a book with nonexisting id")
+                abort(422)
             
-
             if form.validate_on_submit():
-                # flash("Successfully created a new book")
                 form.populate_obj(book)
-
-                book.update()
+                try:
+                    book.update()
+                    flash("Successfully updated the book")
+                except:
+                    flask("Something went wrong and the book was not updated.")
+                    abort(400)
 
             return render_template("pages/book.html", book=book, permissions=permissions)
 
@@ -196,7 +200,9 @@ def create_app(test_config=None):
         permissions = payload["permissions"]
         book = Book(title="", author="", year=0)
         authors = Author.query.all()
-        # print("AUTHORS", authors)
+        if authors is None:
+            flash("We couldn't retrieve the authors from the database.")
+            abort(404)
         form = BookForm()
 
         if request.method == "POST":
@@ -205,19 +211,30 @@ def create_app(test_config=None):
             name = request.form.get("author")
 
             author=Author.query.filter_by(name=name).first()
-            # print("AUTHOR", author.id)
+            if author is None:
+                flash("The author wasn't found in the library. Need to create an author first.")
+                abort(404)
         
             if form.validate_on_submit():
                 
                 form.populate_obj(book)
 
                 book.authors.append(author)
-                
-                book.insert()
 
-            books = Book.query.order_by(Book.id).all()
+                try:
+                    book.insert()
+                    flash("The book has beed added successfully.")
+                except:
+                    flash("We couldn't add new book to the database")
+                    abort(400)
 
-            return render_template("pages/books.html", books=books, permissions=permissions, authors=authors)
+                try:
+                    books = Book.query.order_by(Book.id).all()
+                except:
+                    flash("Couldn't get books from the database.")
+                    abort(404)
+
+                return render_template("pages/books.html", books=books, permissions=permissions, authors=authors)
 
         return render_template("forms/create_book.html", form=form, authors=authors, permissions=permissions)
 
@@ -227,15 +244,22 @@ def create_app(test_config=None):
     @cross_origin()
     @requires_auth("delete:book")
     def delete_book(payload, id):
-        book = Book.query.get(id)
-        permissions = payload["permissions"]
+        try: 
+            book = Book.query.get(id)
+            permissions = payload["permissions"]
 
-        book.delete()
-
-        books = Book.query.order_by(Book.id).all()
-        
-        return render_template("pages/books.html", books=books, permissions=permissions)
-
+            book.delete()
+            flash("The book was seccusfully deleted.")
+            try:
+                books = Book.query.order_by(Book.id).all()
+            except:
+                flash("Couldn't get the books from the database.")
+                abort(500)
+            
+            return render_template("pages/books.html", books=books, permissions=permissions)
+        except:
+            flash(f"The is no book with id {id}.")
+            abort(404)
 
 #------------------------------------------------------------------------------------------
 # Authors
@@ -247,8 +271,11 @@ def create_app(test_config=None):
     def authors(payload):
 
         permissions = payload["permissions"]
-
-        authors = Author.query.order_by(Author.id).all()
+        try:
+            authors = Author.query.order_by(Author.id).all()
+        except:
+            flash("The authors list couldn't been retreived.")
+            abort(404)
         
         return render_template("pages/authors.html", authors=authors, permissions=permissions)
 
@@ -257,20 +284,23 @@ def create_app(test_config=None):
     @cross_origin()
     @requires_auth("post:author")
     def author_by_id(payload, id):
+        try:
+            author = Author.query.get(id)
+  
+            books = []
 
-        author = Author.query.get(id)
+            for book in author.books:
+                item = {
+                    "title": book.title,
+                    "year": book.year
+                }
+                books.append(item)   
 
-        books = []
+            permissions = payload["permissions"]
 
-        for book in author.books:
-            item = {
-                "title": book.title,
-                "year": book.year
-            }
-            books.append(item)
-        
-
-        permissions = payload["permissions"]
+        except:
+            flash("There is no such author in the database.")
+            abort(404)
 
         return render_template("pages/author.html", author=author, permissions=permissions, books=books)
 
@@ -280,23 +310,26 @@ def create_app(test_config=None):
     @cross_origin()
     @requires_auth("patch:author")
     def edit_author(payload, id):
-        # session.pop('_flashes', None)
+
         author = Author.query.get(id)
+        if author is None:
+            flash("There is no such author in the database")
+            abort(422)
         permissions = payload["permissions"]
         form = AuthorForm(obj=author)
 
         if request.method == "POST":
             form = AuthorForm(request.form, meta={'csrf': False})
             author = Author.query.get(id)
-            
+                
             if form.validate_on_submit():
 
                 form.populate_obj(author)
                 author.update()
             return render_template("pages/author.html", author=author, permissions=permissions)
-
+       
         return render_template("forms/edit_author.html", form=form, permissions=permissions)
-
+        
 
 # DELETE author by id
 
@@ -304,15 +337,24 @@ def create_app(test_config=None):
     @cross_origin()
     @requires_auth("delete:author")
     def delete_author(payload, id):
+
         author = Author.query.get(id)
+        if author is None:
+            flash("There is no such author in the database")
+            abort(422)
         permissions = payload["permissions"]
-        # print("METHOD", request.method)
+        try:
+            author.delete()
+            flash("The authro was deleted successfully.")
+        except:
+            flash("Couldn't delete the author")
+            abort(422)
 
-        # if request.method == "DELETE":
-
-        author.delete()
-
-        authors = Author.query.order_by(Author.id).all()
+        try:
+            authors = Author.query.order_by(Author.id).all()
+        except:
+            flash("Something went wrong.")
+            abort(404)
         
         return render_template("pages/authors.html", authors=authors, permissions=permissions)
 
@@ -333,10 +375,17 @@ def create_app(test_config=None):
             if form.validate_on_submit():
                 
                 form.populate_obj(author)
-
-                author.insert()
-
-            authors = Author.query.order_by(Author.id).all()
+                try:
+                    author.insert()
+                    flash("The author was added successfully.")
+                except:
+                    flash("Couldn't add a new author to the database.")
+                    abort(500)
+            try:
+                authors = Author.query.order_by(Author.id).all()
+            except:
+                flash("Couldn't process your request")
+                abort(404)
 
             return render_template("pages/authors.html", authors=authors, permissions=permissions)
 
@@ -357,35 +406,19 @@ def create_app(test_config=None):
 
     @app.errorhandler(404)
     def not_found(error):
-        return jsonify({
-            "success": False,
-            "error": 404,
-            "messages": "resource not found"
-        }), 404
+        return render_template("errors/404.html")
 
     @app.errorhandler(400)
     def bad_request(error):
-        return jsonify({
-            "success": False,
-            "error": 400,
-            "message": "bad request"
-        }), 400
+        return render_template("errors/400.html")
 
     @app.errorhandler(422)
     def unprocessable(error):
-        return jsonify({
-            "success": False,
-            "error": 422,
-            "messages": "You are trying to delete a question that does not exists in the database."
-        }), 422
+        return render_template("errors/422.html")
 
     @app.errorhandler(500)
     def server_error(error):
-        return jsonify({
-            "success": False,
-            "error": 500,
-            "messages": "Internal server error."
-        }), 500
+        return render_template("errors/500.html")
 
     return app
 
