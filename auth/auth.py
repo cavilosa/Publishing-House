@@ -5,7 +5,7 @@ from jose import jwt
 from urllib.request import urlopen
 import os
 from dotenv import load_dotenv
-from flask import session, request
+from flask import session, request, abort
 
 load_dotenv()
 
@@ -132,13 +132,20 @@ def requires_auth(permission=""):
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            # if not session["token"]:
-            #     return token = get_token_auth_header()
-            # else:
-            token = session["token"]
-            payload = verify_decode_jwt(token)
-            check_permissions(permission, payload)
+            try:
+                token = None
+                if session['token']:
+                    token = session['token']
+                else:
+                    token = get_token_auth_header()
+                print('token at authorization time: {}'.format(token))
+                if token is None:
+                    abort(400)
+                payload = verify_decode_jwt(token)
+                check_permissions(permission, payload)
 
-            return f(payload, *args, **kwargs)
+                return f(payload, *args, **kwargs)
+            except:
+                abort(401)
         return wrapper
     return requires_auth_decorator

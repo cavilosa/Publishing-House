@@ -81,14 +81,18 @@ def create_app(test_config=None):
         # check if a user is logged in
         if session.get("token"):
             token = session["token"]
+            print("Session token", token)
         else:
             token = auth0.authorize_access_token()
+            print("TOKEN auth0", token)
             session['token'] = token['access_token']
             token = token['access_token']
-        
-        payload = verify_decode_jwt(token)
+        try:
+            payload = verify_decode_jwt(token)
 
-        permissions = payload["permissions"]
+            permissions = payload["permissions"]
+        except:
+            abort(401)
         
         if "delete:author" and "delete:book" in permissions:
             flash('You were successfully logged in as an editor')
@@ -129,11 +133,22 @@ def create_app(test_config=None):
         permissions = payload["permissions"]
         try:
             books = Book.query.order_by(Book.id).all()
-        
+            # print("BOOKS", books)
+            list = []
+            for book in books:
+                item =({
+                    "id": book.id,
+                    "title":book.title,
+                    "author": book.author,
+                    "year": book.year
+                })
+                # print("ITM", item)
+                list.append(item)
+            print("LIST", list)
         except:
             flash("No books were found in the database")
         
-        return render_template("pages/books.html", books=books, permissions=permissions)
+        return render_template("pages/books.html", books=list, permissions=permissions)
 
 
 # See a book by it's id

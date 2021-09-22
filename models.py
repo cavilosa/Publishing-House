@@ -26,16 +26,7 @@ def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
-
-# def db_drop_and_create_all():
-#     db.drop_all()
-#     db.create_all()
-    # add one demo row which is helping in POSTMAN test
-    # book = Book(title="NEW BOOK", author=1, year=2000)
-    # book.insert()
-
-    # author = Author(name="NEW AUTHOR")
-    # author.insert()
+    db.create_all()
 
 authors_books = db.Table("authors_books", 
     db.Column("book_id", db.Integer, db.ForeignKey("books.id"), primary_key=True), 
@@ -104,8 +95,9 @@ class Author(db.Model):
     books = relationship("Book", secondary=authors_books, 
         backref=db.backref("authors", lazy='dynamic', cascade="save-update, merge, delete"))
 
-    def __init__(self, name):
+    def __init__(self, name, yob):
         self.name = name
+        self.yob = yob
 
     def insert(self):
         try:
