@@ -1,6 +1,9 @@
 {% extends 'layouts/main.html' %}
 {% block title %}BOOKS{% endblock %}
 {% block content %}
+{% if list %}
+{{ list }}
+{% endif %}
     {% if "post:book" not in permissions %}
         {% if books %}
             <ol>

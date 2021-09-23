@@ -132,7 +132,15 @@ def requires_auth(permission=""):
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            token = session["token"]
+            token = None
+            if session["token"]:
+                token = session["token"]
+                print("SESSION TOKEN FROM AUTH0", token)
+            else:
+                token = get_token_auth_header()
+                print("TOKEN GET TOKEN", token)
+            # print("SESSION TOKEN", session["token"])
+            # token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjFoRHk4TDczSUFfVDZuVEw3Y08zeSJ9.eyJpc3MiOiJodHRwczovL2tvcnpoeWstYXBwLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2MTNhNjUxYjRmZWM2ZDAwNjgyYWM1ZTYiLCJhdWQiOlsiYXBwIiwiaHR0cHM6Ly9rb3J6aHlrLWFwcC51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjMyNDA0ODgwLCJleHAiOjE2MzI1NzQ4ODAsImF6cCI6ImEwbXpMUFgwUFo2S1BXVkdvMDU4RkZDVVVOd1NocUlOIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTphdXRob3IiLCJkZWxldGU6Ym9vayIsImdldDphdXRob3JzIiwiZ2V0OmJvb2tzIiwicGF0Y2g6YXV0aG9yIiwicGF0Y2g6Ym9vayIsInBvc3Q6YXV0aG9yIiwicG9zdDpib29rIl19.GN8lBOlbjBv1rnN0rMsy-niu360s964xTs3WjahYNviLRFZl55bNttMM2VYG4htlWA-zzNFcGHccA5a-jbFSU6uqGGSP-WgzsH5AhQOTi_yqqHwK7k1xdT-zPc3SqvYVj1itaXbWVKHOBQmHMGk3-G7TTl6JB2BSVMx9mGROk6Gec4MJ0NqaWludhFemXcNj3NrkXogQWvHwXWNpAMKSp8Gl9H44-jyBVobSACZtLtLpMswXOiooL_UYK43NfQBVU8ew4TLy_1x3a4tQWcrH2Xp2AcEOPGNFWIZidSaNm5bw1rfkOoF32oQQ1CTx87pOVc9Os6w641ebth7FVWwYUA"
             payload = verify_decode_jwt(token)
             check_permissions(permission, payload)
             return f(payload, *args, **kwargs)

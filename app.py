@@ -60,6 +60,19 @@ def create_app(test_config=None):
 # Initial route to authorize with auth0
 # -------------------------------------------------------------------------------------------
 #
+
+    @app.route("/test", methods=["GET", "POST"])
+    @cross_origin()
+    def testing():
+        books = Book.query.all()
+
+        list = [book.format() for book in books]
+        # return jsonify({
+        #     "books": list
+        # })
+        return render_template("pages/books.html", permissions="post:book", list=list)
+
+
     @app.route("/", methods=["GET"])
     def index():
 
@@ -133,18 +146,7 @@ def create_app(test_config=None):
         permissions = payload["permissions"]
         try:
             books = Book.query.order_by(Book.id).all()
-            # print("BOOKS", books)
-            list = []
-            for book in books:
-                item =({
-                    "id": book.id,
-                    "title":book.title,
-                    "author": book.author,
-                    "year": book.year
-                })
-                # print("ITM", item)
-                list.append(item)
-            print("LIST", list)
+            list = [book.format() for book in books]
         except:
             flash("No books were found in the database")
         
@@ -360,7 +362,7 @@ def create_app(test_config=None):
         permissions = payload["permissions"]
         try:
             author.delete()
-            flash("The authro was deleted successfully.")
+            flash("The author was deleted successfully.")
         except:
             flash("Couldn't delete the author")
             abort(422)
