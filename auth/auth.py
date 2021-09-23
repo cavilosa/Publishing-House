@@ -132,20 +132,9 @@ def requires_auth(permission=""):
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            try:
-                token = None
-                if session['token']:
-                    token = session['token']
-                else:
-                    token = get_token_auth_header()
-                print('token at authorization time: {}'.format(token))
-                if token is None:
-                    abort(400)
-                payload = verify_decode_jwt(token)
-                check_permissions(permission, payload)
-
-                return f(payload, *args, **kwargs)
-            except:
-                abort(401)
+            token = session["token"]
+            payload = verify_decode_jwt(token)
+            check_permissions(permission, payload)
+            return f(payload, *args, **kwargs)
         return wrapper
     return requires_auth_decorator

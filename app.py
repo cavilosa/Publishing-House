@@ -381,7 +381,7 @@ def create_app(test_config=None):
     def create_author(payload):
 
         permissions = payload["permissions"]
-        author = Author(name="")
+        author = Author(name="", yob=0)
         form = AuthorForm()
 
         if request.method == "POST":
