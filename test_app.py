@@ -47,9 +47,9 @@ class PublishingHouseTestCase(unittest.TestCase):
             "yob": "TESTING YOB"
         }
 
-        @self.app.route("/")
-        def hello():
-            return render_template("layouts/main.html")
+        # @self.app.route("/")
+        # def hello():
+        #     return render_template("layouts/main.html")
 
            # binds the app to the current context
         with self.app.app_context():
@@ -63,22 +63,18 @@ class PublishingHouseTestCase(unittest.TestCase):
             # self.insert_data()
 
 
-
-
-
     def test_local_page(self):
         """test local page"""
         response = self.client().get('/test')
+
         data = response.get_data(as_text=True)
         # print("DATA", data)
+
         books = Book.query.all()
         list = [book.format() for book in books]
-        print("LIST", str(list))
+        # print("LIST", str(list))
+
         self.assertFalse(str(list) in response.get_data(as_text=True))
-
-
-
-
 
 
 
@@ -87,7 +83,6 @@ class PublishingHouseTestCase(unittest.TestCase):
         """ testing the db """
         books = Book.query.all()
         authors = Author.query.all()
-        # print(len(books), len(authors), books[0].format())
         self.assertEqual(isinstance(books, list), True)
         self.assertEqual(isinstance(books[0], Book), True)
         self.assertEqual(isinstance(authors, list), True)
