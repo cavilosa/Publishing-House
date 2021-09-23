@@ -99,14 +99,14 @@ class PublishingHouseTestCase(unittest.TestCase):
 
     def test_books(self):
         """getting all the books"""
-        response = self.client().get('/books', headers={"Authorization": "Bearer {}".format(self.token)})
+        response = self.client().get('/books', headers={'Authorization': 'Bearer {}'.format(self.token)})
         data = response.get_data(as_text=True)
-        session = test_session(self)
-        SESSION = requests.Session()
-        SESSION.headers.update({"Authorization": "Bearer {}".format(self.token)})
-        print(SESSION.headers["Authorization"])
+        # session = test_session(self)
+        # SESSION = requests.Session()
+        # SESSION.headers.update({"Authorization": "Bearer {}".format(self.token)})
+        # print(SESSION.headers["Authorization"])
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(session["token"], self.token)
+        # self.assertEqual(session["token"], self.token)
 
 
     def test_database(self):
