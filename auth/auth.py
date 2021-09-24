@@ -20,7 +20,7 @@ API_AUDIENCE = os.getenv('API_AUDIENCE')
 def get_token_auth_header():
     """Obtains the Access Token from the Authorization Header
     """
-    print(request.headers)
+    print("HEADERS", request.headers)
     if session["token"] is not None:
         token = session["token"]
         return token

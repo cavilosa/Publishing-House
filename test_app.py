@@ -101,10 +101,10 @@ class PublishingHouseTestCase(unittest.TestCase):
         """getting all the books"""
         response = self.client().get('/books', headers={'Authorization': 'Bearer {}'.format(self.token)})
         data = response.get_data(as_text=True)
-        # session = test_session(self)
-        # SESSION = requests.Session()
-        # SESSION.headers.update({"Authorization": "Bearer {}".format(self.token)})
-        # print(SESSION.headers["Authorization"])
+        session = test_session(self)
+        SESSION = requests.Session()
+        SESSION.headers.update({"Authorization": "Bearer {}".format(self.token)})
+        print("PRINT", SESSION.headers["Authorization"])
         self.assertEqual(response.status_code, 200)
         # self.assertEqual(session["token"], self.token)
 
