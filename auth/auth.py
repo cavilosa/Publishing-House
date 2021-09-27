@@ -20,44 +20,40 @@ API_AUDIENCE = os.getenv('API_AUDIENCE')
 def get_token_auth_header():
     """Obtains the Access Token from the Authorization Header
     """
-    print("HEADERS", request.headers)
-    if session["token"] is not None:
-        token = session["token"]
-        return token
-    else:
-        auth = request.headers.get('Authorization', None)
-        if not auth:
+    auth = request.headers.get('Authorization', None)
+    if not auth:
             print("GET AUTH", auth)
             raise AuthError({
                 'code': 'authorization_header_missing',
                 'description': 'Authorization header is expected.'
             }, 401)
 
-        parts = auth.split()
-        if parts[0].lower() != 'bearer':
+    parts = auth.split()
+    if parts[0].lower() != 'bearer':
             raise AuthError({
                 'code': 'invalid_header',
                 'description': 'Authorization header must start with "Bearer".'
             }, 401)
 
-        elif len(parts) == 1:
+    elif len(parts) == 1:
             raise AuthError({
                 'code': 'invalid_header',
                 'description': 'Token not found.'
             }, 401)
 
-        elif len(parts) > 2:
+    elif len(parts) > 2:
+            print("PARTS > 2", parts)
             raise AuthError({
                 'code': 'invalid_header',
                 'description': 'Authorization header must be bearer token.'
             }, 401)
 
-        token = parts[1]
-        return token
+    token = parts[1]
+    return token
+        
 
 
 def check_permissions(permission, payload):
-    # print("PERMISSIONs", payload["permissions"])
     if "permissions" not in payload:
         raise AuthError({
                         'code': 'invalid_claims',
@@ -137,28 +133,10 @@ def requires_auth(permission=""):
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            # token = None
-            # if session["token"]:
-            #     token = session["token"]
-            #     print("SESSION TOKEN FROM AUTH0", token)
-            # else:
-            #     token = get_token_auth_header()
-            #     print("TOKEN GET TOKEN", token)
-            # print("SESSION TOKEN", session["token"])
-            # session["token"] = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjFoRHk4TDczSUFfVDZuVEw3Y08zeSJ9.eyJpc3MiOiJodHRwczovL2tvcnpoeWstYXBwLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2MTNhNjUxYjRmZWM2ZDAwNjgyYWM1ZTYiLCJhdWQiOlsiYXBwIiwiaHR0cHM6Ly9rb3J6aHlrLWFwcC51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjMyNDA0ODgwLCJleHAiOjE2MzI1NzQ4ODAsImF6cCI6ImEwbXpMUFgwUFo2S1BXVkdvMDU4RkZDVVVOd1NocUlOIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTphdXRob3IiLCJkZWxldGU6Ym9vayIsImdldDphdXRob3JzIiwiZ2V0OmJvb2tzIiwicGF0Y2g6YXV0aG9yIiwicGF0Y2g6Ym9vayIsInBvc3Q6YXV0aG9yIiwicG9zdDpib29rIl19.GN8lBOlbjBv1rnN0rMsy-niu360s964xTs3WjahYNviLRFZl55bNttMM2VYG4htlWA-zzNFcGHccA5a-jbFSU6uqGGSP-WgzsH5AhQOTi_yqqHwK7k1xdT-zPc3SqvYVj1itaXbWVKHOBQmHMGk3-G7TTl6JB2BSVMx9mGROk6Gec4MJ0NqaWludhFemXcNj3NrkXogQWvHwXWNpAMKSp8Gl9H44-jyBVobSACZtLtLpMswXOiooL_UYK43NfQBVU8ew4TLy_1x3a4tQWcrH2Xp2AcEOPGNFWIZidSaNm5bw1rfkOoF32oQQ1CTx87pOVc9Os6w641ebth7FVWwYUA"
-            # print("SESSION AUTH TEST", session["token"])
-            # if session["token"]:
-            #     token = session["token"]
-            # # elif session.headers["Authorization"] is not None:
-            # #     token = session.headers["Authorization"] 
-            # else:
-            #     print("session headers", request.headers["Authorization"])
-            #     token = get_token_auth_header()
-            # # print("TOKEN", token)
-            # # if session["token"]:
-            # #     token = session["token"]
-            # print("session headers", request.headers["Authorization"])
-            token = get_token_auth_header()
+            if "token" in session:
+                token = session["token"]
+            else:
+                token = get_token_auth_header()
             payload = verify_decode_jwt(token)
             check_permissions(permission, payload)
             return f(payload, *args, **kwargs)
