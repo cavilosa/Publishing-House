@@ -162,7 +162,7 @@ def create_app(test_config=None):
             book = Book.query.get(id)
 
             permissions = payload["permissions"]
-            item = {}
+            author = {}
             for author in book.authors:
                 item = {
                     "id": author.id
@@ -172,7 +172,7 @@ def create_app(test_config=None):
             flash(f"The book with id {id} doesn't exist.")
             abort(422)
 
-        return render_template("pages/book.html", book=book, permissions=permissions, author=item)
+        return render_template("pages/book.html", book=book, permissions=permissions, author=author)
 
 
 # Edit a book by it's id

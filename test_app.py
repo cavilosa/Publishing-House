@@ -69,6 +69,15 @@ class PublishingHouseTestCase(unittest.TestCase):
             self.db.create_all()
             # self.insert_data()
 
+    def test_database(self):
+        """ testing the db """
+        books = Book.query.all()
+        authors = Author.query.all()
+        self.assertEqual(isinstance(books, list), True)
+        self.assertEqual(isinstance(books[0], Book), True)
+        self.assertEqual(isinstance(authors, list), True)
+        self.assertEqual(isinstance(authors[0], Author), True)
+
 
     def test_landing_page(self):
         """test landing page"""
@@ -105,14 +114,7 @@ class PublishingHouseTestCase(unittest.TestCase):
         self.assertIsNone(response.headers.get('Authorization'))
 
 
-    def test_database(self):
-        """ testing the db """
-        books = Book.query.all()
-        authors = Author.query.all()
-        self.assertEqual(isinstance(books, list), True)
-        self.assertEqual(isinstance(books[0], Book), True)
-        self.assertEqual(isinstance(authors, list), True)
-        self.assertEqual(isinstance(authors[0], Author), True)
+    
         
 
     # def test_index(self):
