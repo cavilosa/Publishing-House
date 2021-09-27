@@ -182,7 +182,7 @@ def create_app(test_config=None):
     def edit_book(payload, id):
         book = Book.query.get(id)
         if book is None:
-            flash("You are trying to access a book with nonexisting id")
+            flash("You are trying to access a book with non existent id")
             abort(422)
         permissions = payload["permissions"]
         form = BookForm(obj=book)
@@ -191,7 +191,7 @@ def create_app(test_config=None):
             form = BookForm(request.form, meta={'csrf': False})
             book = Book.query.get(id)
             if book is None:
-                flash("You are trying to access a book with nonexisting id")
+                flash("You are trying to access a book with non existent id")
                 abort(422)
             
             if form.validate_on_submit():

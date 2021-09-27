@@ -9,6 +9,7 @@ from models import Author, Book, setup_db
 from app import create_app
 import pytest
 from flask import session, url_for, request, Flask
+from forms import BookForm, AuthorForm
 
 load_dotenv()
 
@@ -47,10 +48,14 @@ class PublishingHouseTestCase(unittest.TestCase):
 
         self.coordinator_token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjFoRHk4TDczSUFfVDZuVEw3Y08zeSJ9.eyJpc3MiOiJodHRwczovL2tvcnpoeWstYXBwLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2MTNhNjU0ZTYzNzYyYzAwNzBiZmU2MTgiLCJhdWQiOlsiYXBwIiwiaHR0cHM6Ly9rb3J6aHlrLWFwcC51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjMyNzU5MTUxLCJleHAiOjE2MzI5MjkxNTEsImF6cCI6ImEwbXpMUFgwUFo2S1BXVkdvMDU4RkZDVVVOd1NocUlOIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInBlcm1pc3Npb25zIjpbImdldDphdXRob3JzIiwiZ2V0OmJvb2tzIiwicGF0Y2g6YXV0aG9yIiwicGF0Y2g6Ym9vayIsInBvc3Q6YXV0aG9yIiwicG9zdDpib29rIl19.jnC9h7wB8H4bU3w5oMaGweLeQVhoaV9MhNHiKTaaPPnCIfv4ln1lOIaeJuqnOTN6G2uQreJjxsOncmsZQ69D8sBHYS8u15emx3MKBkjVS6EA5lI1QiS312zaq_UNaWvy7f0XpgX9asTQ-WZQdOiU9ehyf19PHZ80hMwZgWOawaubJuqSizWrqSKmIGTdHYJ-pNlCfA8B9kWCzgnguq5NRoMkUeSpJ8_WwPsbVAvJCWRTgqIgkxqybD-PbaTuOz2_zP9XS6OCu9OU1w6Ez32pBNnp1THdpdqnj19LjU-t_80jThEExYXyW-48qz3EXn-r-RuFVT6Q2lbsG1yj51rbQw"
 
-
+        self.headers = {
+            
+            'ContentType': "application/json",
+            'dataType': 'json'
+        }
 
         self.new_book = {
-            "title":"TESTING TITLE",
+            "title": "TESTING TITLE",
             "author": "TESTING AUTHOR",
             "year": 3000
         }
@@ -109,6 +114,7 @@ class PublishingHouseTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Authorization", response.headers['Access-Control-Allow-Headers'])
 
+
     def test_books_reader(self):
         """getting all the books for reader with no links to details"""
         response = self.client().get('/books', headers={'Authorization': 'Bearer {}'.format(self.reader_token)})
@@ -132,6 +138,118 @@ class PublishingHouseTestCase(unittest.TestCase):
         self.assertNotIn(html, data)
         self.assertNotIn(str(list), data)
         self.assertIsNone(response.headers.get('Authorization'))
+
+
+    def test_book_by_id_reader(self):
+        """ get book by id for a reader"""
+        response = self.client().get('/books/1', headers={'Authorization': 'Bearer {}'.format(self.reader_token)})
+        data = response.get_data(as_text=True)
+
+        error = '{"code":"unauthorized","description":"Permission not found."}'
+
+        self.assertEqual(response.status_code, 401)
+        self.assertIn(error, data)
+
+
+    def test_book_by_id_coordinator(self):
+        """ get book by id for a coordinator"""
+        response = self.client().get('/books/1', headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+
+        book = Book.query.get(1)
+        book = book.format()
+
+        title = f'<p>Title: {book["title"]}</p>'
+        author = f'<p>Author: {book["author"]}</p>'
+        year = f'<p>Year: {book["year"]}</p>'
+
+        data = response.get_data(as_text=True)
+     
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(title, data)
+        self.assertIn(author, data)
+        self.assertIn(year, data)
+
+    
+    def test_edit_book_coordinator(self):
+        """ edit book by id for coordinator"""
+        # check get method for the route
+        response = self.client().get('/books/1/edit', headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        data = response.get_data(as_text=True)
+        
+        # res = self.client().post('/books/1/edit', json={"id":1, "title":"New"}, follow_redirects=True, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+
+
+        res = self.client().post('/books/1/edit', json=self.new_book, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)}, self.headers)
+        data = json.loads(res.data)
+        print("data", data)
+        # print("JSON",  res.get_json())
+        # # title = request.form.get("title")
+        # # print("title", title)
+
+        # with self.client() as c:
+        #     rv = c.post('/books/1/edit', json={"id":1, "title":"New"}, content_type='application/json', follow_redirects=True, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token), "Content-Type": "application/json"} )
+        #     json_data = rv.get_json()
+        #     print("JSON DATA", json_data)
+        #     print("headers", rv.headers["Content-Type"])
+
+        response = self.client().post("/books/1/edit", data=json.dumps(self.new_book), headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)},content_type='application/json', follow_redirects=True)
+        
+        # json_response = json.loads(response.get_data())
+        print(response.headers["Content-Type"])
+
+        book = Book.query.get(1)
+        book = book.format()
+        print("book", book)
+
+        # form = BookForm(request.form, meta={'csrf': False})
+
+        year_update = {"year" : 2222}
+        book.update(year_update)
+        print("book year change", book)
+        # BookForm(request.form).populate_obj(book.update(year_update))
+
+        book.update()
+
+        check_update = Book.query.get(1)
+        print("check", check_update.format())
+       
+        # new_book = self.new_book
+        # # print("new_book", new_book)
+        # form = BookForm(request.form, meta={'csrf': False})
+        # form.populate_obj(new_book)
+
+        # author = Author.query.get(1)
+        # author_name = author["name"]
+
+        # print("author name", author_name)
+
+        # book.authors.append(author_name)
+
+        # check post method for the route
+        res_data = res.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res.status_code, 200)
+    
+    def test_edit_book_nonexistent_coordinator(self):
+        """ edit book by non existing id for coordinator"""
+        response = self.client().get('/books/100/edit', headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        data = response.get_data(as_text=True)
+        html = "You are trying to access a book with non existent id"
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(html, data)
+
+
+    def test_edit_book_reader(self):
+        """ edit book by id for a reader"""
+        response = self.client().get('/books/1/edit', headers={'Authorization': 'Bearer {}'.format(self.reader_token)})
+
+        data = response.get_data(as_text=True)
+        error = '{"code":"unauthorized","description":"Permission not found."}'
+
+        self.assertEqual(response.status_code, 401)
+        self.assertIn(error, data)
 
 
 #------------------------------------------------------------------------------------------------
