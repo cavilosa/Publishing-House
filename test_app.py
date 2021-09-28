@@ -1,4 +1,5 @@
 from flask_testing import TestCase
+from flask_wtf import FlaskForm
 import os
 from dotenv import load_dotenv
 import unittest
@@ -8,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from models import Author, Book, setup_db
 from app import create_app
 import pytest
-from flask import session, url_for, request, Flask
+from flask import session, url_for, request, Flask, render_template
 from forms import BookForm, AuthorForm
 
 load_dotenv()
@@ -48,11 +49,6 @@ class PublishingHouseTestCase(unittest.TestCase):
 
         self.coordinator_token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjFoRHk4TDczSUFfVDZuVEw3Y08zeSJ9.eyJpc3MiOiJodHRwczovL2tvcnpoeWstYXBwLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2MTNhNjU0ZTYzNzYyYzAwNzBiZmU2MTgiLCJhdWQiOlsiYXBwIiwiaHR0cHM6Ly9rb3J6aHlrLWFwcC51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjMyNzU5MTUxLCJleHAiOjE2MzI5MjkxNTEsImF6cCI6ImEwbXpMUFgwUFo2S1BXVkdvMDU4RkZDVVVOd1NocUlOIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInBlcm1pc3Npb25zIjpbImdldDphdXRob3JzIiwiZ2V0OmJvb2tzIiwicGF0Y2g6YXV0aG9yIiwicGF0Y2g6Ym9vayIsInBvc3Q6YXV0aG9yIiwicG9zdDpib29rIl19.jnC9h7wB8H4bU3w5oMaGweLeQVhoaV9MhNHiKTaaPPnCIfv4ln1lOIaeJuqnOTN6G2uQreJjxsOncmsZQ69D8sBHYS8u15emx3MKBkjVS6EA5lI1QiS312zaq_UNaWvy7f0XpgX9asTQ-WZQdOiU9ehyf19PHZ80hMwZgWOawaubJuqSizWrqSKmIGTdHYJ-pNlCfA8B9kWCzgnguq5NRoMkUeSpJ8_WwPsbVAvJCWRTgqIgkxqybD-PbaTuOz2_zP9XS6OCu9OU1w6Ez32pBNnp1THdpdqnj19LjU-t_80jThEExYXyW-48qz3EXn-r-RuFVT6Q2lbsG1yj51rbQw"
 
-        self.headers = {
-            
-            'ContentType': "application/json",
-            'dataType': 'json'
-        }
 
         self.new_book = {
             "title": "TESTING TITLE",
@@ -65,11 +61,6 @@ class PublishingHouseTestCase(unittest.TestCase):
             "yob": "TESTING YOB"
         }
 
-        # @self.app.route("/")
-        # def hello():
-        #     return render_template("layouts/main.html")
-
-           # binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
             self.db.init_app(self.app)
@@ -169,68 +160,68 @@ class PublishingHouseTestCase(unittest.TestCase):
         self.assertIn(author, data)
         self.assertIn(year, data)
 
+
+    def test_create_book(self):
+        """ create a book """
+        response = self.client().post('/books/create', headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+
+        book = Book(title=self.new_book["title"], author=self.new_book["author"], year=self.new_book["year"])
+        book.insert()
+        id = book.format()["id"]
+
+        check_book = Book.query.get(f'{id}')
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(book)
+        self.assertIsNotNone(check_book)
+
+
+    def test_create_book_fail(self):
+        """ create a book fails no authorization headders"""
+        response = self.client().post('/books/create')
+
+        # book = Book(title=self.new_book["title"], author=self.new_book["author"], year=self.new_book["year"])
+        # book.insert()
+        # id = book.format()["id"]
+
+        # check_book = Book.query.get(f'{id}')
+        
+        self.assertEqual(response.status_code, 401)
+        # self.assertFalse(book)
+        # self.assertIsNone(check_book)
+
     
-    def test_edit_book_coordinator(self):
+    def test_edit_book_coordinator_get(self):
         """ edit book by id for coordinator"""
         # check get method for the route
         response = self.client().get('/books/1/edit', headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
         data = response.get_data(as_text=True)
-        
-        # res = self.client().post('/books/1/edit', json={"id":1, "title":"New"}, follow_redirects=True, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
-
-
-        res = self.client().post('/books/1/edit', json=self.new_book, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)}, self.headers)
-        data = json.loads(res.data)
-        print("data", data)
-        # print("JSON",  res.get_json())
-        # # title = request.form.get("title")
-        # # print("title", title)
-
-        # with self.client() as c:
-        #     rv = c.post('/books/1/edit', json={"id":1, "title":"New"}, content_type='application/json', follow_redirects=True, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token), "Content-Type": "application/json"} )
-        #     json_data = rv.get_json()
-        #     print("JSON DATA", json_data)
-        #     print("headers", rv.headers["Content-Type"])
-
-        response = self.client().post("/books/1/edit", data=json.dumps(self.new_book), headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)},content_type='application/json', follow_redirects=True)
-        
-        # json_response = json.loads(response.get_data())
-        print(response.headers["Content-Type"])
-
-        book = Book.query.get(1)
-        book = book.format()
-        print("book", book)
-
-        # form = BookForm(request.form, meta={'csrf': False})
-
-        year_update = {"year" : 2222}
-        book.update(year_update)
-        print("book year change", book)
-        # BookForm(request.form).populate_obj(book.update(year_update))
-
-        book.update()
-
-        check_update = Book.query.get(1)
-        print("check", check_update.format())
-       
-        # new_book = self.new_book
-        # # print("new_book", new_book)
-        # form = BookForm(request.form, meta={'csrf': False})
-        # form.populate_obj(new_book)
-
-        # author = Author.query.get(1)
-        # author_name = author["name"]
-
-        # print("author name", author_name)
-
-        # book.authors.append(author_name)
-
-        # check post method for the route
-        res_data = res.get_data(as_text=True)
+        book = Book.query.get(1).format()
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(res.status_code, 200)
+        self.assertIsNotNone(book)
+        self.assertTrue(data)
+
+
+    def test_edit_book_coordinator_post(self):
+        """ edit book by id for coordinator"""
+        # check post method for the route
+        res = self.client().post('/books/1/edit', follow_redirects=True, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        data = res.get_data(as_text=True)
+        # print("data post", data)
+        book = Book.query.get(1).format()
+        title = f'<p>Title: {book["title"]}</p>'
+        author = f'<p>Author: {book["author"]}</p>'
+        year = f'<p>Year: {book["year"]}</p>'
     
+        self.assertEqual(res.status_code, 200)
+        self.assertIsNotNone(book)
+        self.assertTrue(data)
+        self.assertIn(title, data)
+        self.assertIn(author, data)
+        self.assertIn(year, data)
+    
+
     def test_edit_book_nonexistent_coordinator(self):
         """ edit book by non existing id for coordinator"""
         response = self.client().get('/books/100/edit', headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
@@ -294,23 +285,6 @@ class PublishingHouseTestCase(unittest.TestCase):
         self.assertIsNone(response.headers.get('Authorization'))
 
 
-    
-
-
-
-#     # POST /manager
-# def test_post_manager(self):
-#     data = {
-#         "name": "manager-2",
-#         "phone": "1231231230",
-#         "website": "www.facebook.com"
-#     }
-#     res = self.client().post(
-#         '/manager', json=data, headers=ADMIN_AUTH)
-#     data = json.loads(res.data)
-#     self.assertEqual(res.status_code, 200)
-#     self.assertEqual(data['success'], True)
-#     self.assertEqual(data['manager']['name'], "manager-2")
 
     def tearDown(self):
         pass
