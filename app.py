@@ -180,6 +180,9 @@ def create_app(test_config=None):
     @cross_origin()
     @requires_auth("patch:book")
     def edit_book(payload, id):
+        
+
+# to load initial page with form
         book = Book.query.get(id)
         if book is None:
             flash("You are trying to access a book with non existent id")
@@ -187,7 +190,14 @@ def create_app(test_config=None):
         permissions = payload["permissions"]
         form = BookForm(obj=book)
 
+# to get updated info from the form
         if request.method == "POST":
+            if request.content_type == 'application/json':
+            #     print("Content type json app.py")
+                return jsonify({
+                    "success": True
+                })
+                print("request headers app.py content type", request.content_type )
             form = BookForm(request.form, meta={'csrf': False})
             book = Book.query.get(id)
             if book is None:
@@ -206,6 +216,26 @@ def create_app(test_config=None):
             return render_template("pages/book.html", book=book, permissions=permissions)
 
         return render_template("forms/edit_book.html", form=form, permissions=permissions)
+
+
+    @app.route("/web_books/<id>/edit", methods=["POST", "GET"])
+    @cross_origin()
+    @requires_auth("patch:book")
+    def web_edit_book(payload, id):
+        body = request.get_json()
+        book = Book.query.filter_by(title=body.get("title"), author=body.get("author"), year=body.get("year")).first().format()
+        
+        try:
+            book.update()
+            print("Successfully updated the book")
+        except:
+            print("Something went wrong and the book was not updated.")
+            abort(400)
+
+        return jsonify({
+            "success": True,
+            "book": book
+        })
 
 
 # Create new book

@@ -195,12 +195,31 @@ class PublishingHouseTestCase(unittest.TestCase):
         """ edit book by id for coordinator"""
         # check get method for the route
         response = self.client().get('/books/1/edit', headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+
         data = response.get_data(as_text=True)
         book = Book.query.get(1).format()
 
         self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(book)
         self.assertTrue(data)
+
+
+    def test_web_edit_book(self):
+        book = {
+            "id": 1,
+            "title": "TEST", 
+            "author": "Anna",
+            "year": 2000
+        }
+        response = self.client().post('/books/1/edit', json=book, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+
+        data = json.loads(response.data)
+        print("data test", data)
+        # print("headers test json", response.headers)
+
+        # self.assertEqual(response.status_code, 200)
+        # self.assertEqual(data["success"], True)
+        # self.assertIsNotNone(data["book"])
 
 
     def test_edit_book_coordinator_post(self):
