@@ -191,13 +191,7 @@ def create_app(test_config=None):
         form = BookForm(obj=book)
 
 # to get updated info from the form
-        if request.method == "POST":
-            if request.content_type == 'application/json':
-            #     print("Content type json app.py")
-                return jsonify({
-                    "success": True
-                })
-                print("request headers app.py content type", request.content_type )
+        if request.method == "POST":      
             form = BookForm(request.form, meta={'csrf': False})
             book = Book.query.get(id)
             if book is None:
@@ -213,7 +207,24 @@ def create_app(test_config=None):
                     flask("Something went wrong and the book was not updated.")
                     abort(400)
 
+            if request.content_type == 'application/json':
+                # print("edit book json post app.py")
+                body = request.get_json()
+                print("BODY", body)
+                return jsonify({
+                    "success": True, 
+                    "book": book.format()
+                })
+
             return render_template("pages/book.html", book=book, permissions=permissions)
+
+        if request.content_type == 'application/json':
+                print("edit book json get")
+                return jsonify({
+                    "success": True, 
+                    "form": form, 
+                    "permissions": permissions
+                })
 
         return render_template("forms/edit_book.html", form=form, permissions=permissions)
 

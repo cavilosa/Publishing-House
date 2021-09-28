@@ -214,10 +214,15 @@ class PublishingHouseTestCase(unittest.TestCase):
         response = self.client().post('/books/1/edit', json=book, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
 
         data = json.loads(response.data)
-        print("data test", data)
-        # print("headers test json", response.headers)
+        print("test edit json post", data)
+
+        # res = self.client().get('/books/1/edit', json=book, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        # data2 = json.loads(res.data)
+        # print("edit book test get json", data2)
 
         # self.assertEqual(response.status_code, 200)
+        # self.assertEqual(res.status_code, 200)
+
         # self.assertEqual(data["success"], True)
         # self.assertIsNotNone(data["book"])
 
