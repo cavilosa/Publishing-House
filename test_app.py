@@ -128,15 +128,15 @@ class PublishingHouseTestCase(unittest.TestCase):
 
     def test_all_books_notauthorized(self):
         """getting all the books without authorization to fail"""
-        response = self.client().get('/books')
-        data = response.get_data(as_text=True)
-        html = """<li><a href="/books/1">TEST, Anna, 2000</a></li>"""
-        books = Book.query.all()
-        list = [book.format() for book in books]
+
+        response = self.client().get('/books', json={})
+
+        data = json.loads(response.data)
+        print("data", data)
+        error = 'authorization_header_missing'
 
         self.assertEqual(response.status_code, 401)
-        self.assertNotIn(html, data)
-        self.assertNotIn(str(list), data)
+        self.assertIn(error, data["code"])
         self.assertIsNone(response.headers.get('Authorization'))
 
 
