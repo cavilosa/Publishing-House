@@ -149,6 +149,12 @@ def create_app(test_config=None):
             list = [book.format() for book in books]
         except:
             flash("No books were found in the database")
+
+        if request.content_type == 'application/json':
+                return jsonify({
+                    "success": True, 
+                    "books": list
+                })
         
         return render_template("pages/books.html", books=list, permissions=permissions)
 
@@ -243,9 +249,10 @@ def create_app(test_config=None):
 
         if request.method == "POST":
             if request.content_type == 'application/json':
-                    print("json post app")
+                    # print("json post app")
                     body = request.get_json()
-                    print("body", body)
+                    # print("body", body)
+                    book = Book(title=body["title"], author=body["author"], year=body["year"])
                     return jsonify({
                         "success": True,
                         "book": book.format()
@@ -283,9 +290,9 @@ def create_app(test_config=None):
                 return render_template("pages/books.html", books=books, permissions=permissions, authors=authors)
 
         if request.content_type == 'application/json':
-            print("json get app")
-            body = request.get_json()
-            print("body app get create", body)
+            # print("json get app")
+            # body = request.get_json()
+            # print("body app get create", body)
             return jsonify({
                 "success": True,
                 "permissions": permissions

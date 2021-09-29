@@ -97,14 +97,13 @@ class PublishingHouseTestCase(unittest.TestCase):
 
     def test_all_books_coordinator(self):
         """getting all the books for coordinator with links to details"""
-        response = self.client().get('/books', headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
-        data = response.get_data(as_text=True)
-        html = """<li><a href="/books/1">TEST, Anna, 2000</a></li>"""
+        response = self.client().get('/books', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
 
-        self.assertIn(html, data)
+        data = json.loads(response.data)
+        
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Authorization", response.headers['Access-Control-Allow-Headers'])
-
+        self.assertEqual(data["success"], True)
+        self.assertIsNotNone(data["books"])
 
     def test_all_books_reader(self):
         """getting all the books for reader with no links to details"""
@@ -166,28 +165,18 @@ class PublishingHouseTestCase(unittest.TestCase):
         response = self.client().post('/books/create', json=self.new_book, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
 
         data = json.loads(response.data)
+        # print("data, post , rest", data)
 
         res = self.client().get('/books/create', json=self.new_book, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
 
-        data2 = json.loads(response.data)
-        print("data2", data2)
-        permission = "create:book"
+        data2 = json.loads(res.data)
+        # print("data2, get , rest", data2)
+        permission = "post:book"
 
         self.assertEqual(res.status_code, 200)
-        # self.assertTrue(data2["permissions"])
+        self.assertTrue(data2["permissions"])
         self.assertEqual(data["success"], True)
-        # self.assertIn(permission, data2["premissions"])
-
-        # book = Book(title=self.new_book["title"], author=self.new_book["author"], year=self.new_book["year"])
-        # book.insert()
-        # id = book.format()["id"]
-
-        # check_book = Book.query.get(f'{id}')
-        
-        # self.assertEqual(response.status_code, 200)
-        # self.assertTrue(book)
-        # self.assertIsNotNone(check_book)
-
+        self.assertIn(permission, data2["permissions"])
 
     def test_create_book_fail(self):
         """ create a book fails no authorization headders"""
