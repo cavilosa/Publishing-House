@@ -105,6 +105,16 @@ class PublishingHouseTestCase(unittest.TestCase):
         self.assertEqual(data["success"], True)
         self.assertIsNotNone(data["books"])
 
+        res = self.client().get('/books', headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+
+        data = res.get_data(as_text=True)
+        html = """<li><a href="/books/1">TEST, Anna, 2000</a></li>"""
+
+        self.assertIn(html, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Authorization", response.headers['Access-Control-Allow-Headers'])
+
+
     def test_all_books_reader(self):
         """getting all the books for reader with no links to details"""
         response = self.client().get('/books', headers={'Authorization': 'Bearer {}'.format(self.reader_token)})
