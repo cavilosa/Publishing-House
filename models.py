@@ -3,6 +3,7 @@ from dotenv.main import load_dotenv
 from sqlalchemy import Table, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy import MetaData
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.declarative import declarative_base
 # from flask_migrate import Migrate
@@ -17,9 +18,16 @@ database_path = "postgresql://{}:{}@{}/{}".format('cavilosa', password, 'localho
 
 Base = declarative_base()
 
-# app = FLASK(__name__)
-# db = SQLAlchemy(app)
-db = SQLAlchemy()
+convention = {
+    "ix": 'ix_%(column_0_label)s',
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s"
+}
+
+metadata = MetaData(naming_convention=convention)
+db = SQLAlchemy(metadata=metadata)
 
 def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
