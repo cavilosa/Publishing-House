@@ -190,6 +190,7 @@ def create_app(test_config=None):
 
         permissions = payload["permissions"]
         form = BookForm(obj=book)
+        authors = Author.query.all()
 
 # to get updated info from the form
         if request.method == "POST":      
@@ -224,7 +225,7 @@ def create_app(test_config=None):
                     "permissions": permissions
                 })
 
-        return render_template("forms/edit_book.html", form=form, permissions=permissions)
+        return render_template("forms/edit_book.html", form=form, authors=authors, permissions=permissions)
 
 
 # Create new book
@@ -336,6 +337,12 @@ def create_app(test_config=None):
         except:
             flash("The authors list couldn't been retreived.")
             abort(404)
+
+        if request.content_type == 'application/json':
+                return jsonify({
+                    "success": True, 
+                    "authors": authors
+                })
         
         return render_template("pages/authors.html", authors=authors, permissions=permissions)
 
@@ -362,6 +369,14 @@ def create_app(test_config=None):
             flash("There is no such author in the database.")
             abort(404)
 
+        if request.content_type == 'application/json':
+                return jsonify({
+                    "success": True, 
+                    "author": author.format(),
+                    "books": books
+                })
+
+
         return render_template("pages/author.html", author=author, permissions=permissions, books=books)
 
 
@@ -386,7 +401,21 @@ def create_app(test_config=None):
 
                 form.populate_obj(author)
                 author.update()
+
+
+            if request.content_type == 'application/json':
+                return jsonify({
+                    "success": True, 
+                    "author": author.format()
+                })
+
             return render_template("pages/author.html", author=author, permissions=permissions)
+
+        if request.content_type == 'application/json':
+                        return jsonify({
+                            "success": True, 
+                            "permissions": permissions
+                        })
        
         return render_template("forms/edit_author.html", form=form, permissions=permissions)
         
@@ -415,6 +444,14 @@ def create_app(test_config=None):
         except:
             flash("Something went wrong.")
             abort(404)
+
+        if request.content_type == 'application/json':
+            return jsonify({
+                        "success": True,
+                        "permissions": permissions, 
+                        "author": author.format()
+                    })
+            
         
         return render_template("pages/authors.html", authors=authors, permissions=permissions)
 
@@ -447,7 +484,23 @@ def create_app(test_config=None):
                 flash("Couldn't process your request")
                 abort(404)
 
+            if request.content_type == 'application/json':
+                    # print("json post app")
+                    body = request.get_json()
+                    # print("body", body)
+                    book = Book(title=body["title"], author=body["author"], year=body["year"])
+                    return jsonify({
+                        "success": True,
+                        "author": author.format()
+                    })
+
             return render_template("pages/authors.html", authors=authors, permissions=permissions)
+
+        if request.content_type == 'application/json':
+                        return jsonify({
+                            "success": True, 
+                            "permissions": permissions
+                        })
 
         return render_template("forms/create_author.html", form=form, permissions=permissions)
 

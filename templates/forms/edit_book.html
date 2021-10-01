@@ -10,7 +10,11 @@
     </div>
     <div class="form-group m-5">
         {{form.author.label()}}
-        {{form.author(class="form-control")}}
+        <select {{form.author(class="form-control")}} name=authors id=authors>
+            {% for author in authors %}
+            <option value= "{{author.name}}" SELECTED>{{author.name}}</option>"
+            {% endfor %}
+        </select>
     </div >
     <div class="form-group m-5">
         {{form.year.label()}}
