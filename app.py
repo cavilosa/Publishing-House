@@ -300,27 +300,31 @@ def create_app(test_config=None):
     def delete_book(payload, id):
         try: 
             book = Book.query.get(id)
+            if book is None:
+                flash(f"The is no book with id {id}.")
+                abort(404)
             permissions = payload["permissions"]
-
             book.delete()
-            flash("The book was seccusfully deleted.")
-            try:
-                books = Book.query.order_by(Book.id).all()
-            except:
-                flash("Couldn't get the books from the database.")
-                abort(500)
-
-            if request.content_type == 'application/json':
-                return jsonify({
-                    "success": True,
-                    "permissions": permissions, 
-                    "book": book.format()
-                })
-            
-            return render_template("pages/books.html", books=books, permissions=permissions)
+            flash("The book was deleted successfully.")
         except:
-            flash(f"The is no book with id {id}.")
+            flash("Couldn't delete the book")
+            abort(422)
+
+        try:
+            books = Book.query.order_by(Book.id).all()
+        except:
+            flash("Something went wrong.")
             abort(404)
+
+        if request.content_type == 'application/json':
+            return jsonify({
+                        "success": True,
+                        "permissions": permissions, 
+                        "book": book.format(),
+                        "books": books
+                    })
+
+        return render_template("pages/books.html", books=books, permissions=permissions)
 
 #------------------------------------------------------------------------------------------
 # Authors
@@ -334,6 +338,7 @@ def create_app(test_config=None):
         permissions = payload["permissions"]
         try:
             authors = Author.query.order_by(Author.id).all()
+            list = [author.format() for author in authors]
         except:
             flash("The authors list couldn't been retreived.")
             abort(404)
@@ -341,7 +346,7 @@ def create_app(test_config=None):
         if request.content_type == 'application/json':
                 return jsonify({
                     "success": True, 
-                    "authors": authors
+                    "authors": list
                 })
         
         return render_template("pages/authors.html", authors=authors, permissions=permissions)
@@ -488,7 +493,7 @@ def create_app(test_config=None):
                     # print("json post app")
                     body = request.get_json()
                     # print("body", body)
-                    book = Book(title=body["title"], author=body["author"], year=body["year"])
+                    author = Author(name=body["name"], yob=body["yob"])
                     return jsonify({
                         "success": True,
                         "author": author.format()
