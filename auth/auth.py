@@ -101,6 +101,7 @@ def verify_decode_jwt(token):
             return payload
 
         except jwt.ExpiredSignatureError:
+            session.clear()
             raise AuthError({
                 'code': 'token_expired',
                 'description': 'Token expired.'

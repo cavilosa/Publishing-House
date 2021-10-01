@@ -61,18 +61,6 @@ def create_app(test_config=None):
 # -------------------------------------------------------------------------------------------
 #
 
-    @app.route("/test", methods=["GET", "POST"])
-    @cross_origin()
-    def testing():
-        books = Book.query.all()
-
-        list = [book.format() for book in books]
-        # return jsonify({
-        #     "books": list
-        # })
-        return render_template("pages/books.html", permissions="post:book", list=list)
-
-
     @app.route("/", methods=["GET"])
     def index():
 
@@ -177,6 +165,12 @@ def create_app(test_config=None):
         except:
             flash(f"The book with id {id} doesn't exist.")
             abort(422)
+
+        if request.content_type == 'application/json':
+                return jsonify({
+                    "success": True, 
+                    "book": book.format()
+                })
 
         return render_template("pages/book.html", book=book, permissions=permissions, author=author)
 
@@ -290,9 +284,6 @@ def create_app(test_config=None):
                 return render_template("pages/books.html", books=books, permissions=permissions, authors=authors)
 
         if request.content_type == 'application/json':
-            # print("json get app")
-            # body = request.get_json()
-            # print("body app get create", body)
             return jsonify({
                 "success": True,
                 "permissions": permissions
@@ -317,6 +308,13 @@ def create_app(test_config=None):
             except:
                 flash("Couldn't get the books from the database.")
                 abort(500)
+
+            if request.content_type == 'application/json':
+                return jsonify({
+                    "success": True,
+                    "permissions": permissions, 
+                    "book": book.format()
+                })
             
             return render_template("pages/books.html", books=books, permissions=permissions)
         except:
