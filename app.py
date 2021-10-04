@@ -18,6 +18,8 @@ from flask import session, abort
 
 load_dotenv()
 
+database_path = os.environ["DATABASE_URL"]
+
 # ----------------------------------------------------------------------------
 # Configuring APP
 # ----------------------------------------------------------------------------
@@ -76,7 +78,7 @@ def create_app(test_config=None):
     @app.route('/login')
     def login():
         return auth0.authorize_redirect(
-            redirect_uri="http://localhost:5000/callback", audience="app")
+            redirect_uri= database_path + "/callback", audience="app")
 
     @app.route('/callback')
     def callback_handling():
@@ -216,7 +218,7 @@ def create_app(test_config=None):
                     book.update()
                     flash("Successfully updated the book")
                 except:
-                    flask("Something went wrong and the book was not updated.")
+                    flash("Something went wrong and the book was not updated.")
                     abort(400)
 
         # for testing purposes returning json data
