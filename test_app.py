@@ -26,7 +26,6 @@ class PublishingHouseTestCase(unittest.TestCase):
         """Seed test database with initial data"""
         book = Book(title="TEST", author="Anna", year=2000)
         author = Author(name="Anna", yob=2017)
-        
 
         self.db.session.add(book)
         self.db.session.add(author)
@@ -42,14 +41,16 @@ class PublishingHouseTestCase(unittest.TestCase):
         self.client = self.app.test_client
         self.password = os.environ["PASSWORD"]
         self.database_name = "test_publishing_house"
-        self.database_path = "postgresql://{}:{}@{}/{}".format('cavilosa', self.password, 'localhost:5432', self.database_name)
+        self.database_path = "postgresql://{}:{}@{}/{}".format('cavilosa',
+                                                               self.password,
+                                                               'localhost:5432',
+                                                               self.database_name)
         setup_db(self.app, self.database_path)
 
         self.db = SQLAlchemy()
         self.db.init_app(self.app)
         with self.app.app_context():
-            
-            
+
             # self.db.session.close()
             # self.db.session.remove()
             # self.db.session.commit()
@@ -69,13 +70,13 @@ class PublishingHouseTestCase(unittest.TestCase):
             "author": "TESTING AUTHOR",
             "year": 3000
         }
-        
+
         self.new_author = {
-            "name": "TESTING NAME", 
+            "name": "TESTING NAME",
             "yob": "TESTING YOB"
         }
 
-        
+
 
     def test_database(self):
         """ testing the db """
@@ -97,9 +98,9 @@ class PublishingHouseTestCase(unittest.TestCase):
         self.assertFalse(str(list) in response.get_data(as_text=True))
         self.assertEqual(response.status_code, 200)
 
-#------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Tests for the Books part
-# -----------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 
 # /books
     def test_all_books_coordinator(self):
@@ -108,7 +109,7 @@ class PublishingHouseTestCase(unittest.TestCase):
         response = self.client().get('/books', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
 
         data = json.loads(response.data)
-        
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["success"], True)
         self.assertIsNotNone(data["books"])
@@ -183,11 +184,11 @@ class PublishingHouseTestCase(unittest.TestCase):
         data = response.get_data(as_text=True)
 
         res = self.client().get('/books/1', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
-        
+
         book = Book.query.get(1).format()
 
         data_json = json.loads(res.data)
-     
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data_json["success"], True)
@@ -222,10 +223,10 @@ class PublishingHouseTestCase(unittest.TestCase):
 
         data = json.loads(response.data)
         error = 'authorization_header_missing'
-        
+
         self.assertEqual(response.status_code, 401)
         self.assertIn(error, data["code"])
-        
+
 
     def test_create_book_reader(self):
         """a reader tries to access create book route without permissions"""
@@ -239,7 +240,7 @@ class PublishingHouseTestCase(unittest.TestCase):
         self.assertEqual(data["description"], description)
 
 
-# /books/<id>/edit  
+# /books/<id>/edit
     def test_edit_book_coordinator_get(self):
         """ edit book by id for coordinator"""
         # check get method for the route
@@ -250,7 +251,7 @@ class PublishingHouseTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["success"], True)
 
-    
+
     def test_edit_book_unauthorized(self):
         """edititin the books/id/edit without auth"""
         response = self.client().get('/books/1/edit', json=self.new_book)
@@ -267,7 +268,7 @@ class PublishingHouseTestCase(unittest.TestCase):
         response = self.client().post('/books/1/edit', json={"id": 1}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
 
         data = json.loads(response.data)
-        
+
         res = self.client().get('/books/1/edit', json={"id": 1}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
         data2 = json.loads(res.data)
         permission = "patch:book"
@@ -304,7 +305,7 @@ class PublishingHouseTestCase(unittest.TestCase):
 # # /books/<id>/delete
 #     def test_delete_book(self):
 #         """ deleting a book with editor permissions"""
-#         response = self.client().get('/books/1/delete', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+#         response = self.client().get('/books/1/delete', json={}, headers={'Authorization': 'Bearer {}'.format(self.editor_token)})
 
 #         data = json.loads(response.data)
 #         # print("data", data)
@@ -313,7 +314,6 @@ class PublishingHouseTestCase(unittest.TestCase):
 #         self.assertEqual(response.status_code, 200)
 #         self.assertEqual(data["success"], True)
 #         self.assertIn(permission, data["permissions"])
-#         self.assertEqual(data["book"], self.new_book)
 
 
     def test_delete_book_fail(self):
@@ -329,12 +329,9 @@ class PublishingHouseTestCase(unittest.TestCase):
         # self.assertIn(permission, data["permissions"])
         # self.assertEqual(data["book"], self.new_book)
 
-
-
-
-#------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Tests for the Authors part
-# -----------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 # /authors
     def test_all_books_coordinator(self):
         """getting all the authors for coordinator with links to details
@@ -342,7 +339,7 @@ class PublishingHouseTestCase(unittest.TestCase):
         response = self.client().get('/authors', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
 
         data = json.loads(response.data)
-        
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["success"], True)
         self.assertIsNotNone(data["authors"])
@@ -405,14 +402,14 @@ class PublishingHouseTestCase(unittest.TestCase):
 
     def test_author_by_id_coordinator(self):
         """ get author by id for a coordinator"""
-       
+
         res = self.client().get('/authors/1', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
-        
+
         author = Author.query.get(1)
-        formated_author = author.format() 
+        formated_author = author.format()
 
         data_json = json.loads(res.data)
-     
+
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data_json["success"], True)
         self.assertEqual(data_json["author"], formated_author)
@@ -443,10 +440,10 @@ class PublishingHouseTestCase(unittest.TestCase):
 
         data = json.loads(response.data)
         error = 'authorization_header_missing'
-        
+
         self.assertEqual(response.status_code, 401)
         self.assertIn(error, data["code"])
-        
+
 
     def test_create_author_reader(self):
         """a reader tries to access create author route without permissions"""
@@ -460,14 +457,14 @@ class PublishingHouseTestCase(unittest.TestCase):
         self.assertEqual(data["description"], description)
 
 
-# /authors/<id>/edit  
+# /authors/<id>/edit
     def test_edit_author_coordinator_get(self):
         """ edit author by id for coordinator"""
         # check get method for the route
         response = self.client().get('/authors/1/edit', json=self.new_author, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
 
         data = json.loads(response.data)
-        
+
         # check post method
         res = self.client().post('/authors/1/edit', json=self.new_author, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
 
@@ -482,7 +479,7 @@ class PublishingHouseTestCase(unittest.TestCase):
         self.assertIn("patch:author", data["permissions"])
         self.assertEqual(author, data_json["author"])
 
-    
+
     def test_edit_author_unauthorized(self):
         """edititin the authors/id/edit without auth"""
         response = self.client().get('/authors/1/edit', json=self.new_author)
@@ -500,8 +497,8 @@ class PublishingHouseTestCase(unittest.TestCase):
 
         data = json.loads(response.data)
         author = Author.query.get(1).format()
-        
-        # checking get method with 
+
+        # checking get method with
         res = self.client().get('/authors/1/edit', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
 
         data2 = json.loads(res.data)
@@ -537,19 +534,18 @@ class PublishingHouseTestCase(unittest.TestCase):
         self.assertIn(error, data)
 
 
-# # /books/<id>/delete
-#     def test_delete_book(self):
-#         """ deleting a book with editor permissions"""
-#         response = self.client().get('/books/1/delete', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+# # /authors/<id>/delete
+#     def test_delete_author(self):
+#         """ deleting author with editor permissions"""
+#         response = self.client().get('/authors/1/delete', json={}, headers={'Authorization': 'Bearer {}'.format(self.editor_token)})
 
 #         data = json.loads(response.data)
 #         # print("data", data)
-#         permission = "delete:book"
+#         permission = "delete:author"
 
 #         self.assertEqual(response.status_code, 200)
 #         self.assertEqual(data["success"], True)
 #         self.assertIn(permission, data["permissions"])
-#         self.assertEqual(data["book"], self.new_book)
 
 
     def test_authors_editor(self):
@@ -605,7 +601,7 @@ class PublishingHouseTestCase(unittest.TestCase):
         # self.db.session.remove()
         # self.db.drop_all()
         pass
-       
+
 
 
 if __name__ == '__main__':

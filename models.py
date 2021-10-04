@@ -13,8 +13,10 @@ load_dotenv()
 
 password = os.environ["PASSWORD"]
 # password = os.environ.get("PASSWORD")
-database_name="publishing_house"
-database_path = "postgresql://{}:{}@{}/{}".format('cavilosa', password, 'localhost:5432', database_name)
+database_name = "publishing_house"
+database_path = "postgresql://{}:{}@{}/{}".format('cavilosa', password,
+                                                  'localhost:5432',
+                                                  database_name)
 
 Base = declarative_base()
 
@@ -29,6 +31,7 @@ convention = {
 metadata = MetaData(naming_convention=convention)
 db = SQLAlchemy(metadata=metadata)
 
+
 def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -36,10 +39,15 @@ def setup_db(app, database_path=database_path):
     db.init_app(app)
     db.create_all()
 
-authors_books = db.Table("authors_books", 
-    db.Column("book_id", db.Integer, db.ForeignKey("books.id"), primary_key=True), 
-    db.Column("author_id", db.Integer, db.ForeignKey("authors.id"), primary_key=True)
-)
+authors_books = db.Table("authors_books",
+                         db.Column("book_id", db.Integer,
+                                   db.ForeignKey("books.id"),
+                                   primary_key=True),
+                         db.Column("author_id", db.Integer,
+                                   db.ForeignKey("authors.id"),
+                                   primary_key=True)
+                         )
+
 
 class Book(db.Model):
     __tablename__ = "books"
@@ -47,15 +55,11 @@ class Book(db.Model):
     title = db.Column(db.String(), nullable=False)
     author = db.Column(db.String(), nullable=False)
     year = db.Column(db.Integer, nullable=False)
-    
-    # authors = db.relationship("Author", secondary=authors_books,
-    #     backref=db.backref("books", lazy="dynamic", cascade="save-update, merge, delete"))
 
     def __init__(self, title, author, year):
         self.title = title,
         self.author = author,
         self.year = year
-
 
     def insert(self):
         try:
@@ -65,7 +69,6 @@ class Book(db.Model):
             db.session.rollback()
             print(sys.exc_info())
 
-
     def delete(self):
         try:
             db.session.delete(self)
@@ -73,7 +76,6 @@ class Book(db.Model):
         except:
             db.session.rollback()
             print(sys.exc_info())
-        
 
     def update(self):
         try:
@@ -82,13 +84,12 @@ class Book(db.Model):
             db.session.rollback()
             print(sys.exc_info())
 
-    
     def format(self):
         return {
             "id": self.id,
-            "title":self.title,
-            "author": self.author, 
-            "year":self.year
+            "title": self.title,
+            "author": self.author,
+            "year": self.year
         }
 
     def __repr__(self):
@@ -100,8 +101,10 @@ class Author(db.Model):
     id = Column(db.Integer, primary_key=True)
     name = Column(db.String, nullable=False)
     yob = Column(db.Integer, nullable=False)
-    books = relationship("Book", secondary=authors_books, 
-        backref=db.backref("authors", lazy='dynamic', cascade="save-update, merge, delete"))
+    books = relationship("Book", secondary=authors_books,
+                         backref=db.backref("authors", lazy='dynamic',
+                                            cascade="save-update, merge, \
+                                                    delete"))
 
     def __init__(self, name, yob):
         self.name = name
@@ -115,7 +118,6 @@ class Author(db.Model):
             db.session.rollback()
             print(sys.exc_info())
 
-
     def delete(self):
         try:
             db.session.delete(self)
@@ -123,7 +125,6 @@ class Author(db.Model):
         except:
             db.session.rollback()
             print(sys.exc_info())
-        
 
     def update(self):
         try:
@@ -132,16 +133,13 @@ class Author(db.Model):
             db.session.rollback()
             print(sys.exc_info())
 
-    
     def format(self):
         return {
             "id": self.id,
-            "name":self.name,
+            "name": self.name,
             "year_of_birth": self.yob
         }
 
     def __repr__(self):
         # return json.dumps(self.short())
         return f"<{self.id}, {self.name}>"
-
-
