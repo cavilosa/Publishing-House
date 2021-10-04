@@ -29,6 +29,11 @@
     
     {% endif %}
 
+    {% if no_role %}
+        <h4>You haven't been assigned a role yet. Contact the administator for permissions.</h4>
+        <div><a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a></div>
+    {% endif %}
+
 
     {% if permissions %}
     <container>

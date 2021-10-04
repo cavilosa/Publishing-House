@@ -52,7 +52,6 @@ def create_app(test_config=None):
     def after_request(response):
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
         response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
-        # print ("HEADERS", request.headers)
         session.pop('_flashes', None)
         return response
 
@@ -108,11 +107,7 @@ def create_app(test_config=None):
 
         else:
             if permissions == []:
-                flash("You haven't been assigned a role yet. Contact the administator for permissions.")
-                # session.clear()
-                # return render_template("layouts/main.html")
-            #     session["token"] = "unauthorized"
-                # return redirect(url_for('log_out'))
+                return render_template('layouts/main.html', no_role=True)
             return render_template('layouts/main.html')
        
 # Logout 
