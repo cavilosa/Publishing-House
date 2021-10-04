@@ -317,7 +317,7 @@ def create_app(test_config=None):
             if book is None:
                 return jsonify({
                     "success": False
-            })
+                })
 
         book = Book.query.get(id)
         if book is None:
@@ -457,7 +457,7 @@ def create_app(test_config=None):
             if author is None:
                 return jsonify({
                     "success": False
-            })
+                })
 
         author = Author.query.get(id)
         if author is None:
