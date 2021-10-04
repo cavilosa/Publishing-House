@@ -52,15 +52,9 @@ class PublishingHouseTestCase(unittest.TestCase):
             "yob": "TESTING YOB"
         }
         
-        self.db = SQLAlchemy()
-        self.db.init_app(self.app)
         with self.app.app_context():
-            # self.db.session.rollback()
-            self.db.drop_all()
-            self.db.session.remove()
-            self.db.session.commit()
-            self.db.session.close()
-            self.db.drop_all()
+            self.db = SQLAlchemy()
+            self.db.init_app(self.app)
             self.db.create_all()
             # self.insert_data()
 
@@ -75,29 +69,11 @@ class PublishingHouseTestCase(unittest.TestCase):
         self.assertEqual(isinstance(authors, list), True)
         self.assertEqual(isinstance(authors[0], Author), True)
 
-
-
     def tearDown(self):
-
-        # self.app = Flask(__name__)
-        # self.db.init_app(self.app)
-        # with self.app.app_context():
-        books = Book.query.all()
-        print("tear", len(books))
-        #     # self.db.session.remove()
-        #     # self.db.session.commit()
-        #     # self.db.session.close()
-        #     self.db.session.rollback()
-        #     self.db.drop_all()
-        #     # self.app.app_context.pop()
-        #     self.db.session.remove()
-        #     self.db.session.commit()
-        #     self.db.session.close()
-        #     print("tear after", len(books))
-        with self.app.app_context():   
+        with self.app.app_context():
+            books = Book.query.all() 
+            print("tear", len(books)) 
             self.db.session.remove()
-            self.db.session.commit()
-            self.db.session.close()
             self.db.drop_all()
             books = Book.query.all()
             print("tear after", len(books))
