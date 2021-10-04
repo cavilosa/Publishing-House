@@ -311,14 +311,23 @@ def create_app(test_config=None):
     @cross_origin()
     @requires_auth("delete:book")
     def delete_book(payload, id):
-        try:
+
+        if request.content_type == 'application/json':
             book = Book.query.get(id)
             if book is None:
-                flash(f"The is no book with id {id}.")
-                abort(404)
+                return jsonify({
+                    "success": False
+            })
+
+        book = Book.query.get(id)
+        if book is None:
+            flash(f"The is no book with id {id}.")
+            abort(404)
+        try:
             permissions = payload["permissions"]
             book.delete()
             flash("The book was deleted successfully.")
+
         except:
             flash("Couldn't delete the book")
             abort(422)
@@ -331,12 +340,10 @@ def create_app(test_config=None):
 
         if request.content_type == 'application/json':
             return jsonify({
-                        "success": True,
-                        "permissions": permissions,
-                        "book": book.format(),
-                        "books": books
-                    })
-
+                "success": True,
+                "book": book,
+                "permissions": permissions
+            })
         return render_template("pages/books.html", books=books,
                                permissions=permissions)
 
@@ -444,6 +451,13 @@ def create_app(test_config=None):
     @cross_origin()
     @requires_auth("delete:author")
     def delete_author(payload, id):
+
+        if request.content_type == 'application/json':
+            author = Author.query.get(id)
+            if author is None:
+                return jsonify({
+                    "success": False
+            })
 
         author = Author.query.get(id)
         if author is None:

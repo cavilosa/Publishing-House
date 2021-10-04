@@ -321,13 +321,9 @@ class PublishingHouseTestCase(unittest.TestCase):
         response = self.client().post('/books/1000/delete', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
 
         data = json.loads(response.data)
-        print("data", data)
-        # permission = "delete:book"
 
-        self.assertEqual(response.status_code, 401)
-        # self.assertEqual(data["success"], True)
-        # self.assertIn(permission, data["permissions"])
-        # self.assertEqual(data["book"], self.new_book)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data["success"], False)
 
 # ----------------------------------------------------------------------------
 # Tests for the Authors part
@@ -546,6 +542,16 @@ class PublishingHouseTestCase(unittest.TestCase):
 #         self.assertEqual(response.status_code, 200)
 #         self.assertEqual(data["success"], True)
 #         self.assertIn(permission, data["permissions"])
+
+
+    def test_delete_author_fail(self):
+        """ deleting an author fails"""
+        response = self.client().post('/authors/1000/delete', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data["success"], False)
 
 
     def test_authors_editor(self):
