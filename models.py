@@ -18,6 +18,7 @@ database_name = "publishing_house"
 #                                                   database_name)
 
 database_path = os.environ["DATABASE_URL"]
+print("DB PATH HEROKU", database_path)
 
 Base = declarative_base()
 
