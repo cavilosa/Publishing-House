@@ -78,7 +78,7 @@ def create_app(test_config=None):
     @app.route('/login')
     def login():
         return auth0.authorize_redirect(
-            redirect_uri= "/callback", audience="app")
+            redirect_uri="http://localhost:5000/callback", audience="app")
 
     @app.route('/callback')
     def callback_handling():
@@ -218,7 +218,7 @@ def create_app(test_config=None):
                     book.update()
                     flash("Successfully updated the book")
                 except:
-                    flash("Something went wrong and the book was not updated.")
+                    flask("Something went wrong and the book was not updated.")
                     abort(400)
 
         # for testing purposes returning json data
