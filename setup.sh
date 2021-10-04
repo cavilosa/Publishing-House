@@ -17,4 +17,4 @@ export AUTH0_LOGOUT_URL="https://localhost:5000"
 # DATABASE
 export PASSWORD="cavilosa1"
 
-export DATABASE_URL='postgres://xzlulntdewogtm:f2b1eac6e03064d0d75a27e8c872ebeeb5863c8917d306d8c7250f21c1e3843c@ec2-54-204-148-110.compute-1.amazonaws.com:5432/d3ps3306cfe4ai'
+export DATABASE_URL='postgresql://xzlulntdewogtm:f2b1eac6e03064d0d75a27e8c872ebeeb5863c8917d306d8c7250f21c1e3843c@ec2-54-204-148-110.compute-1.amazonaws.com:5432/d3ps3306cfe4ai'
