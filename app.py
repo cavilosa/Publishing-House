@@ -65,7 +65,6 @@ def create_app(test_config=None):
     def index():
 
         if session.get("token"):
-            # print("TOKE", session.get("token"))
             return redirect("/callback")
         else:
             login = True
@@ -101,13 +100,19 @@ def create_app(test_config=None):
 
         elif "patch:author" and "post:book" in permissions:
             flash('You were successfully logged in as a coordinator')
-            return render_template('layouts/main.html',permissions=permissions, token=token)
+            return render_template('layouts/main.html', permissions=permissions, token=token)
 
         elif "get:book" and "get:authors" in permissions:
             flash('You were successfully logged in as a reader')
             return render_template('layouts/main.html', permissions=permissions,  token=True) 
 
         else:
+            if permissions == []:
+                flash("You haven't been assigned a role yet. Contact the administator for permissions.")
+                # session.clear()
+                # return render_template("layouts/main.html")
+            #     session["token"] = "unauthorized"
+                # return redirect(url_for('log_out'))
             return render_template('layouts/main.html')
        
 # Logout 
