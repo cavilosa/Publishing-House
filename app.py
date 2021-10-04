@@ -1,5 +1,6 @@
 import os
-from flask import Flask, request, abort, jsonify, redirect, render_template, request, url_for, flash
+from flask import Flask, request, abort, jsonify, redirect, render_template, \
+    request, url_for, flash
 from flask.templating import render_template_string
 from flask_sqlalchemy import SQLAlchemy
 from urllib.parse import urlencode
@@ -17,9 +18,10 @@ from flask import session, abort
 
 load_dotenv()
 
-#---------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Configuring APP
-#----------------------------------------
+# ----------------------------------------------------------------------------
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -29,36 +31,38 @@ def create_app(test_config=None):
     setup_db(app)
     app.secret_key = os.environ["JWT_CODE_SIGNING_SECRET"]
 
- 
 
-#----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # OAUTH initiation
-#---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+
     oauth = OAuth(app)
 
     auth0 = oauth.register(
-    'auth0',
-    client_id=os.environ["AUTH0_ID"],
-    client_secret=os.environ["JWT_CODE_SIGNING_SECRET"],
-    api_base_url='https://' + os.environ["AUTH0_DOMAIN"],
-    access_token_url='https://' + os.environ["AUTH0_DOMAIN"] + '/oauth/token',
-    authorize_url='https://' + os.environ["AUTH0_DOMAIN"] + '/authorize',
-    client_kwargs={
-        'scope': 'openid profile email',
-    },
+        'auth0',
+        client_id=os.environ["AUTH0_ID"],
+        client_secret=os.environ["JWT_CODE_SIGNING_SECRET"],
+        api_base_url='https://' + os.environ["AUTH0_DOMAIN"],
+        access_token_url='https://' + os.environ["AUTH0_DOMAIN"] +
+        '/oauth/token',
+        authorize_url='https://' + os.environ["AUTH0_DOMAIN"] + '/authorize',
+        client_kwargs={
+            'scope': 'openid profile email',
+        }
     )
-    
+
     @app.after_request
     def after_request(response):
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
+        response.headers.add('Access-Control-Allow-Headers',
+                             'Content-Type,Authorization,true')
+        response.headers.add('Access-Control-Allow-Methods',
+                             'GET,PATCH,POST,DELETE,OPTIONS')
         session.pop('_flashes', None)
         return response
 
 
 # Initial route to authorize with auth0
-# -------------------------------------------------------------------------------------------
-#
+# ----------------------------------------------------------------------------
 
     @app.route("/", methods=["GET"])
     def index():
@@ -69,11 +73,10 @@ def create_app(test_config=None):
             login = True
             return render_template("layouts/main.html", login=True)
 
-
     @app.route('/login')
     def login():
-        return auth0.authorize_redirect(redirect_uri="http://localhost:5000/callback", audience="app")
-
+        return auth0.authorize_redirect(
+            redirect_uri="http://localhost:5000/callback", audience="app")
 
     @app.route('/callback')
     def callback_handling():
@@ -92,39 +95,44 @@ def create_app(test_config=None):
             permissions = payload["permissions"]
         except:
             abort(401)
-        
+
         if "delete:author" and "delete:book" in permissions:
             flash('You were successfully logged in as an editor')
-            return render_template('layouts/main.html', permissions=permissions, token=True)
+            return render_template('layouts/main.html',
+                                   permissions=permissions, token=True)
 
         elif "patch:author" and "post:book" in permissions:
             flash('You were successfully logged in as a coordinator')
-            return render_template('layouts/main.html', permissions=permissions, token=token)
+            return render_template('layouts/main.html',
+                                   permissions=permissions, token=token)
 
         elif "get:book" and "get:authors" in permissions:
             flash('You were successfully logged in as a reader')
-            return render_template('layouts/main.html', permissions=permissions,  token=True) 
+            return render_template('layouts/main.html',
+                                   permissions=permissions,  token=True)
 
         else:
             if permissions == []:
                 return render_template('layouts/main.html', no_role=True)
             return render_template('layouts/main.html')
-       
-# Logout 
-#-----------------------------------------------------------------------------------------------
+
+# Logout
+# -----------------------------------------------------------------------------
 #
     @app.route('/logout')
     def log_out():
         # clear the session
         session.clear()
         # redirect user to logout endpoint
-        params = {'returnTo': url_for('index', _external=True), 'client_id': os.environ["AUTH0_ID"]}
-        return redirect('https://korzhyk-app.us.auth0.com' + '/v2/logout?' + urlencode(params))
+        params = {'returnTo': url_for('index', _external=True),
+                  'client_id': os.environ["AUTH0_ID"]}
+        return redirect('https://korzhyk-app.us.auth0.com' + '/v2/logout?' +
+                        urlencode(params))
 
 
-#----------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Books routes: list, create, patch
-#-----------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # List all the books in the db
     @app.route("/books", methods=["GET"])
@@ -140,11 +148,12 @@ def create_app(test_config=None):
 
         if request.content_type == 'application/json':
                 return jsonify({
-                    "success": True, 
+                    "success": True,
                     "books": list
                 })
-        
-        return render_template("pages/books.html", books=list, permissions=permissions)
+
+        return render_template("pages/books.html", books=list,
+                               permissions=permissions)
 
 
 # See a book by it's id
@@ -168,11 +177,12 @@ def create_app(test_config=None):
 
         if request.content_type == 'application/json':
                 return jsonify({
-                    "success": True, 
+                    "success": True,
                     "book": book.format()
                 })
 
-        return render_template("pages/book.html", book=book, permissions=permissions, author=author)
+        return render_template("pages/book.html", book=book,
+                               permissions=permissions, author=author)
 
 
 # Edit a book by it's id
@@ -181,7 +191,7 @@ def create_app(test_config=None):
     @requires_auth("patch:book")
     def edit_book(payload, id):
 
-# to load initial page with form
+        # to load initial page with form
         book = Book.query.get(id)
 
         if book is None:
@@ -193,13 +203,13 @@ def create_app(test_config=None):
         authors = Author.query.all()
 
 # to get updated info from the form
-        if request.method == "POST":      
+        if request.method == "POST":
             form = BookForm(request.form, meta={'csrf': False})
             book = Book.query.get(id)
             if book is None:
                 flash("You are trying to access a book with non existent id")
                 abort(422)
-            
+
             if form.validate_on_submit():
                 form.populate_obj(book)
                 try:
@@ -209,23 +219,25 @@ def create_app(test_config=None):
                     flask("Something went wrong and the book was not updated.")
                     abort(400)
 
-# for testing purposes returning json data
-          # for post methof 
+        # for testing purposes returning json data
+            # for post method
             if request.content_type == 'application/json':
                 return jsonify({
-                    "success": True, 
+                    "success": True,
                     "book": book.format()
                 })
 
-            return render_template("pages/book.html", book=book, permissions=permissions)
+            return render_template("pages/book.html", book=book,
+                                   permissions=permissions)
         # for get method
         if request.content_type == 'application/json':
                 return jsonify({
-                    "success": True, 
+                    "success": True,
                     "permissions": permissions
                 })
 
-        return render_template("forms/edit_book.html", form=form, authors=authors, permissions=permissions)
+        return render_template("forms/edit_book.html", form=form,
+                               authors=authors, permissions=permissions)
 
 
 # Create new book
@@ -244,10 +256,9 @@ def create_app(test_config=None):
 
         if request.method == "POST":
             if request.content_type == 'application/json':
-                    # print("json post app")
                     body = request.get_json()
-                    # print("body", body)
-                    book = Book(title=body["title"], author=body["author"], year=body["year"])
+                    book = Book(title=body["title"], author=body["author"],
+                                year=body["year"])
                     return jsonify({
                         "success": True,
                         "book": book.format()
@@ -257,13 +268,14 @@ def create_app(test_config=None):
 
             name = request.form.get("author")
 
-            author=Author.query.filter_by(name=name).first()
+            author = Author.query.filter_by(name=name).first()
             if author is None:
-                flash("The author wasn't found in the library. Need to create an author first.")
+                flash("""The author wasn't found in the library.
+                      Need to create an author first.""")
                 abort(404)
-        
+
             if form.validate_on_submit():
-                
+
                 form.populate_obj(book)
 
                 book.authors.append(author)
@@ -280,9 +292,10 @@ def create_app(test_config=None):
                 except:
                     flash("Couldn't get books from the database.")
                     abort(404)
-                
 
-                return render_template("pages/books.html", books=books, permissions=permissions, authors=authors)
+                return render_template("pages/books.html", books=books,
+                                       permissions=permissions,
+                                       authors=authors)
 
         if request.content_type == 'application/json':
             return jsonify({
@@ -290,15 +303,15 @@ def create_app(test_config=None):
                 "permissions": permissions
             })
 
-        return render_template("forms/create_book.html", form=form, authors=authors, permissions=permissions)
-
+        return render_template("forms/create_book.html", form=form,
+                               authors=authors, permissions=permissions)
 
     # Delete book by it's id
     @app.route("/books/<id>/delete", methods=["GET", "POST"])
     @cross_origin()
     @requires_auth("delete:book")
     def delete_book(payload, id):
-        try: 
+        try:
             book = Book.query.get(id)
             if book is None:
                 flash(f"The is no book with id {id}.")
@@ -319,16 +332,17 @@ def create_app(test_config=None):
         if request.content_type == 'application/json':
             return jsonify({
                         "success": True,
-                        "permissions": permissions, 
+                        "permissions": permissions,
                         "book": book.format(),
                         "books": books
                     })
 
-        return render_template("pages/books.html", books=books, permissions=permissions)
+        return render_template("pages/books.html", books=books,
+                               permissions=permissions)
 
-#------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Authors
-#------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
     @app.route("/authors", methods=["GET"])
     @cross_origin()
@@ -345,12 +359,12 @@ def create_app(test_config=None):
 
         if request.content_type == 'application/json':
                 return jsonify({
-                    "success": True, 
+                    "success": True,
                     "authors": list
                 })
-        
-        return render_template("pages/authors.html", authors=authors, permissions=permissions)
 
+        return render_template("pages/authors.html", authors=authors,
+                               permissions=permissions)
 
     @app.route("/authors/<id>", methods=["GET"])
     @cross_origin()
@@ -358,7 +372,7 @@ def create_app(test_config=None):
     def author_by_id(payload, id):
         try:
             author = Author.query.get(id)
-  
+
             books = []
 
             for book in author.books:
@@ -366,7 +380,7 @@ def create_app(test_config=None):
                     "title": book.title,
                     "year": book.year
                 }
-                books.append(item)   
+                books.append(item)
 
             permissions = payload["permissions"]
 
@@ -376,14 +390,13 @@ def create_app(test_config=None):
 
         if request.content_type == 'application/json':
                 return jsonify({
-                    "success": True, 
+                    "success": True,
                     "author": author.format(),
                     "books": books
                 })
 
-
-        return render_template("pages/author.html", author=author, permissions=permissions, books=books)
-
+        return render_template("pages/author.html", author=author,
+                               permissions=permissions, books=books)
 
 # Edit a book by it's id
     @app.route("/authors/<id>/edit", methods=["POST", "GET"])
@@ -401,32 +414,32 @@ def create_app(test_config=None):
         if request.method == "POST":
             form = AuthorForm(request.form, meta={'csrf': False})
             author = Author.query.get(id)
-                
+
             if form.validate_on_submit():
 
                 form.populate_obj(author)
                 author.update()
 
-
             if request.content_type == 'application/json':
                 return jsonify({
-                    "success": True, 
+                    "success": True,
                     "author": author.format()
                 })
 
-            return render_template("pages/author.html", author=author, permissions=permissions)
+            return render_template("pages/author.html", author=author,
+                                   permissions=permissions)
 
         if request.content_type == 'application/json':
-                        return jsonify({
-                            "success": True, 
-                            "permissions": permissions
-                        })
-       
-        return render_template("forms/edit_author.html", form=form, permissions=permissions)
-        
+            return jsonify({
+                "success": True,
+                "permissions": permissions
+            })
+
+        return render_template("forms/edit_author.html", form=form,
+                               permissions=permissions)
+
 
 # DELETE author by id
-
     @app.route("/authors/<id>/delete", methods=["GET", "POST"])
     @cross_origin()
     @requires_auth("delete:author")
@@ -453,12 +466,12 @@ def create_app(test_config=None):
         if request.content_type == 'application/json':
             return jsonify({
                         "success": True,
-                        "permissions": permissions, 
+                        "permissions": permissions,
                         "author": author.format()
                     })
-            
-        
-        return render_template("pages/authors.html", authors=authors, permissions=permissions)
+
+        return render_template("pages/authors.html", authors=authors,
+                               permissions=permissions)
 
 
 # Create new author
@@ -473,9 +486,9 @@ def create_app(test_config=None):
 
         if request.method == "POST":
             form = AuthorForm(request.form, meta={'csrf': False})
-        
+
             if form.validate_on_submit():
-                
+
                 form.populate_obj(author)
                 try:
                     author.insert()
@@ -490,37 +503,37 @@ def create_app(test_config=None):
                 abort(404)
 
             if request.content_type == 'application/json':
-                    # print("json post app")
                     body = request.get_json()
-                    # print("body", body)
                     author = Author(name=body["name"], yob=body["yob"])
                     return jsonify({
                         "success": True,
                         "author": author.format()
                     })
 
-            return render_template("pages/authors.html", authors=authors, permissions=permissions)
+            return render_template("pages/authors.html", authors=authors,
+                                   permissions=permissions)
 
         if request.content_type == 'application/json':
-                        return jsonify({
-                            "success": True, 
-                            "permissions": permissions
-                        })
+            return jsonify({
+                "success": True,
+                "permissions": permissions
+            })
 
-        return render_template("forms/create_author.html", form=form, permissions=permissions)
+        return render_template("forms/create_author.html", form=form,
+                               permissions=permissions)
 
 
-#----------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Errorhandlers
-#----------------------------------------------------
-        
+# ----------------------------------------------------------------------------
+
     @app.errorhandler(AuthError)
     def handle_auth_error(ex):
         response = jsonify(ex.error)
         response.status_code = ex.status_code
         return response
 
-      # Handlers for all expected errors
+    # Handlers for all expected errors
 
     @app.errorhandler(404)
     def not_found(error):
@@ -544,4 +557,4 @@ APP = create_app()
 
 if __name__ == '__main__':
     APP.run(host='0.0.0.0', port=5000, debug=True)
-    App.config['TEMPLATES_AUTO_RELOAD'] = True
+    APP.config['TEMPLATES_AUTO_RELOAD'] = True
