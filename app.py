@@ -78,7 +78,7 @@ def create_app(test_config=None):
     @app.route('/login')
     def login():
         return auth0.authorize_redirect(
-            redirect_uri= database_path + "/callback", audience="app")
+            redirect_uri= "/callback", audience="app")
 
     @app.route('/callback')
     def callback_handling():
