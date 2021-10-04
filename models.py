@@ -12,11 +12,12 @@ import json
 load_dotenv()
 
 password = os.environ["PASSWORD"]
-# password = os.environ.get("PASSWORD")
 database_name = "publishing_house"
-database_path = "postgresql://{}:{}@{}/{}".format('cavilosa', password,
-                                                  'localhost:5432',
-                                                  database_name)
+# database_path = "postgresql://{}:{}@{}/{}".format('cavilosa', password,
+#                                                   'localhost:5432',
+#                                                   database_name)
+
+database_path = os.environ["DATABASE_URL"]
 
 Base = declarative_base()
 
