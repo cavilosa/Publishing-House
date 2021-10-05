@@ -13,6 +13,7 @@ load_dotenv()
 
 password = os.environ["PASSWORD"]
 database_name = "publishing_house"
+on_heroku=False
 on_heroku = os.environ["on_heroku"]
 if on_heroku == True:
     print("on heroku true", os.environ["on_heroku"])
