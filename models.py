@@ -16,7 +16,8 @@ database_name = "publishing_house"
 on_heroku = os.environ["on_heroku"]
 if on_heroku == True:
     database_path = os.environ["DATABASE_URL"]
-database_path = "postgresql://{}:{}@{}/{}".format('cavilosa', password,
+else:
+    database_path = "postgresql://{}:{}@{}/{}".format('cavilosa', password,
                                                   'localhost:5432',
                                                   database_name)
 
