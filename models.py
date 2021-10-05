@@ -6,7 +6,7 @@ from sqlalchemy import MetaData
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.declarative import declarative_base
-# from flask_migrate import Migrate
+from flask_migrate import Migrate
 import json
 
 load_dotenv()
@@ -27,15 +27,16 @@ metadata = MetaData(naming_convention=convention)
 db = SQLAlchemy(metadata=metadata)
 
 
+
 def setup_db(app, DATABASE_URL=DATABASE_URL):
     if DATABASE_URL[0:10] != "postgresql":
-        print("not sql")
         DATABASE_URL = DATABASE_URL.replace("postgres", "postgresql")
     app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
-    db.create_all()
+    # migrate = Migrate(app, db)
+    # db.create_all()
 
 authors_books = db.Table("authors_books",
                          db.Column("book_id", db.Integer,

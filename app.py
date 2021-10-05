@@ -27,7 +27,7 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
     CORS(app, expose_headers='Authorization')
-    migrate = Migrate(app, db)
+    # migrate = Migrate(app, db)
     setup_db(app)
     app.secret_key = os.environ["JWT_CODE_SIGNING_SECRET"]
 
