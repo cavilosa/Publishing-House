@@ -6,9 +6,9 @@ export AUTH0_ID="a0mzLPX0PZ6KPWVGo058FFCUUNwShqIN"
 export ALGORITHMS=["RS256"]
 export API_AUDIENCE="app"
 export CLIENT_ID="a0mzLPX0PZ6KPWVGo058FFCUUNwShqIN"
-export AUTH0_CALLBACK_URL="https://fsnd-capstone-publishing-house.herokuapp.com/"
-export AUTH0_LOGIN_URL="https://fsnd-capstone-publishing-house.herokuapp.com/"
-export AUTH0_LOGOUT_URL=" https://fsnd-capstone-publishing-house.herokuapp.com/"
+export AUTH0_CALLBACK_URL="http://localhost:5000"
+export AUTH0_LOGIN_URL="http://localhost:5000"
+export AUTH0_LOGOUT_URL="http://localhost:5000"
 
 # AUTH0 tokens
 
@@ -17,4 +17,4 @@ export AUTH0_LOGOUT_URL=" https://fsnd-capstone-publishing-house.herokuapp.com/"
 # DATABASE
 export PASSWORD="cavilosa1"
 
-# export DATABASE_URL='postgres://xzlulntdewogtm:f2b1eac6e03064d0d75a27e8c872ebeeb5863c8917d306d8c7250f21c1e3843c@ec2-54-204-148-110.compute-1.amazonaws.com:5432/d3ps3306cfe4ai'
+export DATABASE_URL="postgresql://cavilosa:cavilosa1@localhost:5432/publishing_house"
