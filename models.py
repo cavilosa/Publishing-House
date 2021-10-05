@@ -14,7 +14,8 @@ load_dotenv()
 password = os.environ["PASSWORD"]
 database_name = "publishing_house"
 on_heroku = os.environ["on_heroku"]
-if on_heroku == True:
+if on_heroku:
+    print("on heroku true", on_heroku)
     DATABASE_URL = os.environ["DATABASE_URL"]
 else:
     DATABASE_URL = "postgresql://{}:{}@{}/{}".format('cavilosa', password,
