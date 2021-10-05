@@ -13,18 +13,8 @@ load_dotenv()
 
 password = os.environ["PASSWORD"]
 database_name = "publishing_house"
-on_heroku=False
-on_heroku = os.environ["on_heroku"]
-if on_heroku == True:
-    print("on heroku true", os.environ["on_heroku"])
-    DATABASE_URL = os.environ["DATABASE_URL"]
-else:
-    DATABASE_URL = "postgresql://{}:{}@{}/{}".format('cavilosa', password,
-                                                  'localhost:5432',
-                                                  database_name)
-# print("ON HEROKU", on_heroku)
-print("DATABASE_URL", DATABASE_URL)
 
+on_heroku = os.environ["on_heroku"]
 
 Base = declarative_base()
 
@@ -40,7 +30,14 @@ metadata = MetaData(naming_convention=convention)
 db = SQLAlchemy(metadata=metadata)
 
 
-def setup_db(app, database_path=DATABASE_URL):
+def setup_db(app):
+    if on_heroku == True:
+        print("on heroku true", os.environ["on_heroku"])
+        database_path = os.environ["DATABASE_URL"]
+    print("on heroku false", os.environ["on_heroku"])
+    database_path = "postgresql://{}:{}@{}/{}".format('cavilosa', password,
+                                                    'localhost:5432',
+                                                    database_name)
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
