@@ -22,6 +22,7 @@ load_dotenv()
 # Configuring APP
 # ----------------------------------------------------------------------------
 
+DATABASE_URL = os.environ["DATABASE_URL"]
 
 def create_app(test_config=None):
     # create and configure the app
@@ -75,8 +76,9 @@ def create_app(test_config=None):
 
     @app.route('/login')
     def login():
+        AUTH0_CALLBACK_URL = os.environ["AUTH0_CALLBACK_URL"]
         return auth0.authorize_redirect(
-            redirect_uri="https://fsnd-capstone-publishing-house.herokuapp.com/callback", audience="app")
+            redirect_uri= AUTH0_CALLBACK_URL +"/callback", audience="app")
 
     @app.route('/callback')
     def callback_handling():
