@@ -17,4 +17,4 @@ export AUTH0_LOGOUT_URL="https://fsnd-capstone-publishing-house.herokuapp.com/"
 # DATABASE
 export PASSWORD="cavilosa1"
 
-export DATABASE_URL='postgresql://xzlulntdewogtm:f2b1eac6e03064d0d75a27e8c872ebeeb5863c8917d306d8c7250f21c1e3843c@ec2-54-204-148-110.compute-1.amazonaws.com:5432/d3ps3306cfe4ai'
+export DATABASE_URL="postgres://btaouklqvqpkxg:4ffb88dc21318bc91083b907a826c8f0dbc642b5e8b60e3f0d249286c43bdc33@ec2-3-218-47-9.compute-1.amazonaws.com:5432/dft4fvk5aghr1b"

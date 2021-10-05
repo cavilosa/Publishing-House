@@ -22,7 +22,7 @@ class PublishingHouseTestCase(unittest.TestCase):
         """Seed test database with initial data"""
         book = Book(title="TEST", author="Anna", year=2000)
         author = Author(name="Anna", yob=2017)
-       
+
 
         self.db.session.add(book)
         self.db.session.add(author)
@@ -46,17 +46,17 @@ class PublishingHouseTestCase(unittest.TestCase):
             "author": "TESTING AUTHOR",
             "year": 3000
         }
-        
+
         self.new_author = {
-            "name": "TESTING NAME", 
+            "name": "TESTING NAME",
             "yob": "TESTING YOB"
         }
-        
+
         with self.app.app_context():
             self.db = SQLAlchemy()
             self.db.init_app(self.app)
             self.db.create_all()
-            # self.insert_data()
+            self.insert_data()
 
 
     def test_database(self):
@@ -71,13 +71,13 @@ class PublishingHouseTestCase(unittest.TestCase):
 
     def tearDown(self):
         with self.app.app_context():
-            books = Book.query.all() 
-            print("tear", len(books)) 
+            books = Book.query.all()
+            print("tear", len(books))
             self.db.session.remove()
             self.db.drop_all()
             books = Book.query.all()
             print("tear after", len(books))
-  
+
 
 if __name__ == '__main__':
     unittest.main()
