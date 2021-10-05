@@ -27,8 +27,12 @@ metadata = MetaData(naming_convention=convention)
 db = SQLAlchemy(metadata=metadata)
 
 
-def setup_db(app, database_path=DATABASE_URL):
-    app.config["SQLALCHEMY_DATABASE_URI"] = database_path
+def setup_db(app, DATABASE_URL=DATABASE_URL):
+    if DATABASE_URL[0:10] != "postgresql":
+        print("not sql")
+        DATABASE_URL = DATABASE_URL.replace("postgres", "postgresql")
+    print("DB url", DATABASE_URL)
+    app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
