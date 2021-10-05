@@ -31,7 +31,6 @@ def setup_db(app, DATABASE_URL=DATABASE_URL):
     if DATABASE_URL[0:10] != "postgresql":
         print("not sql")
         DATABASE_URL = DATABASE_URL.replace("postgres", "postgresql")
-    print("DB url", DATABASE_URL)
     app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
