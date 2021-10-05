@@ -15,6 +15,8 @@ from flask_migrate import Migrate
 from authlib.integrations.flask_client import OAuth
 from functools import wraps
 from flask import session, abort
+import sys
+import logging
 
 load_dotenv()
 
@@ -32,6 +34,8 @@ def create_app(test_config=None):
     migrate = Migrate(app, db)
     setup_db(app)
     app.secret_key = os.environ["JWT_CODE_SIGNING_SECRET"]
+    app.logger.addHandler(logging.StreamHandler(sys.stdout))
+    app.logger.setLevel(logging.ERROR)
 
 
 # ----------------------------------------------------------------------------

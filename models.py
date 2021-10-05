@@ -18,6 +18,7 @@ database_name = "publishing_house"
 #                                                   database_name)
 
 database_path = os.environ["DATABASE_URL"]
+print("DATABASE PATH", database_path)
 
 Base = declarative_base()
 
@@ -39,6 +40,8 @@ def setup_db(app, database_path=database_path):
     db.app = app
     db.init_app(app)
     db.create_all()
+    # database_path = os.environ["DATABASE_URL"]
+    print("DATABASE PATH", database_path)
 
 authors_books = db.Table("authors_books",
                          db.Column("book_id", db.Integer,
