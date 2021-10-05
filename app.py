@@ -76,7 +76,7 @@ def create_app(test_config=None):
     @app.route('/login')
     def login():
         return auth0.authorize_redirect(
-            redirect_uri=" https://fsnd-capstone-publishing-house.herokuapp.com//callback", audience="app")
+            redirect_uri=" https://fsnd-capstone-publishing-house.herokuapp.com/callback", audience="app")
 
     @app.route('/callback')
     def callback_handling():
