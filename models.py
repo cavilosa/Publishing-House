@@ -35,8 +35,6 @@ def setup_db(app, DATABASE_URL=DATABASE_URL):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
-    # migrate = Migrate(app, db)
-    # db.create_all()
 
 authors_books = db.Table("authors_books",
                          db.Column("book_id", db.Integer,
