@@ -24,10 +24,6 @@ print("ON HEROKU", on_heroku)
 print("database path", database_path)
 
 
-
-# database_path = os.environ["DATABASE_URL"]
-
-
 Base = declarative_base()
 
 convention = {
