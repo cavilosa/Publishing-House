@@ -385,7 +385,8 @@ def create_app(test_config=None):
             for book in author.books:
                 item = {
                     "title": book.title,
-                    "year": book.year
+                    "year": book.year,
+                    "id": book.id
                 }
                 books.append(item)
 

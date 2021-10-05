@@ -5,33 +5,37 @@
 <div class="author">
    <p>Name: {{ author.name }}, {{ author.yob }}
     </p>
-        
+
    {% if books%}
    <p>Books:</p>
-       <ol>
         {% for book in books %}
-           <li>
-               {{ book.title}}, {{ book.year}}
-           </li>
+            <ol>
+                {% if "post:book" in permissions %}
+                <li>
+                    <p><a href="/books/{{ book.id }}"> {{ book.title}}, {{ book.year}} </a></p>
+                {% else %}
+                    <p>{{ book.title}}, {{ book.year}}</p>
+                </li>
+                {% endif %}
+            </ol>
         {% endfor %}
-       </ol>
     {% else %}
     There are no books written by this author.
     {% endif %}
-  
+
 </div>
 
 <div class="links">
     {% if "post:author" in permissions %}
     <div><a href="/authors/{{ author.id }}/edit">Edit this author</a></div>
     {% endif%}
-    
+
     {% if "delete:author" in permissions %}
     <div><a data-method="delete" href="/authors/{{ author.id }}/delete">DELETE</a></div>
     {% endif %}
-    
+
 </div>
-       
+
 {% endif %}
 
 {% endblock content %}
