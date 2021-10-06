@@ -6,22 +6,19 @@
 This application is for the Publishing House usage. It has a database with books
 and authors, as well as detailed information about them. At the landing page
 a user is offered to log is in order to see/edit/delete books and authors.
-*****************
-## Roles
+
+## <span style="color:blue">Roles</span>
 ----------
----------------
 There are 3 roles:
 #### Reader
 ---------------
 A reader can access a list of books and authors.
-
 Permissions - get:authors, get:books
 
 #### Coordinator
 ------------
 Can see the details of books and authors, including a permission to modify and
 create new entries.
-
 Permissions - reader + patch:author, patch:book, post:author, post:book
 
 #### Editor
@@ -32,12 +29,38 @@ Permissions - coordinator + delete:author, delete:book
 
 ## Authentification
 _____________________
-___________________
 
 For the login purposes this app is using 3d party authentication: Auth0 servicese.
 First, a user needs to sign up. That email needs to be asssigned to a role in the auth0 dashboard.
 After the login auth0 returns a jwt token that is used for checking permissions.
 Each route, except the landing page, requires specific auth0 permission. Depending on those permissions, links to various routes become available.
+
+## Sign in and JWT information
+________________
+
+To sigh in as a *reader*:
+
+email: reader@gmail.com
+password: Capstone1#
+
+Valid JWT token is:
+""
+
+as a *coordinator*:
+
+email: coordinator@gmail.com
+password: Capstone1#
+
+Valid JWT token is:
+""
+
+as an *editor*:
+
+email: editor@gmail.com
+password: Capstone1#
+
+Valid JWT token is:
+""
 
 
 ## <span style="color:blue"> Routes </span>
@@ -161,7 +184,12 @@ On successfull deletion JSON object will be returned:
 
 **Auth0 errors**: token_expired, invalid_claims, invalid_header.
 
-**Application** errors: 400, 401, 404, 500.
+**Application** errors:
+- 400:Bad Request. The server couldn't process your request,
+- 404:You are trying to access an item that is not in the database.
+The server can not find the requested resource.,
+- 422:The request was well-formed but was unable to be followed due to semantic errors. The server couldn't process your request.
+- 500:Internal server error. The server has encountered a situation it doesn't know how to handle.
 
 
 ## Project Dependencies:
@@ -203,43 +231,3 @@ Now we need to create main and test databases:
 Locally, the application will run on <a href="localhost:5000/">localhost:5000/</a>
 
 Production version URL is hosted on <a href="https://fsnd-capstone-publishing-house.herokuapp.com/">https://fsnd-capstone-publishing-house.herokuapp.com/</a>
-
-
-## Sign in and JWT information
-________________
-_______________
-
-To sigh in as a reader:
-
-email: reader@gmail.com
-password: Capstone1#
-
-Valid JWT token is:
-""
-
-as a coordinator:
-
-email: coordinator@gmail.com
-password: Capstone1#
-
-Valid JWT token is:
-""
-
-as an editor:
-
-email: editor@gmail.com
-password: Capstone1#
-
-Valid JWT token is:
-""
-
-
-
-
-
-
-
-
-
-
-
