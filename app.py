@@ -24,6 +24,7 @@ load_dotenv()
 
 DATABASE_URL = os.environ["DATABASE_URL"]
 
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
@@ -77,8 +78,10 @@ def create_app(test_config=None):
     @app.route('/login')
     def login():
         AUTH0_CALLBACK_URL = os.environ["AUTH0_CALLBACK_URL"]
+        API_AUDIENCE = os.environ["API_AUDIENCE"]
         return auth0.authorize_redirect(
-            redirect_uri= AUTH0_CALLBACK_URL +"/callback", audience="app")
+            redirect_uri=AUTH0_CALLBACK_URL + "/callback",
+            audience=API_AUDIENCE)
 
     @app.route('/callback')
     def callback_handling():
@@ -343,7 +346,7 @@ def create_app(test_config=None):
         if request.content_type == 'application/json':
             return jsonify({
                 "success": True,
-                "book": book,
+                "book": book.format(),
                 "permissions": permissions
             })
         return render_template("pages/books.html", books=books,
