@@ -67,6 +67,10 @@ Has the major access to all the data with the coordinator access plus permission
 
 Permissions - coordinator + delete:author, delete:book
 
+#### Run the development server
+
+    export FLASK_APP=app && export FLASK_ENV=development && flask run --reload
+
 ## Authentification
 _____________________
 
