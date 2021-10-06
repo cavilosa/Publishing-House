@@ -7,6 +7,46 @@ This application is for the Publishing House usage. It has a database with books
 and authors, as well as detailed information about them. At the landing page
 a user is offered to log is in order to see/edit/delete books and authors.
 
+## Project Dependencies:
+
+Python 3.9.5 from <a href="https://www.python.org/downloads/">Official website</a>
+
+pip 21.1.1 from <a href="https://pypi.org/project/pip/">oficial website</a>
+
+Create <a href="https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/">virtual environment</a> for the application:
+
+    python3 -m venv env
+
+Activate virtual environment with command:
+
+    source env/bin/activate
+
+To deactivate:
+
+    deactivate
+
+In the virtual environment install project dependencies from the requirements.txt file with pip command:
+
+    pip install -r requirements.txt
+
+Export environment varibles with:
+
+    source setup.sh
+
+Start the postgresql server on ubuntu:
+
+    sudo service postgresql start
+
+Now we need to create main and test databases:
+
+    sudo -u postgres createdb publishing_house
+
+    sudo -u postgres createdb test
+
+Locally, the application will run on <a href="localhost:5000/">localhost:5000/</a>
+
+Production version URL is hosted on <a href="https://fsnd-capstone-publishing-house.herokuapp.com/">https://fsnd-capstone-publishing-house.herokuapp.com/</a>
+
 ## <span style="color:blue">Roles</span>
 ----------
 There are 3 roles:
@@ -192,42 +232,3 @@ The server can not find the requested resource.,
 - 500:Internal server error. The server has encountered a situation it doesn't know how to handle.
 
 
-## Project Dependencies:
-
-Python 3.9.5 from <a href="https://www.python.org/downloads/">Official website</a>
-
-pip 21.1.1 from <a href="https://pypi.org/project/pip/">oficial website</a>
-
-Create <a href="https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/">virtual environment</a> for the application:
-
-    python3 -m venv env
-
-Activate virtual environment with command:
-
-    source env/bin/activate
-
-To deactivate:
-
-    deactivate
-
-In the virtual environment install project dependencies from the requirements.txt file with pip command:
-
-    pip install -r requirements.txt
-
-Export environment varibles with:
-
-    source setup.sh
-
-Start the postgresql server on ubuntu:
-
-    sudo service postgresql start
-
-Now we need to create main and test databases:
-
-    sudo -u postgres createdb publishing_house
-
-    sudo -u postgres createdb test
-
-Locally, the application will run on <a href="localhost:5000/">localhost:5000/</a>
-
-Production version URL is hosted on <a href="https://fsnd-capstone-publishing-house.herokuapp.com/">https://fsnd-capstone-publishing-house.herokuapp.com/</a>
