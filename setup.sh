@@ -12,6 +12,10 @@ export AUTH0_LOGOUT_URL="http://localhost:5000"
 
 # AUTH0 tokens
 
+export reader_token=""
+export coordinator_token=""
+export editor_token=""
+
  JWT_TOKEN=""
 
 # DATABASE
