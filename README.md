@@ -39,7 +39,6 @@ First, a user needs to sign up. That email needs to be asssigned to a role in th
 After the login auth0 returns a jwt token that is used for checking permissions.
 Each route, except the landing page, requires specific auth0 permission. Depending on those permissions, links to various routes become available.
 
-**Auth0 errors**: token_expired, invalid_claims, invalid_header.
 
 ## <span style="color:blue"> Routes </span>
 
@@ -58,16 +57,23 @@ For a coordinator and an editor there will be additional links to Add New Book a
 
 And only an editor will have Delete buttons for Books and Authors displayed when followed the links to a precise book or author.
 
-### /books and /authors
+### /books and /authors, methods = GET
 _______________________________________________
 For readers this route will display just a list of books and authors.
 
 For editors and coordinators this route will add links to detailed information, as well as editing options.
 
-Autho0 errors will be raised is the permission is not found.
+Autho0 error will be raised if the permission is not found.
+
+JSON response will include:
+
+        {
+            "success": True,
+            "books": list // "authors": list
+        }
 
 
-### /books/id and /authors/id
+### - /books/id and /authors/id, methods = GET
 ________________________________________
 A reader won't have access to this route.
 
@@ -77,20 +83,85 @@ Coordinator will see
 
 Editor will get additional buttons to delete the book or the author.
 
-### /books/<id>/edit and /authors/<id>/edit
+If the book or author id is not in the database, 422 error will raised.
+
+JSON response will include:
+
+        {
+           "success": True,
+           "book": book.format() // "author": author.format()
+        }
+
+
+### - /books/id/edit and /authors/id/edit, methods = GET, POST
+_______________________________________
+A reader won't have access to this route. Auth0 will raise error if authorization header is missing.
+
+Book and Author form objects will be populated with  the existing entry on GET request.
+POST method will pick up the new data and return it to the database, updating the entry with the corresponding id.
+
+If the book or author id is not in the database, 422 error will raised.
+
+JSON response for POST request will include:
+
+        {
+          "success": True,
+          "book": book.format() // "author": author.format()
+        }
+
+JSON response for GET request will include:
+
+        {
+          "success": True,
+          "permissions": permissions
+        }
+
+
+### - /books/create and /authors/create, methods = GET, POST
+_________________________________________
 A reader won't have access to this route.
 
-Book and Author form objects will populate the existing entry and pick up the changes, returning them to the database.
+On GET request a BookForm or AthorFrom will loaded with JSON response for GET request will include:
+
+        {
+          "success": True,
+          "permissions": permissions
+        }
+
+On POST request the forms wil store user's input in the databse, redirecting to the /books and /authors routes respectively.
+
+JSON response for GET request will include:
+
+        {
+          "success": True,
+          "author": author.format() // "book": book.format
+        }
+
+Books can be created only with the authors from the database, so in order to add a new book, its author should be created already. If the author is not in the database, 404 error will raised.
+
+### - /books/id/delete and /authors/id/delete, methods = GET, POST
+This route uthorized only for the editor role.
+
+If the book or author id is not in the database, 404 error will raised. And return JSON object
+
+    {
+            "success": False
+    }
+
+On successfull deletion JSON object will be returned:
+
+    {
+        "success": True,
+        "book": book.format(),  // "author": author.format()
+        "permissions": permissions
+    }
 
 
-#### /books/create and /authors/create
-A reader won't have access to this route.
+## <span style="color:blue"> ERRORS </span>
 
-Book and Author forms wil pick up user inputs and setore them in the databse, redirecting to the /books and /authors routes respectively.
+**Auth0 errors**: token_expired, invalid_claims, invalid_header.
 
-Books can be created only with the authors from the database, so in order to add a new book, its author should be created already.
-
-
+**Application** errors: 400, 401, 404, 500.
 
 
 
