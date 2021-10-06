@@ -17,46 +17,72 @@ from flask_sqlalchemy import SQLAlchemy
 
 load_dotenv()
 
+# class BaseTestCase(unittest.TestCase):
+#     def create_app(self):
+#         return create_app()
+
+# def create_app():
+#     self.app = create_app()
+#     self.client = self.app.test_client
+#     self.password = os.environ["PASSWORD"]
+#     self.database_name = "test"
+#     self.database_path = "postgresql://{}:{}@{}/{}".format('cavilosa', self.password, 'localhost:5432', self.database_name)
+#     setup_db(self.app, self.database_path)
+#     self.db = SQLAlchemy()
+#     self.db.init_app(self.app)
+def insert_data(self):
+        """Seed test database with initial data"""
+        book = Book(title="TEST", author="Anna", year=2000)
+        author = Author(name="Anna", yob=2017)
+
+        self.db.session.add(book)
+        self.db.session.add(author)
+        # book.authors.append(author)
+        # author.books.append(book)
+        self.db.session.commit()
+        self.db.session.close()
+
+
 class PublishingHouseTestCase(unittest.TestCase):
     def insert_data(self):
         """Seed test database with initial data"""
         book = Book(title="TEST", author="Anna", year=2000)
         author = Author(name="Anna", yob=2017)
-       
 
         self.db.session.add(book)
         self.db.session.add(author)
-
         # book.authors.append(author)
         # author.books.append(book)
-
         self.db.session.commit()
         self.db.session.close()
 
     def setUp(self):
         self.app = create_app()
+
         self.client = self.app.test_client
         self.password = os.environ["PASSWORD"]
         self.database_name = "test"
         self.database_path = "postgresql://{}:{}@{}/{}".format('cavilosa', self.password, 'localhost:5432', self.database_name)
+        # self.database_path = f"postgresql://cavilosa:{self.password}@localhost:5432/test"
         setup_db(self.app, self.database_path)
+        print("db ", self.database_path)
 
         self.new_book = {
             "title": "TESTING TITLE",
             "author": "TESTING AUTHOR",
             "year": 3000
         }
-        
+
         self.new_author = {
-            "name": "TESTING NAME", 
+            "name": "TESTING NAME",
             "yob": "TESTING YOB"
         }
-        
+
         with self.app.app_context():
             self.db = SQLAlchemy()
-            self.db.init_app(self.app)
+            # self.db.init_app(self.app)
             self.db.create_all()
-            # self.insert_data()
+            self.insert_data()
 
 
     def test_database(self):
@@ -71,13 +97,13 @@ class PublishingHouseTestCase(unittest.TestCase):
 
     def tearDown(self):
         with self.app.app_context():
-            books = Book.query.all() 
-            print("tear", len(books)) 
+            books = Book.query.all()
+            print("tear", len(books))
             self.db.session.remove()
             self.db.drop_all()
             books = Book.query.all()
             print("tear after", len(books))
-  
+
 
 if __name__ == '__main__':
     unittest.main()
