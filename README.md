@@ -11,7 +11,7 @@ a user is offered to log is in order to see/edit/delete books and authors.
 
 Python 3.9.5 from <a href="https://www.python.org/downloads/">Official website</a>
 
-pip 21.1.1 from <a href="https://pypi.org/project/pip/">oficial website</a>
+pip 21.1.1 from <a href="https://pypi.org/project/pip/">Official website</a>
 
 Create <a href="https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/">virtual environment</a> for the application:
 
@@ -29,7 +29,7 @@ In the virtual environment install project dependencies from the requirements.tx
 
     pip install -r requirements.txt
 
-Export environment varibles with:
+Export environment variables with:
 
     source setup.sh
 
@@ -71,11 +71,11 @@ Permissions - coordinator + delete:author, delete:book
 
     export FLASK_APP=app && export FLASK_ENV=development && flask run --reload
 
-## Authentification
+## Authentication
 _____________________
 
-For the login purposes this app is using 3d party authentication: Auth0 servicese.
-First, a user needs to sign up. That email needs to be asssigned to a role in the auth0 dashboard.
+For the login purposes this app is using 3d party authentication: Auth0 services.
+First, a user needs to sign up. That email needs to be assigned to a role in the auth0 dashboard.
 After the login auth0 returns a jwt token that is used for checking permissions.
 Each route, except the landing page, requires specific auth0 permission. Depending on those permissions, links to various routes become available.
 
@@ -111,16 +111,16 @@ Valid JWT token is:
 
 All routes use render_template method to display the information. For testing purposes and possible further development, most of the routes are equipped with json object return if the request is of json type.
 
-### Landign page
+### Landing page
 ____________________________________
-Offers to log in, if a sesssion token is available, redirects to the /callback route with the appropriate information displayed, according to the permisssions.
-Also, logout button will crear session token and redirect to landign page.
+Offers to log in, if a session token is available, redirects to the /callback route with the appropriate information displayed, according to the permissions.
+Also, logout button will clear session token and redirect to landing page.
 
 ### Main page
 _____________________________________
 Here the application will determine what permissions a user has: for a reader will display Books and Authors, as well as Logout and Main Page links.
 
-For a coordinator and an editor there will be additional links to Add New Book and Annd New Author available as well as Edit Book and Edit Author in the detailed pages.
+For a coordinator and an editor there will be additional links to Add New Book and Add New Author available as well as Edit Book and Edit Author in the detailed pages.
 
 And only an editor will have Delete buttons for Books and Authors displayed when followed the links to a precise book or author.
 
@@ -188,14 +188,14 @@ JSON response for GET request will include:
 _________________________________________
 A reader won't have access to this route.
 
-On GET request a BookForm or AthorFrom will loaded with JSON response for GET request will include:
+On GET request a BookForm or AuthorFrom will loaded with JSON response for GET request will include:
 
         {
           "success": True,
           "permissions": permissions
         }
 
-On POST request the forms wil store user's input in the databse, redirecting to the /books and /authors routes respectively.
+On POST request the forms wil store user's input in the database, redirecting to the /books and /authors routes respectively.
 
 JSON response for GET request will include:
 
@@ -207,7 +207,7 @@ JSON response for GET request will include:
 Books can be created only with the authors from the database, so in order to add a new book, its author should be created already. If the author is not in the database, 404 error will raised.
 
 ### - /books/id/delete and /authors/id/delete, methods = GET, POST
-This route uthorized only for the editor role.
+This route authorized only for the editor role.
 
 If the book or author id is not in the database, 404 error will raised. And return JSON object
 
@@ -215,7 +215,7 @@ If the book or author id is not in the database, 404 error will raised. And retu
             "success": False
     }
 
-On successfull deletion JSON object will be returned:
+On successful deletion JSON object will be returned:
 
     {
         "success": True,
