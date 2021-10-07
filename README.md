@@ -3,15 +3,24 @@
 ## <span style="color:blue">Publishing House Application</span>
 -----------------
 --------------------
-This application is for the Publishing House usage. It has a database with books
-and authors, as well as detailed information about them. At the landing page
-a user is offered to log is in order to see/edit/delete books and authors.
+Publishing House application can be used to store authors and books data for edition purposes.
+This Final Project demonstrates my skills in:
+- Coding in Python 3
+- Relational Database Architecture
+- Modeling Data Objects with SQLAlchemy
+- Internet Protocols and Communication
+- Developing a Flask API
+- Authentication and Access
+- Authentication with Auth0
+- Authentication in Flask
+- Role-Based Access Control (RBAC)
+- Testing Flask Applications
+- Deploying Applications
 
 ## Project Dependencies:
 
-Python 3.9.5 from <a href="https://www.python.org/downloads/">Official website</a>
-
-pip 21.1.1 from <a href="https://pypi.org/project/pip/">oficial website</a>
+This applicaton is using Python 3.9.5, <a href="https://www.python.org/downloads/">Official website</a>, and
+pip 21.1.1, <a href="https://pypi.org/project/pip/">oficial website</a>.
 
 Create <a href="https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/">virtual environment</a> for the application:
 
@@ -43,6 +52,8 @@ Now we need to create main and test databases:
 
     sudo -u postgres createdb test
 
+Psql users and passwords can be edited in the setup.sh file.
+
 Locally, the application will run on <a href="localhost:5000/">localhost:5000/</a>
 
 Production version URL is hosted on <a href="https://fsnd-capstone-publishing-house.herokuapp.com/">https://fsnd-capstone-publishing-house.herokuapp.com/</a>
@@ -50,24 +61,20 @@ Production version URL is hosted on <a href="https://fsnd-capstone-publishing-ho
 ## <span style="color:blue">Roles</span>
 ----------
 There are 3 roles:
-#### Reader
----------------
-A reader can access a list of books and authors.
-Permissions - get:authors, get:books
 
-#### Coordinator
-------------
-Can see the details of books and authors, including a permission to modify and
+**Reader** can access a list of books and authors.
+Permissions - *get:authors, get:books*.
+
+**Coordinator** c an see the details of books and authors, including a permission to modify and
 create new entries.
-Permissions - reader + patch:author, patch:book, post:author, post:book
+Permissions - *reader + patch:author, patch:book, post:author, post:book*.
 
-#### Editor
-----------------
-Has the major access to all the data with the coordinator access plus permissions to delete books and authors.
+**Editor** has the major access to all the data with the coordinator access plus permissions to delete books and authors.
+Permissions - *coordinator + delete:author, delete:book*.
 
-Permissions - coordinator + delete:author, delete:book
+#### Start the development server
 
-#### Run the development server
+From the main folder with app.py file run the command:
 
     export FLASK_APP=app && export FLASK_ENV=development && flask run --reload
 
@@ -88,7 +95,7 @@ email: reader@gmail.com
 password: Capstone1#
 
 Valid JWT token is:
-""
+<span style="font-size:5px'">"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjFoRHk4TDczSUFfVDZuVEw3Y08zeSJ9.eyJpc3MiOiJodHRwczovL2tvcnpoeWstYXBwLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2MTNhNjY3M2NiZDI3MDAwNjlmODg3NGIiLCJhdWQiOlsiYXBwIiwiaHR0cHM6Ly9rb3J6aHlrLWFwcC51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjMzNTM4ODg2LCJleHAiOjE2MzM3MDg4ODYsImF6cCI6ImEwbXpMUFgwUFo2S1BXVkdvMDU4RkZDVVVOd1NocUlOIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInBlcm1pc3Npb25zIjpbImdldDphdXRob3JzIiwiZ2V0OmJvb2tzIl19.BZgHspyLL6M24hC7lhaOmTZXFoe3htgBBQL1sz2LZ4Hv0YxcHZsr9-MqOB9n-1-eCp__fuQ2n-1GHFQIyXp-udNQ4frLJrvmDv-mNwn7uhO51t8v7DfSqV70CR_RxbeZahImdNOnzr--NF5z133bE4fBEZ-9Ffn8jomkv-Q5WgtYOXnAa5P-Ma_O9S5Ti9rAJHDQCDKuLlYHDON7aRaLTuP3sR6egyAevFJf37YqZJjDzzS17lJbvg9dh1jg_SNWGN_s7bDDWBvuIkYlXv4xqwLMb7ilDnBDq7EzMXZ1VUL2wq2wmDgmNOYxkkxFdfiBRGES2U5QgWXjWcTvQuimdQ"</span>
 
 as a *coordinator*:
 
@@ -236,3 +243,10 @@ The server can not find the requested resource.,
 - 500:Internal server error. The server has encountered a situation it doesn't know how to handle.
 
 
+## <span style="color:blue"> Tests </span>
+
+Testing is done with uniitest library, to run the tests:
+
+    python test_app.py
+
+Tests check all endpoints for success and fail behaviours, as well as for RBAC with appropriate permissions and withut them.
