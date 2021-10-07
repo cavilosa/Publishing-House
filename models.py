@@ -99,9 +99,7 @@ class Author(db.Model):
     name = Column(db.String, nullable=False)
     yob = Column(db.Integer, nullable=False)
     books = relationship("Book", secondary=authors_books,
-                         backref=db.backref("authors", lazy='dynamic',
-                                            cascade="save-update, merge, \
-                                                    delete"))
+                         backref=db.backref("authors", lazy=True))
 
     def __init__(self, name, yob):
         self.name = name
