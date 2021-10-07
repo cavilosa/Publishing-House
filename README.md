@@ -66,7 +66,7 @@ There are 3 roles:
 **Reader** can access a list of books and authors.
 Permissions - *get:authors, get:books*.
 
-**Coordinator** c an see the details of books and authors, including a permission to modify and
+**Coordinator** can see the details of books and authors, including a permission to modify and
 create new entries.
 Permissions - *reader + patch:author, patch:book, post:author, post:book*.
 
@@ -90,9 +90,10 @@ Each route, except the landing page, requires specific auth0 permission. Dependi
 ## Sign in and JWT information
 ________________
 
-To sigh in as a *reader*:
+To sign in as a *reader*:
 
 email: reader@gmail.com
+
 password: Capstone1#
 
 Valid JWT token is:
@@ -101,6 +102,7 @@ Valid JWT token is:
 as a *coordinator*:
 
 email: coordinator@gmail.com
+
 password: Capstone1#
 
 Valid JWT token is:
@@ -109,6 +111,7 @@ Valid JWT token is:
 as an *editor*:
 
 email: editor@gmail.com
+
 password: Capstone1#
 
 Valid JWT token is:
@@ -117,7 +120,7 @@ Valid JWT token is:
 
 ## <span style="color:blue"> Routes </span>
 
-All routes use render_template method to display the information. For testing purposes and possible further development, most of the routes are equipped with json object return if the request is of json type.
+All routes use render_template method to display the information. For testing purposes and possible further development, most of the routes are equipped with json object returned if the request is of json type.
 
 ### Landing page
 ____________________________________
@@ -158,7 +161,7 @@ Coordinator will see
 
 Editor will get additional buttons to delete the book or the author.
 
-If the book or author id is not in the database, 422 error will raised.
+If the book or author id is not in the database, 422 error will be raised.
 
 JSON response will include:
 
@@ -196,16 +199,16 @@ JSON response for GET request will include:
 _________________________________________
 A reader won't have access to this route.
 
-On GET request a BookForm or AuthorFrom will loaded with JSON response for GET request will include:
+On GET request a BookForm or AuthorFrom will be loaded, JSON response for GET request will include:
 
         {
           "success": True,
           "permissions": permissions
         }
 
-On POST request the forms wil store user's input in the database, redirecting to the /books and /authors routes respectively.
+On POST request the forms will store user's input in the database, redirecting to the /books and /authors routes respectively.
 
-JSON response for GET request will include:
+JSON response for POST request will include:
 
         {
           "success": True,
@@ -246,7 +249,7 @@ The server can not find the requested resource.,
 
 ## <span style="color:blue"> Tests </span>
 
-Testing is done with uniitest library, to run the tests:
+Testing is done with unittest library, to run the tests:
 
     python test_app.py
 
