@@ -34,7 +34,7 @@ def setup_db(app, DATABASE_URL=DATABASE_URL):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
-    db.create_all()
+    db.create_all() # Heroku deployment doesn't need this line
 
 authors_books = db.Table("authors_books",
                          db.Column("book_id", db.Integer,
