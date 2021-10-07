@@ -549,9 +549,8 @@ def create_app(test_config=None):
 
     @app.errorhandler(AuthError)
     def handle_auth_error(ex):
-        response = jsonify(ex.error)
-        response.status_code = ex.status_code
-        return response
+        error = str(ex)
+        return render_template("errors/auth.html", error=error)
 
     # Handlers for all expected errors
 
