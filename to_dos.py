@@ -62,4 +62,40 @@ class Vehicle(inheritedClassName):
     make = Column(String)
     seats = Column(Integer)
 This Vehicle(inheritedClassName) syntax tells that you are inheriting the class inheritedClassName in the class Vehicle.
+
+
+You can group methods from the same module like so:
+
+from flask import (
+  Flask,
+  request,
+  flash,
+  redirect,
+  render_template,
+  ....,
+  other_packages_name ,
+  url_for,
+  flash
+)
+
+app.py line 336:
+To see what error is being thrown, you may use:
+
+print(sys.exc_info())
+For debugging purposes you can use sys.exc_info().You can refer more here
+
+Flash messages could also be useful here if you have a frontend to show.
+
+You can also try using logging to get the best debugging results. I suggest you to please go through the Module-Level Functions here to broaden your knowledge.
+
+
+SUGGESTION
+You can make use of flask-blueprint to properly separating your endpoints. Like - You can arrange endpoints related to actors in one file and endpoints related to movies in another file!
+
+
+SUGGESTION
+You should document the endpoint by use of multiline docstring!
+Check the best practices on Python Multiline docstring
+
+
 """
