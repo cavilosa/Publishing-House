@@ -37,7 +37,7 @@ To deactivate:
 
 In the virtual environment install project dependencies from the requirements.txt file with pip command:
 
-    pip install -r requirements.txt
+    pip3 install -r requirements.txt
 
 Export environment variables with:
 
@@ -75,9 +75,15 @@ Permissions - *coordinator + delete:author, delete:book*.
 
 #### Start the development server
 
-From the main folder with app.py file run the command:
+From the main folder with app.py file run the command on Lunix:
 
     export FLASK_APP=app && export FLASK_ENV=development && flask run --reload
+
+On Windows:
+
+    set FLASK_APP=app
+    set FLASK_ENV=development
+    set flask run --reload
 
 ## Authentication
 _____________________
