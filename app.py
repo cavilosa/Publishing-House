@@ -7,7 +7,7 @@ from urllib.parse import urlencode
 from flask_cors import CORS, cross_origin
 import json
 from dotenv import load_dotenv
-from models import db, setup_db,  Book, Author, authors_books
+from models import db, setup_db, Book, Author, authors_books
 from forms import BookForm, AuthorForm
 from auth.auth import AuthError, verify_decode_jwt, requires_auth
 from flask_migrate import Migrate
@@ -98,7 +98,7 @@ def create_app(test_config=None):
             payload = verify_decode_jwt(token)
 
             permissions = payload["permissions"]
-        except:
+        except BaseException:
             abort(401)
 
         if "delete:author" and "delete:book" in permissions:
@@ -114,7 +114,7 @@ def create_app(test_config=None):
         elif "get:book" and "get:authors" in permissions:
             flash('You were successfully logged in as a reader')
             return render_template('layouts/main.html',
-                                   permissions=permissions,  token=True)
+                                   permissions=permissions, token=True)
 
         else:
             if permissions == []:
@@ -148,14 +148,14 @@ def create_app(test_config=None):
         try:
             books = Book.query.order_by(Book.id).all()
             list = [book.format() for book in books]
-        except:
+        except BaseException:
             flash("No books were found in the database")
 
         if request.content_type == 'application/json':
-                return jsonify({
-                    "success": True,
-                    "books": list
-                })
+            return jsonify({
+                "success": True,
+                "books": list
+            })
 
         return render_template("pages/books.html", books=list,
                                permissions=permissions)
@@ -176,15 +176,15 @@ def create_app(test_config=None):
                     "id": author.id
                 }
 
-        except:
+        except BaseException:
             flash(f"The book with id {id} doesn't exist.")
             abort(422)
 
         if request.content_type == 'application/json':
-                return jsonify({
-                    "success": True,
-                    "book": book.format()
-                })
+            return jsonify({
+                "success": True,
+                "book": book.format()
+            })
 
         return render_template("pages/book.html", book=book,
                                permissions=permissions, author=author)
@@ -220,7 +220,7 @@ def create_app(test_config=None):
                 try:
                     book.update()
                     flash("Successfully updated the book")
-                except:
+                except BaseException:
                     flask("Something went wrong and the book was not updated.")
                     abort(400)
 
@@ -236,10 +236,10 @@ def create_app(test_config=None):
                                    permissions=permissions)
         # for get method
         if request.content_type == 'application/json':
-                return jsonify({
-                    "success": True,
-                    "permissions": permissions
-                })
+            return jsonify({
+                "success": True,
+                "permissions": permissions
+            })
 
         return render_template("forms/edit_book.html", form=form,
                                authors=authors, permissions=permissions)
@@ -261,13 +261,13 @@ def create_app(test_config=None):
 
         if request.method == "POST":
             if request.content_type == 'application/json':
-                    body = request.get_json()
-                    book = Book(title=body["title"], author=body["author"],
-                                year=body["year"])
-                    return jsonify({
-                        "success": True,
-                        "book": book.format()
-                    })
+                body = request.get_json()
+                book = Book(title=body["title"], author=body["author"],
+                            year=body["year"])
+                return jsonify({
+                    "success": True,
+                    "book": book.format()
+                })
 
             form = BookForm(request.form, meta={'csrf': False})
 
@@ -288,13 +288,13 @@ def create_app(test_config=None):
                 try:
                     book.insert()
                     flash("The book has beed added successfully.")
-                except:
+                except BaseException:
                     flash("We couldn't add new book to the database")
                     abort(400)
 
                 try:
                     books = Book.query.order_by(Book.id).all()
-                except:
+                except BaseException:
                     flash("Couldn't get books from the database.")
                     abort(404)
 
@@ -333,13 +333,13 @@ def create_app(test_config=None):
             book.delete()
             flash("The book was deleted successfully.")
 
-        except:
+        except BaseException:
             flash("Couldn't delete the book")
             abort(422)
 
         try:
             books = Book.query.order_by(Book.id).all()
-        except:
+        except BaseException:
             flash("Something went wrong.")
             abort(404)
 
@@ -365,15 +365,15 @@ def create_app(test_config=None):
         try:
             authors = Author.query.order_by(Author.id).all()
             list = [author.format() for author in authors]
-        except:
+        except BaseException:
             flash("The authors list couldn't been retreived.")
             abort(404)
 
         if request.content_type == 'application/json':
-                return jsonify({
-                    "success": True,
-                    "authors": list
-                })
+            return jsonify({
+                "success": True,
+                "authors": list
+            })
 
         return render_template("pages/authors.html", authors=authors,
                                permissions=permissions)
@@ -397,16 +397,16 @@ def create_app(test_config=None):
 
             permissions = payload["permissions"]
 
-        except:
+        except BaseException:
             flash("There is no such author in the database.")
             abort(404)
 
         if request.content_type == 'application/json':
-                return jsonify({
-                    "success": True,
-                    "author": author.format(),
-                    "books": books
-                })
+            return jsonify({
+                "success": True,
+                "author": author.format(),
+                "books": books
+            })
 
         return render_template("pages/author.html", author=author,
                                permissions=permissions, books=books)
@@ -473,22 +473,22 @@ def create_app(test_config=None):
         try:
             author.delete()
             flash("The author was deleted successfully.")
-        except:
+        except BaseException:
             flash("Couldn't delete the author")
             abort(422)
 
         try:
             authors = Author.query.order_by(Author.id).all()
-        except:
+        except BaseException:
             flash("Something went wrong.")
             abort(404)
 
         if request.content_type == 'application/json':
             return jsonify({
-                        "success": True,
-                        "permissions": permissions,
-                        "author": author.format()
-                    })
+                "success": True,
+                "permissions": permissions,
+                "author": author.format()
+            })
 
         return render_template("pages/authors.html", authors=authors,
                                permissions=permissions)
@@ -513,22 +513,22 @@ def create_app(test_config=None):
                 try:
                     author.insert()
                     flash("The author was added successfully.")
-                except:
+                except BaseException:
                     flash("Couldn't add a new author to the database.")
                     abort(500)
             try:
                 authors = Author.query.order_by(Author.id).all()
-            except:
+            except BaseException:
                 flash("Couldn't process your request")
                 abort(404)
 
             if request.content_type == 'application/json':
-                    body = request.get_json()
-                    author = Author(name=body["name"], yob=body["yob"])
-                    return jsonify({
-                        "success": True,
-                        "author": author.format()
-                    })
+                body = request.get_json()
+                author = Author(name=body["name"], yob=body["yob"])
+                return jsonify({
+                    "success": True,
+                    "author": author.format()
+                })
 
             return render_template("pages/authors.html", authors=authors,
                                    permissions=permissions)
@@ -571,6 +571,7 @@ def create_app(test_config=None):
         return render_template("errors/500.html")
 
     return app
+
 
 app = create_app()
 

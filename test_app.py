@@ -86,7 +86,12 @@ class PublishingHouseTestCase(unittest.TestCase):
     def test_all_books_coordinator(self):
         """getting all the books for coordinator with links to details
            checking get and post methods"""
-        response = self.client().get('/books', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        response = self.client().get(
+            '/books',
+            json={},
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         data = json.loads(response.data)
 
@@ -94,24 +99,36 @@ class PublishingHouseTestCase(unittest.TestCase):
         self.assertEqual(data["success"], True)
         self.assertIsNotNone(data["books"])
 
-        res = self.client().get('/books', headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        res = self.client().get(
+            '/books',
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         data = res.get_data(as_text=True)
         html = """<li><a href="/books/1">TEST, Anna, 2000</a></li>"""
 
         self.assertIn(html, data)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Authorization", response.headers['Access-Control-Allow-Headers'])
+        self.assertIn(
+            "Authorization",
+            response.headers['Access-Control-Allow-Headers'])
 
     def test_all_books_reader(self):
         """getting all the books for reader with no links to details"""
-        response = self.client().get('/books', headers={'Authorization': 'Bearer {}'.format(self.reader_token)})
+        response = self.client().get(
+            '/books',
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.reader_token)})
         data = response.get_data(as_text=True)
         html = """<li> TEST, Anna, 2000</li>"""
 
         self.assertIn(html, data)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Authorization", response.headers['Access-Control-Allow-Headers'])
+        self.assertIn(
+            "Authorization",
+            response.headers['Access-Control-Allow-Headers'])
 
     def test_all_books_notauthorized(self):
         """getting all the books without authorization to fail"""
@@ -128,10 +145,14 @@ class PublishingHouseTestCase(unittest.TestCase):
 # /books/<id>
     def test_book_by_id_reader(self):
         """ get book by id for a reader"""
-        response = self.client().get('/books/1', headers={'Authorization': 'Bearer {}'.format(self.reader_token)})
+        response = self.client().get(
+            '/books/1',
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.reader_token)})
         data = response.get_data(as_text=True)
 
-        error = ' ({&#39;code&#39;: &#39;unauthorized&#39;, &#39;description&#39;: &#39;Permission not found.&#39;}, 401)'
+        error = '&#39;Permission not found.&#39;}, 401)'
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(error, data)
@@ -141,14 +162,18 @@ class PublishingHouseTestCase(unittest.TestCase):
         response = self.client().get('/books/1')
         data = response.get_data(as_text=True)
 
-        error = '({&#39;code&#39;: &#39;authorization_header_missing&#39;, &#39;description&#39;: &#39;Authorization header is expected.&#39;}, 401)'
+        error = '&#39;Authorization header is expected.&#39;}, 401)'
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(error, data)
 
     def test_book_by_id_coordinator(self):
         """ get book by id for a coordinator"""
-        response = self.client().get('/books/1', headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        response = self.client().get(
+            '/books/1',
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         book = Book.query.get(1)
         book = book.format()
@@ -159,7 +184,12 @@ class PublishingHouseTestCase(unittest.TestCase):
 
         data = response.get_data(as_text=True)
 
-        res = self.client().get('/books/1', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        res = self.client().get(
+            '/books/1',
+            json={},
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         book = Book.query.get(1).format()
 
@@ -177,11 +207,21 @@ class PublishingHouseTestCase(unittest.TestCase):
 # /books/create
     def test_create_book(self):
         """ create a book """
-        response = self.client().post('/books/create', json=self.new_book, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        response = self.client().post(
+            '/books/create',
+            json=self.new_book,
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         data = json.loads(response.data)
 
-        res = self.client().get('/books/create', json=self.new_book, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        res = self.client().get(
+            '/books/create',
+            json=self.new_book,
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         data2 = json.loads(res.data)
         permission = "post:book"
@@ -204,7 +244,12 @@ class PublishingHouseTestCase(unittest.TestCase):
     def test_create_book_reader(self):
         """a reader tries to access create book route without permissions"""
 
-        res = self.client().get('/books/create', json=self.new_book, headers={'Authorization': 'Bearer {}'.format(self.reader_token)})
+        res = self.client().get(
+            '/books/create',
+            json=self.new_book,
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.reader_token)})
 
         data = res.get_data(as_text=True)
         description = 'Permission not found.'
@@ -216,7 +261,12 @@ class PublishingHouseTestCase(unittest.TestCase):
     def test_edit_book_coordinator_get(self):
         """ edit book by id for coordinator"""
         # check get method for the route
-        response = self.client().get('/books/1/edit', json=self.new_book, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        response = self.client().get(
+            '/books/1/edit',
+            json=self.new_book,
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         data = json.loads(response.data)
 
@@ -235,11 +285,23 @@ class PublishingHouseTestCase(unittest.TestCase):
 
     def test_edit_book_coordinator_post(self):
         """ testing editing book by id with json response post and get"""
-        response = self.client().post('/books/1/edit', json={"id": 1}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        response = self.client().post(
+            '/books/1/edit',
+            json={
+                "id": 1},
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         data = json.loads(response.data)
 
-        res = self.client().get('/books/1/edit', json={"id": 1}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        res = self.client().get(
+            '/books/1/edit',
+            json={
+                "id": 1},
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
         data2 = json.loads(res.data)
         permission = "patch:book"
 
@@ -251,7 +313,11 @@ class PublishingHouseTestCase(unittest.TestCase):
 
     def test_edit_book_nonexistent_coordinator(self):
         """ edit book by non existing id for coordinator"""
-        response = self.client().get('/books/1000/edit', headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        response = self.client().get(
+            '/books/1000/edit',
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         data = response.get_data(as_text=True)
         html = "You are trying to access a book with non existent id"
@@ -261,10 +327,14 @@ class PublishingHouseTestCase(unittest.TestCase):
 
     def test_edit_book_reader(self):
         """ edit book by id for a reader"""
-        response = self.client().get('/books/1/edit', headers={'Authorization': 'Bearer {}'.format(self.reader_token)})
+        response = self.client().get(
+            '/books/1/edit',
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.reader_token)})
 
         data = response.get_data(as_text=True)
-        error = ' ({&#39;code&#39;: &#39;unauthorized&#39;, &#39;description&#39;: &#39;Permission not found.&#39;}, 401)'
+        error = '&#39;Permission not found.&#39;}, 401)'
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(error, data)
@@ -272,10 +342,18 @@ class PublishingHouseTestCase(unittest.TestCase):
 # /books/<id>/delete
     def test_delete_book(self):
         """ deleting a book with editor permissions"""
-        book = Book(self.new_book["title"], self.new_author["name"], self.new_book["year"])
+        book = Book(
+            self.new_book["title"],
+            self.new_author["name"],
+            self.new_book["year"])
         book.insert()
 
-        response = self.client().get(f'/books/{book.id}/delete', json={}, headers={'Authorization': 'Bearer {}'.format(self.editor_token)})
+        response = self.client().get(
+            f'/books/{book.id}/delete',
+            json={},
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.editor_token)})
 
         data = json.loads(response.data)
         permission = "delete:book"
@@ -289,7 +367,12 @@ class PublishingHouseTestCase(unittest.TestCase):
 
     def test_delete_book_fail(self):
         """ deleting a book fails"""
-        response = self.client().post('/books/1000/delete', json={}, headers={'Authorization': 'Bearer {}'.format(self.editor_token)})
+        response = self.client().post(
+            '/books/1000/delete',
+            json={},
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.editor_token)})
 
         data = json.loads(response.data)
 
@@ -303,7 +386,12 @@ class PublishingHouseTestCase(unittest.TestCase):
     def test_all_books_coordinator(self):
         """getting all the authors for coordinator with links to details
            checking get and post methods"""
-        response = self.client().get('/authors', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        response = self.client().get(
+            '/authors',
+            json={},
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         data = json.loads(response.data)
 
@@ -311,24 +399,36 @@ class PublishingHouseTestCase(unittest.TestCase):
         self.assertEqual(data["success"], True)
         self.assertIsNotNone(data["authors"])
 
-        res = self.client().get('/authors', headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        res = self.client().get(
+            '/authors',
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         data = res.get_data(as_text=True)
         html = """<li><a href="/authors/1"> Anna, 2017</a></li>"""
 
         self.assertIn(html, data)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Authorization", response.headers['Access-Control-Allow-Headers'])
+        self.assertIn(
+            "Authorization",
+            response.headers['Access-Control-Allow-Headers'])
 
     def test_all_authors_reader(self):
         """getting all the authors for reader with no links to details"""
-        response = self.client().get('/authors', headers={'Authorization': 'Bearer {}'.format(self.reader_token)})
+        response = self.client().get(
+            '/authors',
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.reader_token)})
         data = response.get_data(as_text=True)
         html = """ <li>Anna, 2017</li>"""
 
         self.assertIn(html, data)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Authorization", response.headers['Access-Control-Allow-Headers'])
+        self.assertIn(
+            "Authorization",
+            response.headers['Access-Control-Allow-Headers'])
 
     def test_all_authors_notauthorized(self):
         """getting all the authors without authorization to fail"""
@@ -347,10 +447,14 @@ class PublishingHouseTestCase(unittest.TestCase):
 # /authors/<id>
     def test_author_by_id_reader(self):
         """ get author by id for a reader"""
-        response = self.client().get('/authors/1', headers={'Authorization': 'Bearer {}'.format(self.reader_token)})
+        response = self.client().get(
+            '/authors/1',
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.reader_token)})
 
         data = response.get_data(as_text=True)
-        error = "({&#39;code&#39;: &#39;unauthorized&#39;, &#39;description&#39;: &#39;Permission not found.&#39;}, 401)"
+        error = "&#39;description&#39;: &#39;Permission not found.&#39;}, 401)"
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(error, data)
@@ -360,7 +464,7 @@ class PublishingHouseTestCase(unittest.TestCase):
         response = self.client().get('/authors/1')
         data = response.get_data(as_text=True)
 
-        error = ' ({&#39;code&#39;: &#39;authorization_header_missing&#39;, &#39;description&#39;: &#39;Authorization header is expected.&#39;}, 401)'
+        error = '&#39;Authorization header is expected.&#39;}, 401)'
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(error, data)
@@ -368,7 +472,12 @@ class PublishingHouseTestCase(unittest.TestCase):
     def test_author_by_id_coordinator(self):
         """ get author by id for a coordinator"""
 
-        res = self.client().get('/authors/1', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        res = self.client().get(
+            '/authors/1',
+            json={},
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         author = Author.query.get(1)
         formated_author = author.format()
@@ -382,11 +491,21 @@ class PublishingHouseTestCase(unittest.TestCase):
 # /authors/create
     def test_create_author(self):
         """ create an author """
-        response = self.client().post('/authors/create', json=self.new_author, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        response = self.client().post(
+            '/authors/create',
+            json=self.new_author,
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         data = json.loads(response.data)
 
-        res = self.client().get('/authors/create', json=self.new_author, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        res = self.client().get(
+            '/authors/create',
+            json=self.new_author,
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         data2 = json.loads(res.data)
         permission = "post:author"
@@ -409,10 +528,15 @@ class PublishingHouseTestCase(unittest.TestCase):
     def test_create_author_reader(self):
         """a reader tries to access create author route without permissions"""
 
-        res = self.client().get('/books/author', json=self.new_author, headers={'Authorization': 'Bearer {}'.format(self.reader_token)})
+        res = self.client().get(
+            '/books/author',
+            json=self.new_author,
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.reader_token)})
 
         data = res.get_data(as_text=True)
-        description = "({&#39;code&#39;: &#39;unauthorized&#39;, &#39;description&#39;: &#39;Permission not found.&#39;}, 401)"
+        description = "&#39;description&#39;: &#39;Permission not found.&#39;}"
 
         self.assertEqual(res.status_code, 200)
         self.assertIn(description, data)
@@ -421,12 +545,22 @@ class PublishingHouseTestCase(unittest.TestCase):
     def test_edit_author_coordinator_get(self):
         """ edit author by id for coordinator"""
         # check get method for the route
-        response = self.client().get('/authors/1/edit', json=self.new_author, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        response = self.client().get(
+            '/authors/1/edit',
+            json=self.new_author,
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         data = json.loads(response.data)
 
         # check post method
-        res = self.client().post('/authors/1/edit', json=self.new_author, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        res = self.client().post(
+            '/authors/1/edit',
+            json=self.new_author,
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         data_json = json.loads(res.data)
 
@@ -444,20 +578,30 @@ class PublishingHouseTestCase(unittest.TestCase):
         response = self.client().get('/authors/1/edit', json=self.new_author)
 
         data = response.get_data(as_text=True)
-        error = "({&#39;code&#39;: &#39;authorization_header_missing&#39;, &#39;description&#39;: &#39;Authorization header is expected.&#39;}, 401)"
+        error = "&#39;Authorization header is expected.&#39;}, 401)"
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(error, data)
 
     def test_edit_author_coordinator(self):
         """ testing editing author by id with json response post"""
-        response = self.client().post('/authors/1/edit', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        response = self.client().post(
+            '/authors/1/edit',
+            json={},
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         data = json.loads(response.data)
         author = Author.query.get(1).format()
 
         # checking get method with
-        res = self.client().get('/authors/1/edit', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        res = self.client().get(
+            '/authors/1/edit',
+            json={},
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         data2 = json.loads(res.data)
         permission = "patch:book"
@@ -471,20 +615,29 @@ class PublishingHouseTestCase(unittest.TestCase):
 
     def test_edit_author_nonexistent_coordinator(self):
         """ edit author by non existing id for coordinator"""
-        response = self.client().get('/authors/10000/edit', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        response = self.client().get(
+            '/authors/10000/edit',
+            json={},
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         data = response.get_data(as_text=True)
-        error = "The request was well-formed but was unable to be followed due to semantic errors. The server couldn\'t process your request."
+        error = "The server couldn\'t process your request."
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(error, data)
 
     def test_edit_author_reader(self):
         """ edit author by id for a reader"""
-        response = self.client().get('/authors/1/edit', headers={'Authorization': 'Bearer {}'.format(self.reader_token)})
+        response = self.client().get(
+            '/authors/1/edit',
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.reader_token)})
 
         data = response.get_data(as_text=True)
-        error = ' ({&#39;code&#39;: &#39;unauthorized&#39;, &#39;description&#39;: &#39;Permission not found.&#39;}, 401)'
+        error = '&#39;Permission not found.&#39;}, 401)'
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(error, data)
@@ -496,7 +649,12 @@ class PublishingHouseTestCase(unittest.TestCase):
         author.insert()
         id = author.id
 
-        response = self.client().get(f'/authors/{id}/delete', json={}, headers={'Authorization': 'Bearer {}'.format(self.editor_token)})
+        response = self.client().get(
+            f'/authors/{id}/delete',
+            json={},
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.editor_token)})
 
         data = json.loads(response.data)
         permission = "delete:author"
@@ -510,7 +668,12 @@ class PublishingHouseTestCase(unittest.TestCase):
 
     def test_delete_author_fail(self):
         """ deleting an author fails for a cooridnator without permissions"""
-        response = self.client().post('/authors/1000/delete', json={}, headers={'Authorization': 'Bearer {}'.format(self.coordinator_token)})
+        response = self.client().post(
+            '/authors/1000/delete',
+            json={},
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.coordinator_token)})
 
         data = response.get_data(as_text=True)
         error = "unauthorized"
@@ -520,7 +683,12 @@ class PublishingHouseTestCase(unittest.TestCase):
 
     def test_delete_author_fail(self):
         """ deleting nonexistent author"""
-        response = self.client().post('/authors/10000/delete', json={}, headers={'Authorization': 'Bearer {}'.format(self.editor_token)})
+        response = self.client().post(
+            '/authors/10000/delete',
+            json={},
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.editor_token)})
 
         data = json.loads(response.data)
 
@@ -529,23 +697,35 @@ class PublishingHouseTestCase(unittest.TestCase):
 
     def test_authors_editor(self):
         """getting all the authors"""
-        response = self.client().get('/authors', headers={'Authorization': 'Bearer {}'.format(self.editor_token)})
+        response = self.client().get(
+            '/authors',
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.editor_token)})
         data = response.get_data(as_text=True)
         html = """<li><a href="/authors/1"> Anna, 2017</a></li>"""
 
         self.assertIn(html, data)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Authorization", response.headers['Access-Control-Allow-Headers'])
+        self.assertIn(
+            "Authorization",
+            response.headers['Access-Control-Allow-Headers'])
 
     def test_authors_reader(self):
         """getting all the authors"""
-        response = self.client().get('/authors', headers={'Authorization': 'Bearer {}'.format(self.reader_token)})
+        response = self.client().get(
+            '/authors',
+            headers={
+                'Authorization': 'Bearer {}'.format(
+                    self.reader_token)})
         data = response.get_data(as_text=True)
         html = """<li>Anna, 2017</li>"""
 
         self.assertIn(html, data)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Authorization", response.headers['Access-Control-Allow-Headers'])
+        self.assertIn(
+            "Authorization",
+            response.headers['Access-Control-Allow-Headers'])
 
     def test_authors_notauthorized(self):
         """getting all the authors without authorization to fail"""

@@ -34,7 +34,8 @@ def setup_db(app, DATABASE_URL=DATABASE_URL):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
-    db.create_all() # Heroku deployment doesn't need this line
+    db.create_all()  # Heroku deployment doesn't need this line
+
 
 authors_books = db.Table("authors_books",
                          db.Column("book_id", db.Integer,
@@ -62,7 +63,7 @@ class Book(db.Model):
         try:
             db.session.add(self)
             db.session.commit()
-        except:
+        except BaseException:
             db.session.rollback()
             print(sys.exc_info())
 
@@ -70,14 +71,14 @@ class Book(db.Model):
         try:
             db.session.delete(self)
             db.session.commit()
-        except:
+        except BaseException:
             db.session.rollback()
             print(sys.exc_info())
 
     def update(self):
         try:
             db.session.commit()
-        except:
+        except BaseException:
             db.session.rollback()
             print(sys.exc_info())
 
@@ -109,7 +110,7 @@ class Author(db.Model):
         try:
             db.session.add(self)
             db.session.commit()
-        except:
+        except BaseException:
             db.session.rollback()
             print(sys.exc_info())
 
@@ -117,14 +118,14 @@ class Author(db.Model):
         try:
             db.session.delete(self)
             db.session.commit()
-        except:
+        except BaseException:
             db.session.rollback()
             print(sys.exc_info())
 
     def update(self):
         try:
             db.session.commit()
-        except:
+        except BaseException:
             db.session.rollback()
             print(sys.exc_info())
 

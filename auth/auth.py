@@ -15,41 +15,40 @@ API_AUDIENCE = os.getenv('API_AUDIENCE')
 # AUTH0_CALLBACK_URL = os.getenv("AUTH0_CALLBACK_URL")
 
 
-## Auth Header
+# Auth Header
 
 def get_token_auth_header():
     """Obtains the Access Token from the Authorization Header
     """
     auth = request.headers.get('Authorization', None)
     if not auth:
-            raise AuthError({
-                'code': 'authorization_header_missing',
-                'description': 'Authorization header is expected.'
-            }, 401)
+        raise AuthError({
+            'code': 'authorization_header_missing',
+            'description': 'Authorization header is expected.'
+        }, 401)
 
     parts = auth.split()
     if parts[0].lower() != 'bearer':
-            raise AuthError({
-                'code': 'invalid_header',
-                'description': 'Authorization header must start with "Bearer".'
-            }, 401)
+        raise AuthError({
+            'code': 'invalid_header',
+            'description': 'Authorization header must start with "Bearer".'
+        }, 401)
 
     elif len(parts) == 1:
-            raise AuthError({
-                'code': 'invalid_header',
-                'description': 'Token not found.'
-            }, 401)
+        raise AuthError({
+            'code': 'invalid_header',
+            'description': 'Token not found.'
+        }, 401)
 
     elif len(parts) > 2:
-            print("PARTS > 2", parts)
-            raise AuthError({
-                'code': 'invalid_header',
-                'description': 'Authorization header must be bearer token.'
-            }, 401)
+        print("PARTS > 2", parts)
+        raise AuthError({
+            'code': 'invalid_header',
+            'description': 'Authorization header must be bearer token.'
+        }, 401)
 
     token = parts[1]
     return token
-        
 
 
 def check_permissions(permission, payload):
@@ -110,7 +109,7 @@ def verify_decode_jwt(token):
         except jwt.JWTClaimsError:
             raise AuthError({
                 'code': 'invalid_claims',
-                'description': 'Incorrect claims. Please, check the audience and issuer.'
+                'description': 'Ivalid claims. Check the audience and issuer.'
             }, 401)
         except Exception:
             raise AuthError({
@@ -118,9 +117,9 @@ def verify_decode_jwt(token):
                 'description': 'Unable to parse authentication token.'
             }, 400)
     raise AuthError({
-                'code': 'invalid_header',
+        'code': 'invalid_header',
                 'description': 'Unable to find the appropriate key.'
-            }, 401)
+    }, 401)
 
 
 class AuthError(Exception):
