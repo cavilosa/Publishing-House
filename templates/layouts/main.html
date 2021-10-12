@@ -17,16 +17,24 @@
 
     <!-- favicon -->
     <link rel="shortcut icon" href="../../static/img/teddy-bear.png">
-    
+
 </head>
 
 <body>
-    
-    
+
+
 
     {% if login==True %}
     <h4>If you'd like to browse through our books and authors, please <a id="qsLoginBtn" class="btn btn-primary btn-lg btn-login btn-block" href="/login">Log In</a>.</h4>
-    
+
+    Please, checkout the application functionality using registered emails:<br>
+
+    Reader - reader@gmail.com,<br>
+    Coordinator - coordinator@gmail.com,<br>
+    Editor - editor@gmail.com<br>
+
+    Password: Cavilosa1#
+
     {% endif %}
 
     {% if no_role %}
@@ -38,21 +46,21 @@
     {% if permissions %}
     <container>
       <div><a href="/books">BOOKS</a></div>
-      <div><a href="/authors">AUTHORS</a></div>   
+      <div><a href="/authors">AUTHORS</a></div>
           {% if "patch:book" in permissions %}
           <div><a href="/books/create">ADD NEW BOOK</a></div>
           <div><a href="/authors/create">ADD NEW AUTHOR</a>
-          {% endif %}</div> 
+          {% endif %}</div>
        <div><a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a></div>
     {% endif %}
-        <div><a class = "main_page" href="{{ url_for('index') }}">Main Page</a></div>    
-        
+        <div><a class = "main_page" href="{{ url_for('index') }}">Main Page</a></div>
+
     </container>
 
       {% block content %}{% endblock %}
 
     <div class="flash">
-        
+
       {% with messages = get_flashed_messages() %}
           {% if messages %}
             {% for message in messages %}
