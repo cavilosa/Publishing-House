@@ -27,18 +27,23 @@
     {% if login==True %}
     <h4>If you'd like to browse through our books and authors, please <a id="qsLoginBtn" class="btn btn-primary btn-lg btn-login btn-block" href="/login">Log In</a>.</h4>
 
-    Please, checkout the application functionality using registered emails:<br>
-
-    Reader - reader@gmail.com,<br>
-    Coordinator - coordinator@gmail.com,<br>
-    Editor - editor@gmail.com<br>
-
-    Password: Cavilosa1#
+    <div class="sign_in">
+      <h4>Please, checkout the application functionality using registered emails:</h4>
+        <p>
+          <b>Reader</b> - reader_user@gmail.com, password = Reader_user0
+        </p>
+        <p>
+          <b>Coordinator </b> - coordinator_user@gmail.com, password = Coordinator_user0
+        </p>
+        <p>
+          <b> Editor </b>- editor_user@gmail.com, password = Editor_user0
+        </p>
+    </div>
 
     {% endif %}
 
     {% if no_role %}
-        <h4>You haven't been assigned a role yet. Contact the administator for permissions.</h4>
+        <h4>You haven't been assigned a role yet. Contact the administrator for permissions.</h4>
         <div><a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a></div>
     {% endif %}
 
@@ -52,8 +57,8 @@
           <div><a href="/authors/create">ADD NEW AUTHOR</a>
           {% endif %}</div>
        <div><a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a></div>
+       <div><a class = "main_page" href="{{ url_for('index') }}">Main Page</a></div>
     {% endif %}
-        <div><a class = "main_page" href="{{ url_for('index') }}">Main Page</a></div>
 
     </container>
 
