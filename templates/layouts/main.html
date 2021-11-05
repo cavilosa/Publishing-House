@@ -16,23 +16,25 @@
     {% if login==True %}
     <h2>If you'd like to browse through our books and authors, please <a id="qsLoginBtn" class="btn btn-primary btn-lg btn-login btn-block" href="/login">Log In</a>.</h2>
 
-    <div class="sign_in">
-      <h3>Checkout the application functionality using registered emails:</h3>
-        <p class="reader">
-          <b>Reader</b> - reader_user@gmail.com, password = Reader_user0
-        </p>
-        <p class="coordinator">
-          <b>Coordinator </b> - coordinator_user@gmail.com, password = Coordinator_user0
-        </p>
-        <p class="editor">
-          <b> Editor </b>- editor_user@gmail.com, password = Editor_user0
-        </p>
-        <p class="git">
-          Here is the <a href="https://github.com/cavilosa/Publishing-House">
-              <b>Git Repository</b></a> with detailed Readme file, describing all the APP functionality.
+    <container>
+      <div class="sign_in">
+        <h3>Checkout the application functionality using registered emails:</h3>
+          <p class="reader">
+            <b>Reader</b>:
+            <br>reader_user@gmail.com, <br>password = Reader_user0
           </p>
-    </div>
-
+          <p class="coordinator">
+            <b>Coordinator </b> : <br> coordinator_user@gmail.com, <br> password = Coordinator_user0
+          </p>
+          <p class="editor">
+            <b> Editor </b>:<br> editor_user@gmail.com, <br>password = Editor_user0
+          </p>
+          <p class="git">
+            Here is the <a href="https://github.com/cavilosa/Publishing-House">
+                <b>Git Repository</b></a> with detailed Readme file, describing all the APP functionality.
+            </p>
+      </div>
+    </container>
 
     {% endif %}
 
