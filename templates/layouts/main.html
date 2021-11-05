@@ -5,15 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../static/css/main.css">
     <link rel="shortcut icon" href="../../static/img/teddy-bear.png">
-
+    <title>FSND Publishing House</title>
 </head>
 
 <body>
     <div class="header">
         <h1>FSND Publishing House</h1>
     </div>
-
-    <title>{% block title %}{% endblock %}</title>
 
     {% if login==True %}
     <h4>If you'd like to browse through our books and authors, please <a id="qsLoginBtn" class="btn btn-primary btn-lg btn-login btn-block" href="/login">Log In</a>.</h4>
