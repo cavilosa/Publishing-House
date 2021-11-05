@@ -14,6 +14,10 @@ h2 {
     text-align: center;
 }
 
+h3 {
+    grid-area: side;
+}
+
 .main_page,
 #qsLogoutBtn {
     color: #cc6600;
@@ -47,9 +51,47 @@ a {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
-.sign_in {
+/* .sign_in {
     display: flex;
     flex-flow: column;
     flex-direction: column;
     align-items: center;
+} */
+
+.sign_in {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 1fr 3fr;
+    grid-template-areas:
+        "side reader"
+        "side coordinator"
+        "side editor"
+        "git git";
+    column-gap: 10px;
+    margin: 20px;
+    padding: 10px;
+}
+
+.reader {
+    grid-area: reader;
+}
+
+.coordinator {
+    grid-area: coordinator;
+}
+
+.editor {
+    grid-area: editor;
+}
+
+.git {
+    grid-area: git;
+    color: #8B0000;
+}
+
+.reader,
+.coordinator,
+.editor,
+.git {
+    text-align: center;
 }
