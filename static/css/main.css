@@ -4,19 +4,24 @@ body{
 }
 
 h1 {
-    /* background-color: #ffffff; */
     border-radius: 5px;
     text-align: center;
     color: #994d00;
+    text-shadow: 2px 2px 5px red;
 }
 
 h2 {
     text-align: center;
+    color: #994d00;
+    text-decoration: underline;
+    padding-top: 5vw;
+    /* margin: 5vw; */
 }
 
 h3 {
     grid-area: side;
     padding: 5vw;
+    color: #9c2238;
 }
 
 .main_page,
