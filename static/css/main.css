@@ -94,8 +94,9 @@ a {
 .editor {
     text-align: center;
     background-color: #eee;
-    border-radius: 20px;
+    border-radius: 5vw;
     width: 30vw;
+    padding: 10px;
 }
 
 container {
