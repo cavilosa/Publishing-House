@@ -10,7 +10,7 @@ h1 {
     color: #994d00;
 }
 
-h4 {
+h2 {
     text-align: center;
 }
 
@@ -49,6 +49,7 @@ a {
 
 .sign_in {
     display: flex;
+    flex-flow: column;
     flex-direction: column;
     align-items: center;
 }
