@@ -2,35 +2,42 @@
 <html lang="en" dir="ltr">
 <head>
     <meta charset="utf-8">
-    <div class="header">
-      <h1>FSND Publishing House</h1>
-  </div>
-
-    <title>{% block title %}{% endblock %}</title>
-
-    <!-- meta -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- styles -->
     <link rel="stylesheet" href="../../static/css/main.css">
-
-    <!-- favicon -->
     <link rel="shortcut icon" href="../../static/img/teddy-bear.png">
-    
+    <title>FSND Publishing House</title>
 </head>
 
 <body>
-    
-    
+    <div class="header">
+        <h1>FSND Publishing House</h1>
+    </div>
 
     {% if login==True %}
     <h4>If you'd like to browse through our books and authors, please <a id="qsLoginBtn" class="btn btn-primary btn-lg btn-login btn-block" href="/login">Log In</a>.</h4>
-    
+
+    <div class="sign_in">
+      <h4>Please, checkout the application functionality using registered emails:</h4>
+        <p>
+          <b>Reader</b> - reader_user@gmail.com, password = Reader_user0
+        </p>
+        <p>
+          <b>Coordinator </b> - coordinator_user@gmail.com, password = Coordinator_user0
+        </p>
+        <p>
+          <b> Editor </b>- editor_user@gmail.com, password = Editor_user0
+        </p>
+        <p>
+          Here is the <a href="https://github.com/cavilosa/Publishing-House">
+              <b>Git Repository</b></a> with detailed Readme file, describing all the APP functionality.
+          </p>
+    </div>
+
+
     {% endif %}
 
     {% if no_role %}
-        <h4>You haven't been assigned a role yet. Contact the administator for permissions.</h4>
+        <h4>You haven't been assigned a role yet. Contact the administrator for permissions.</h4>
         <div><a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a></div>
     {% endif %}
 
@@ -38,21 +45,21 @@
     {% if permissions %}
     <container>
       <div><a href="/books">BOOKS</a></div>
-      <div><a href="/authors">AUTHORS</a></div>   
+      <div><a href="/authors">AUTHORS</a></div>
           {% if "patch:book" in permissions %}
           <div><a href="/books/create">ADD NEW BOOK</a></div>
           <div><a href="/authors/create">ADD NEW AUTHOR</a>
-          {% endif %}</div> 
+          {% endif %}</div>
        <div><a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a></div>
+       <div><a class = "main_page" href="{{ url_for('index') }}">Main Page</a></div>
     {% endif %}
-        <div><a class = "main_page" href="{{ url_for('index') }}">Main Page</a></div>    
-        
+
     </container>
 
       {% block content %}{% endblock %}
 
     <div class="flash">
-        
+
       {% with messages = get_flashed_messages() %}
           {% if messages %}
             {% for message in messages %}
