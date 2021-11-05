@@ -250,7 +250,7 @@ Testing is done with unittest library, to run the tests:
 
     python test_app.py
 
-Tests check all endpoints for success and fail behaviours, as well as for RBAC with appropriate permissions and withut them.
+Tests check all endpoints for success and fail behaviors, as well as for RBAC with appropriate permissions and without them.
 
 
 ## <span style="color:blue"> PYCODESTYLE </span>
