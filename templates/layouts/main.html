@@ -49,8 +49,6 @@
         </main>
   {% endif %}
 
-            {% block content %}{% endblock %}
-
       {% if permissions %}
       <div class="header">
         <h1>Publishing House</h1>
@@ -66,6 +64,8 @@
           <div class="link"><a class = "main_page" href="{{ url_for('index') }}">Main Page</a></div>
       </article>
       {% endif %}
+
+      {% block content %}{% endblock %}
 
 </div>
 

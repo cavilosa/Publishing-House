@@ -6,28 +6,32 @@
 {% endif %}
     {% if "post:book" not in permissions %}
         {% if books %}
+        <div class="books">
             <ol>
                 {% for book in books %}
                 <li> {{ book.title }}, {{ book.author}}, {{ book.year }}</li>
                 {% endfor %}
             </ol>
-            {% else %}
+        {% else %}
                 There are no books in the database yet.
-            {% endif %}
+        </div>
+
+        {% endif %}
     {% endif %}
 
 
         {% if "post:book" in permissions %}
             {% if books %}
-            <ol>
-                {% for book in books %}
-                <li><a href="/books/{{ book.id }}">{{ book.title }}, {{ book.author }}, {{ book.year }}</a></li>
-                {% endfor %}
-            </ol>
-            {% else %}
-                There are no books in the database yet.
+            <div class="books">
+                <ol>
+                    {% for book in books %}
+                    <li><a href="/books/{{ book.id }}">{{ book.title }}, {{ book.author }}, {{ book.year }}</a></li>
+                    {% endfor %}
+                </ol>
+                {% else %}
+                    There are no books in the database yet.
+            </div>
             {% endif %}
-        <!-- <a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a> -->
     {% endif %}
 
 {% endblock content %}
