@@ -1,47 +1,72 @@
 body{
-    /* background-color:#d9d9d9; */
     background-image: url("../img/background_books.png.jpg");
     font-size: 20px;
 }
 
+main {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: auto;
+    grid-template-areas:
+        "header"
+        "signin"
+        "container"
+        "footer";
+}
+
 h1 {
+    grid-area: header;
     border-radius: 5px;
     text-align: center;
     color:white;
     text-shadow: 2px 2px 5px red;
 }
 
-#login {
-    background: rgba(204, 204, 204, 0.5);
-    /* opacity: 0.5; */
+.transparent {
+    grid-area: signin;
+    background: rgba(204, 204, 204, 0.9);
+    border-radius: 10px;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
 }
 
 h2 {
     text-align: center;
     color:black;
     text-decoration: underline;
-    padding-top: 5vw;
-    opacity: 1;
+}
+
+#qsLoginBtn {
+    color:#8B0000;
+    margin: 10px;
 }
 
 h3 {
     grid-area: side;
     padding: 5vw;
+    margin: 5vw;
     color: #9c2238;
+    font-weight: 900;
+    background-color: bisque;
+    text-align: center;
+    justify-content: center;
+    border-radius: 20px;
 }
 
 .main_page,
 #qsLogoutBtn {
     color: #cc6600;
     font-weight: 200;
-
 }
 
 container {
+    grid-area: container;
     display: flex;
     flex-flow: row;
-    justify-content: space-around;
-    padding: 5px;
+    justify-content: center;
+    align-items: center;
 }
 
 a {
@@ -66,6 +91,7 @@ a {
 .sign_in {
     display: grid;
     grid-template-rows: auto;
+    width: 100vw;
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
         "side reader"
@@ -98,15 +124,17 @@ a {
     color: #8B0000;
     font-size: 30px;
     font-weight: bold;
+    background-color: bisque;
+    padding: 10px;
 }
 
 .reader,
 .coordinator,
 .editor {
     text-align: center;
-    background-color: #eee;
+    background-color: bisque;
     border-radius: 5vw;
-    width: 30vw;
+    max-width: 40vw;
     padding: 10px;
 }
 
