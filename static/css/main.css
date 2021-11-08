@@ -204,6 +204,27 @@ li {
     margin: 5px;
 }
 
+.book {
+    color:#8B0000;
+    font-weight: 600;
+    background: rgba(204, 204, 204, 0.7);
+    max-width: 95vw;
+    text-align: center;
+}
+
+.more {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-around;
+}
+
+.edit,
+.delete {
+    background-color: bisque;
+    padding: 5px;
+    border-radius: 5px;
+}
+
 @media only screen and (min-width: 466px) and (max-width: 600px) {
 
     body {

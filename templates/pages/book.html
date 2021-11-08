@@ -19,9 +19,16 @@
 </div>
 {% endif %}
 {% if "post:book" in permissions %}
-<a href="/books/{{ book.id }}/edit">Edit this book</a>
-{% endif%}
-{% if "delete:book" in permissions %}
-<a href="/books/{{ book.id }}/delete">Delete this book</a>
-{% endif %}
+<div class="more">
+    <div class="edit">
+        <a href="/books/{{ book.id }}/edit">Edit this book</a>
+        {% endif%}
+        </div>
+        {% if "delete:book" in permissions %}
+        <div class="delete">
+            <a href="/books/{{ book.id }}/delete">Delete this book</a>
+        {% endif %}
+        </div>
+</div>
+
 {% endblock content %}
