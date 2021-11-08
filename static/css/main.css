@@ -218,3 +218,18 @@ container {
         max-width: 100vw;
     }
 }
+
+.permissions {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: space-around;
+    font-size: xx-large;
+    font-weight: 900;
+}
+
+.link {
+    background: rgba(204, 204, 204, 0.9);
+    padding: 10px;
+    border-radius: 5px;
+}

@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../static/css/main.css">
     <link rel="shortcut icon" href="../../static/img/books.png">
-    <title>FSND Publishing House</title>
+    <title>Publishing House</title>
 </head>
 
 <body>
+  {% if login==True %}
     <main>
           <div class="header">
               <h1>Publishing House</h1>
           </div>
 
-          {% if login==True %}
           <div class="transparent">
             <h2>If you'd like to browse through our books and authors, please <a id="qsLoginBtn" class="btn btn-primary btn-lg btn-login btn-block" href="/login">Log In</a></h2>
           </div>
@@ -39,45 +39,35 @@
             </div>
           </container>
 
-          {% endif %}
-
           {% if no_role %}
+          <article class="not_assigned"></article>
               <h4>You haven't been assigned a role yet. Contact the administrator for permissions.</h4>
               <div><a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a></div>
+          </article>
           {% endif %}
 
-
-          {% if permissions %}
-          <container>
-            <div><a href="/books">BOOKS</a></div>
-            <div><a href="/authors">AUTHORS</a></div>
-                {% if "patch:book" in permissions %}
-                <div><a href="/books/create">ADD NEW BOOK</a></div>
-                <div><a href="/authors/create">ADD NEW AUTHOR</a>
-                {% endif %}</div>
-            <div><a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a></div>
-            <div><a class = "main_page" href="{{ url_for('index') }}">Main Page</a></div>
-          {% endif %}
-
-          </container>
+        </main>
+  {% endif %}
 
             {% block content %}{% endblock %}
 
-          <!-- <div class="flash">
+      {% if permissions %}
+      <div class="header">
+        <h1>Publishing House</h1>
+      </div>
+      <article class="permissions">
+          <div class="link"><a href="/books">BOOKS</a></div>
+          <div class="link"><a href="/authors">AUTHORS</a></div>
+              {% if "patch:book" in permissions %}
+          <div class="link"><a href="/books/create">ADD NEW BOOK</a></div>
+          <div class="link"><a href="/authors/create">ADD NEW AUTHOR</a>
+              {% endif %}</div>
+          <div class="link"><a id="qsLogoutBtn" class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a></div>
+          <div class="link"><a class = "main_page" href="{{ url_for('index') }}">Main Page</a></div>
+      </article>
+      {% endif %}
 
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                  {% for message in messages %}
-                    <div class="alert alert-block alert-info fade in">
-                      <a class="close" data-dismiss="alert">&times;</a>
-                      {{ message }}
-                    </div>
-                  {% endfor %}
-                {% endif %}
-            {% endwith %}
-          </div> -->
-
-    </main>
+</div>
 
     <!-- scripts -->
     <script src="../../static/js/main.js" type="text/javascript"></script>
