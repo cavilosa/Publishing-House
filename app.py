@@ -232,8 +232,8 @@ def create_app(test_config=None):
                     "book": book.format()
                 })
 
-            return render_template("pages/book.html", book=book,
-                                   permissions=permissions)
+            return redirect (url_for("book_by_id", payload=payload, id=id))
+
         # for get method
         if request.content_type == 'application/json':
             return jsonify({
@@ -437,8 +437,7 @@ def create_app(test_config=None):
                     "author": author.format()
                 })
 
-            return render_template("pages/author.html", author=author,
-                                   permissions=permissions)
+            return redirect (url_for("author_by_id", payload=payload, id=id))
 
         if request.content_type == 'application/json':
             return jsonify({
