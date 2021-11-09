@@ -14,5 +14,5 @@ class BookForm(FlaskForm):
 
 class AuthorForm(FlaskForm):
     name = StringField("NAME", validators=[DataRequired()])
-    yob = StringField("YEAR OF BIRTH", validators=())
-    send = SubmitField('send')
+    yob = StringField("BIRTH YEAR", validators=())
+    send = SubmitField('SEND')

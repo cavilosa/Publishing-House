@@ -37,7 +37,6 @@ container,
     margin: auto;
 }
 
-
 h1 {
     grid-area: header;
     border-radius: 5px;
@@ -129,6 +128,7 @@ a {
     column-gap: 20px;
     margin: 30px;
     border-radius: 10px;
+    row-gap: 5px;
 }
 
 .reader {
@@ -240,8 +240,8 @@ li {
 /* Authors display */
 
 h4 {
-    padding: 10px;
-    margin-bottom: auto;
+    padding: 5px;
+    margin: auto;
 }
 
 p {
