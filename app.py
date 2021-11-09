@@ -528,8 +528,7 @@ def create_app(test_config=None):
                     "author": author.format()
                 })
 
-            return render_template("pages/authors.html", authors=authors,
-                                   permissions=permissions)
+            return redirect(url_for("authors"))
 
         if request.content_type == 'application/json':
             return jsonify({
