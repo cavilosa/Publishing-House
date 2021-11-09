@@ -298,9 +298,7 @@ def create_app(test_config=None):
                     flash("Couldn't get books from the database.")
                     abort(404)
 
-                return render_template("pages/books.html", books=books,
-                                       permissions=permissions,
-                                       authors=authors)
+                return redirect(url_for("books"))
 
         if request.content_type == 'application/json':
             return jsonify({
