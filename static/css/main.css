@@ -214,6 +214,17 @@ li {
     margin: auto;
 }
 
+form {
+    background: #c59b9bb3;
+    text-align: center;
+    padding: 10px;
+    font-weight: 800;
+}
+
+form * {
+    margin: 2px;
+}
+
 .more {
     display: flex;
     flex-flow: row;
