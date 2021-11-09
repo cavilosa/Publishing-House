@@ -3,7 +3,7 @@
 {% block content %}
 {% if book %}
 <div class="book">
-    <p>Title: {{ book.title }}</p>
+    <p>TITLE: {{ book.title }}</p>
     {% if "post:book" in permissions %}
         {% if author %}
         <p>AUTHOR:<a href="/authors/{{author.id}}"> {{book.author}}</a></p>
