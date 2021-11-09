@@ -1,5 +1,5 @@
 {% extends 'layouts/main.html' %}
-{% block title %}BOOKS{% endblock %}
+{% block title %}AUTHORS{% endblock %}
 {% block content %}
     {% if "post:author" not in permissions %}
         {% if authors %}
@@ -9,10 +9,9 @@
             {% endfor %}
         </ol>
         {% else %}
-            There are no authors in the database yet. 
+            There are no authors in the database yet.
         {% endif %}
     {% endif %}
-
 
     {% if "post:author" in permissions %}
         {% if authors %}
@@ -22,7 +21,7 @@
             {% endfor %}
         </ol>
         {% else %}
-            There are no authors in the database yet. 
+            There are no authors in the database yet.
         {% endif %}
 
     {% endif %}

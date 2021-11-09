@@ -98,6 +98,7 @@ container {
 
 a {
     color:black;
+    word-wrap: break-word;
 }
 
 .links {
@@ -172,6 +173,7 @@ container {
     flex-wrap: wrap;
     justify-content:space-around;
     font-weight: 700;
+    margin-right: 15px;
 }
 
 .link {
@@ -185,7 +187,12 @@ container {
 /* Book display */
 
 .books {
-    max-width: 95vw;
+    /* max-width: 95vw; */
+    /* max-width: fit-content; */
+    /* align-self: center;
+    align-items: center; */
+    /* margin: auto; */
+    margin: 5px;
 }
 
 ol {
@@ -206,12 +213,38 @@ li {
     max-width: fit-content;
 }
 
-.book {
+.book,
+.author {
     color:#520303;
     font-weight: 600;
     background: #c59b9bb3;
     max-width: 90vw;
     text-align: center;
+    margin: auto;
+    padding: 10px;
+    margin-right: 15px;
+        /* margin-right: 15px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px; */
+}
+
+.form_worning {
+    max-width: 90vw;
+    font-size: medium;
+    font-weight: bold;
+    font-style: italic;
+
+}
+
+/* Authors display */
+
+h4 {
+    padding: 10px;
+    margin-bottom: auto;
+}
+
+p {
     margin: auto;
 }
 
@@ -220,6 +253,7 @@ form {
     text-align: center;
     padding: 10px;
     font-weight: 800;
+    margin-right: 15px;
 }
 
 form * {
@@ -230,6 +264,7 @@ form * {
     display: flex;
     flex-flow: row;
     justify-content: space-around;
+    margin: 10px;
 }
 
 .edit,
@@ -240,6 +275,14 @@ form * {
 }
 
 @media only screen and (max-width: 465px) {
+    .books {
+        /* border: solid red;
+        display: flex;
+        flex-flow: column; */
+        margin-right: 20px;
+        /* align-self: center; */
+    }
+
     .sign_in {
         display: flex;
         flex-flow: column;
@@ -250,9 +293,13 @@ form * {
         padding: 0;
     }
 
-    .book {
-        margin-top: 20px;
-    }
+    /* .book,
+    .author {
+        margin-right: 15px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    } */
 
     container {
         padding: 5px;
@@ -277,6 +324,10 @@ form * {
         font-size: medium;
     }
 
+    h4 {
+        margin: auto;
+    }
+
     .reader,
     .coordinator,
     .editor {
@@ -287,10 +338,17 @@ form * {
     form {
         font-weight: 300;
         font-size: small;
+        margin-top: 15px;
     }
 
-    .book {
+    ol {
         font-size: small;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    li {
+        max-width:max-content;
     }
 }
 
@@ -327,10 +385,54 @@ form * {
         padding: 5px;
         margin: 5px;
     }
+
+    .book,
+    .author,
+    .more {
+        font-size: large;
+        margin-right: 25px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+
+    form {
+        font-size: medium;
+    }
+
+    .form_worning,
+    #author {
+        font-size: large;
+    }
+
+    input {
+        font-size: medium;
+    }
 }
 
 @media only screen and (min-width: 901px) {
     .link {
+        font-size: x-large;
+    }
+
+    .book,
+    .author,
+    .more {
+        font-size:x-large;
+        margin-right: 25px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+
+    form {
+        font-size: x-large;
+        margin-top: 1vw;
+    }
+
+    input,
+    .form_worning,
+    #author {
         font-size: x-large;
     }
 }

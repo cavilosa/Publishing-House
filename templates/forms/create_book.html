@@ -2,7 +2,7 @@
 {% block title %}CREATE BOOK{% endblock %}
 {% block content %}
 <form action="" method="post">
-    <h3>Please, don't forget to add your author first if not in the list.</h1>
+    <p class="form_worning">Please, don't forget to add your author first if not in the list.</p>
     {{form.hidden_tag()}}
     {{ form.csrf_token }}
     <div class="form-group m-5">

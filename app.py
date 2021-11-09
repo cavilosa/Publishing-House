@@ -287,7 +287,7 @@ def create_app(test_config=None):
 
                 try:
                     book.insert()
-                    flash("The book has beed added successfully.")
+                    flash("The book has been added successfully.")
                 except BaseException:
                     flash("We couldn't add new book to the database")
                     abort(400)
