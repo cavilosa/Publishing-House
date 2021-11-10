@@ -1,4 +1,8 @@
 {% extends 'layouts/main.html' %}
 {% block content %}
-<h2>Bad Request. The server couldn't process your request.</h2>
+
+<div class="errors">
+    <p class="error">Bad Request. The server couldn't process your request.</p>
+    <div class="link_error"><a class = "main_page" href="{{ url_for('index') }}">Main Page</a></div>
+</div>
 {% endblock %}

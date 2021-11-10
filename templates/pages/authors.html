@@ -3,27 +3,30 @@
 {% block content %}
     {% if "post:author" not in permissions %}
         {% if authors %}
-        <ol>
-            {% for author in authors %}
-            <li>{{ author.name }}, {{ author.yob }}</li>
-            {% endfor %}
-        </ol>
-        {% else %}
-            There are no authors in the database yet.
+        <div class="authors">
+            <ol>
+                {% for author in authors %}
+                <li>{{ author.name }}, {{ author.yob }}</li>
+                {% endfor %}
+            </ol>
+            {% else %}
+                There are no authors in the database yet.
+        </div>
         {% endif %}
     {% endif %}
 
     {% if "post:author" in permissions %}
         {% if authors %}
-        <ol>
-            {% for author in authors %}
-            <li><a href="/authors/{{ author.id }}"> {{ author.name }}, {{ author.yob }}</a></li>
-            {% endfor %}
-        </ol>
-        {% else %}
+        <div class="authors">
+            <ol>
+                {% for author in authors %}
+                <li><a href="/authors/{{ author.id }}"> {{ author.name }}, {{ author.yob }}</a></li>
+                {% endfor %}
+            </ol>
+            {% else %}
             There are no authors in the database yet.
         {% endif %}
-
+        </div>
     {% endif %}
 
 {% endblock content %}

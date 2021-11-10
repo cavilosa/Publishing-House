@@ -1,4 +1,9 @@
 {% extends 'layouts/main.html' %}
 {% block content %}
-<h2>Internal server error. The server has encountered a situation it doesn't know how to handle.</h2>
+<div class="errors">
+    <p class="error">Internal server error. The server has encountered a situation it doesn't know how to handle.</p>
+    <div class="link_error"><a class = "main_page" href="{{ url_for('index') }}">Main Page</a></div>
+</div>
+
+
 {% endblock %}

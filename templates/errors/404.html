@@ -1,4 +1,7 @@
 {% extends 'layouts/main.html' %}
 {% block content %}
-<h2>You are trying to access an item that is not in the database. The server can not find the requested resource.</h2>
+<div class="errors">
+    <p class="error">You are trying to access an item that is not in the database. The server can not find the requested resource.</p>
+    <div class="link_error"><a class = "main_page" href="{{ url_for('index') }}">Main Page</a></div>
+</div>
 {% endblock %}

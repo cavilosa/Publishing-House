@@ -9,6 +9,15 @@
 </head>
 
 <body>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
   {% if login==True %}
     <main>
           <div class="header">
@@ -70,7 +79,7 @@
 </div>
 
     <!-- scripts -->
-    <script src="../../static/js/main.js" type="text/javascript"></script>
+<script src="../../static/js/main.js" type="text/javascript"></script>
 
 </body>
 </html>

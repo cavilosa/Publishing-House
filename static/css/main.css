@@ -27,6 +27,7 @@ main {
     bottom:0px;
     left:0px;
     right:0px;
+    justify-content: center;
 }
 
 .transparent,
@@ -184,21 +185,55 @@ container {
     margin: 2px;
 }
 
+.errors {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+
+p.error {
+    background-color: hsl(0, 76%, 45%, 0.7);
+    font-size: inherit;
+    max-width: 70vw;
+    font-size: large;
+    font-weight: 900;
+}
+
+ul.flashes {
+    margin-right: 20px;
+    max-width: 70vw;
+    font-size: large;
+    /* margin: auto; */
+}
+
+.link_error {
+    margin: 20px;
+    font-weight:bolder;
+    font-size:x-large;
+    border:#520303 solid;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: hsl(207, 29%, 87%, 0.5);
+}
+
+.link_error a.main_page {
+    color: black;
+    font-weight: 900;
+
+}
+
 /* Book display */
 
-.books {
-    /* max-width: 95vw; */
-    /* max-width: fit-content; */
-    /* align-self: center;
-    align-items: center; */
-    /* margin: auto; */
-    margin: 5px;
+.books,
+.authors {
+    max-width: 80vw;
+    margin:auto;
 }
 
 ol {
     font-size: large;
     font-weight: 500;
-    /* background: hsla(0, 27%, 57%, 0.5); */
     background: #c59b9bb3;
     max-width: 90vw;
     align-self: center;
@@ -275,13 +310,6 @@ form * {
 }
 
 @media only screen and (max-width: 465px) {
-    .books {
-        /* border: solid red;
-        display: flex;
-        flex-flow: column; */
-        margin-right: 20px;
-        /* align-self: center; */
-    }
 
     .sign_in {
         display: flex;
@@ -292,14 +320,6 @@ form * {
         font-size: medium;
         padding: 0;
     }
-
-    /* .book,
-    .author {
-        margin-right: 15px;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        border-radius: 5px;
-    } */
 
     container {
         padding: 5px;
@@ -350,6 +370,10 @@ form * {
     li {
         max-width:max-content;
     }
+
+    /* ul.flashes {
+        font-size: large;
+    } */
 }
 
 
@@ -357,6 +381,17 @@ form * {
 
     body {
         font-size: small;
+    }
+
+    .sign_in,
+    .transparent {
+        max-width: 600px;
+    }
+
+    .books,
+    .authors {
+        max-width: 70vw;
+        margin:auto;
     }
 
     .transparent {
@@ -368,6 +403,10 @@ form * {
     .editor {
         font-size: medium;
         max-width: 40vw;
+    }
+
+    .git {
+        font-size: medium;
     }
 
     h3 {
@@ -408,11 +447,30 @@ form * {
     input {
         font-size: medium;
     }
+
+    p.error {
+        font-size:x-large;
+    }
+
+    ul.flashes {
+        margin: auto;
+    }
 }
 
 @media only screen and (min-width: 901px) {
+    .sign_in,
+    .transparent {
+        max-width: 70vw;
+    }
+
     .link {
         font-size: x-large;
+    }
+
+    .books,
+    .authors {
+        max-width: 60vw;
+        margin:auto;
     }
 
     .book,
@@ -434,5 +492,13 @@ form * {
     .form_worning,
     #author {
         font-size: x-large;
+    }
+
+    p.error {
+        font-size:xx-large;
+    }
+
+    ul.flashes {
+        margin: auto;
     }
 }
