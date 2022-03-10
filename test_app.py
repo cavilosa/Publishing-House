@@ -274,7 +274,7 @@ class PublishingHouseTestCase(unittest.TestCase):
         self.assertEqual(data["success"], True)
 
     def test_edit_book_unauthorized(self):
-        """edititin the books/id/edit without auth"""
+        """edition the books/id/edit without auth"""
         response = self.client().get('/books/1/edit', json=self.new_book)
 
         data = response.get_data(as_text=True)
